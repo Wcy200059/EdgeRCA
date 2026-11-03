@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EdgeRCA · 诊断信息流</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a href="#" class="brand" aria-label="EdgeRCA 诊断信息流"><span class="brand-symbol">E</span><strong>EdgeRCA</strong><span class="brand-subtitle">诊断信息流</span></a>
+    <div class="top-tools"><span class="saved-status"><i></i> 已保存的离线实验</span><label>查看案例 <select id="case-select" aria-label="选择实验案例"></select></label><button class="quiet-button" id="provenance">来源与口径 ↗</button></div>
+  </header>
+  <main>
+    <section class="intro"><div><p class="eyebrow">DATA → PROGRAM → AGENTS → ANSWER</p><h1>数据是怎样变成诊断答案的？</h1><p class="lead">跟着一项观测，看清程序处理、模型决策，以及它们之间的每一次交接。</p></div><div class="case-summary" id="case-summary"></div></section>
+    <section id="overview" aria-label="完整处理流程"></section>
+    <details class="question"><summary><span class="eyebrow">本题任务</span><strong id="question-brief">正在载入…</strong><span>展开原题</span></summary><p id="question-text"></p><p id="window-text" class="muted"></p></details>
+    <section class="trackbar" aria-label="选择要跟踪的材料"><div class="track-icon">⌁</div><div class="track-title"><strong>跟踪一条材料</strong><span>指标、日志、调用和缺失说明分组查看</span></div><label>设备节点<select id="node-select" aria-label="选择设备节点"></select></label><label class="fact-select-label">本地材料（按类型）<select id="fact-select" aria-label="选择本地观测"></select></label><button class="button" id="trace-selected">查看这项的完整路径 ↗</button></section>
+    <div class="notice error" id="load-error" role="alert" hidden></div>
+    <div class="workspace" id="workspace" hidden>
+      <aside class="journey" aria-label="处理步骤"><div class="journey-title"><strong>按实际发生顺序</strong><span id="step-count"></span></div><div class="legend"><span class="role program">程序</span><span class="role four">4B 节点</span><span class="role nine">9B 中央</span></div><nav id="step-list"></nav></aside>
+      <div class="main-column">
+        <div class="playbar"><div id="position"></div><div class="play-controls"><button class="button" id="previous">← 上一步</button><button class="button" id="play">▶ 自动播放</button><button class="button primary" id="next">下一步 →</button></div></div>
+        <article class="step-panel" id="step-panel" aria-live="polite" aria-atomic="false"><div id="step-heading"></div><div id="handoff"></div><div id="stage-body"></div><div class="step-footer"><span id="next-description"></span><button class="button primary" id="bottom-next">继续下一步 →</button></div></article>
+      </div>
+    </div>
+    <footer><span>此页读取保存的记录，不调用模型。这里展示的“解释”是当时的输出，不是已证实的根因。</span><span id="footer-source"></span></footer>
+  </main>
+  <dialog id="inspector"><div class="dialog-heading"><div><p class="eyebrow" id="inspector-kind"></p><h2 id="inspector-title"></h2></div><button class="icon-button" id="close-inspector" aria-label="关闭详情">×</button></div><div class="dialog-body" id="inspector-body"></div></dialog>
+  <div class="toast" id="toast" role="status" hidden></div>
+  <script src="app.js"></script>
+</body>
+</html>
