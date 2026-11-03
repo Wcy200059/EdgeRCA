@@ -1,0 +1,26 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Tomcat03",
+        "reason": "high JVM CPU load",
+        "time": "14:01:00",
+        "evidence_ids": [
+          "e46",
+          "e72"
+        ],
+        "explanation": "e46 显示 Tomcat03 在 14:01 持续触发长调用规则（P95=1020ms, max=6068ms），e72 确认其下游 IG01 调用延迟显著。虽 OS CPU 无明显异常（e103），但高内存未加载，基于现有长调用证据，Tomcat03 为最可能根因。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615271400000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1"
+}

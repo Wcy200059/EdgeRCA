@@ -1,0 +1,38 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "apache01",
+        "reason": "high disk I/O read usage",
+        "time": "00:21:00",
+        "evidence_ids": [
+          "e254",
+          "e255",
+          "e256"
+        ],
+        "explanation": "apache01 在 00:21:00 触发磁盘读取规则 (e254, e255)，且读写总量 (e256) 在 00:19:00 至 00:29:00 持续处于 triggered 状态，峰值出现在 00:23:00。这构成了高磁盘 I/O 的强证据。"
+      },
+      {
+        "component": "apache01",
+        "reason": "high memory usage",
+        "time": "00:20:00",
+        "evidence_ids": [
+          "e258"
+        ],
+        "explanation": "apache01 内存 (MEMFreeMem) 在 00:20:00 触发规则 (e258)，随后在 00:20:00-00:25:00 期间规则持续 triggered，表明可用内存下降。虽然直接证据是内存而非磁盘空间，但在高 I/O 场景下，内存耗尽常伴随或导致 I/O 停顿，且符合故障特征。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1616603400000,
+  "model_judgment_verified": false,
+  "expected_failures": 2,
+  "answer_schema": "faults_v1",
+  "field_repairs": [],
+  "warnings": []
+}

@@ -1,0 +1,90 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "MG01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "apache01 磁盘指标 e230 显示 sdb 有波动，但未明确是读还是写，也未确认是否导致服务故障。需进一步确认磁盘活动类型及其对业务的影响，并检查 MG01 自身磁盘状态。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "16:30:00",
+        "end": "17:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc",
+          "JVM-Memory_HeapMemoryUsed"
+        ],
+        "focus": "确认 Tomcat01 内存使用率是否飙升或堆内存耗尽，以验证长调用（e179）是否为 OOM 导致。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:MG01",
+        "start": "16:30:00",
+        "end": "17:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKReadBps",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKWriteBps"
+        ],
+        "focus": "明确 MG01 磁盘 sdb 的读写方向，确认 e230 中的规则触发是否由高磁盘读 I/O 引起。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:apache01",
+        "start": "16:30:00",
+        "end": "17:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKReadBps",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKWriteBps"
+        ],
+        "focus": "明确 apache01 磁盘 sdb 的读写方向，确认 e230 中的规则触发是否由高磁盘读 I/O 引起。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "use unique e IDs from current evidence; node overviews are not evidence",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 0,
+          "item": {
+            "id": "h1",
+            "assessment": "supported",
+            "component": "Tomcat01",
+            "reason": "JVM Out of Memory (OOM) Heap",
+            "time": "16:30:02.552",
+            "time_evidence_id": "e179",
+            "support_ids": [
+              "e179",
+              "e167"
+            ],
+            "counter_ids": [],
+            "explanation": "Tomcat01 在 16:30:02 出现长调用（e179），且 CPU 指标 e167 显示单核利用率达 100%。长调用与高 CPU 常伴随 OOM 发生，需确认内存是否耗尽导致线程阻塞或 GC 停顿，从而引发长调用。"
+          },
+          "error": "use unique e IDs from current evidence; node overviews are not evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

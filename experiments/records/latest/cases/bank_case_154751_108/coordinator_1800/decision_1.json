@@ -1,0 +1,100 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "IG02",
+        "reason": "high CPU usage",
+        "time": "19:04:00",
+        "time_evidence_id": "e11",
+        "support_ids": [
+          "e11"
+        ],
+        "counter_ids": [],
+        "explanation": "IG02 在 19:04:00 出现 CPU 使用率 94.4% 的极端峰值 (e11)，随后回落。这是明确的资源耗尽事件，符合故障特征。需确认其是否导致下游服务不可用。"
+      },
+      {
+        "id": "h2",
+        "assessment": "supported",
+        "component": "apache01",
+        "reason": "network latency",
+        "time": "19:15:04",
+        "time_evidence_id": "e305",
+        "support_ids": [
+          "e305",
+          "e307",
+          "e308"
+        ],
+        "counter_ids": [],
+        "explanation": "apache01 在 19:15:04 至 19:19:14 期间出现多起 502 错误 (e305, e307, e308 等)，时间集中在 19:15-19:18。这构成了明确的业务失败证据，符合第二个故障要求。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:IG02",
+        "start": "19:00:00.000",
+        "end": "19:10:00.000",
+        "tools": [
+          "get_metrics",
+          "get_calls"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_NETWORK_ens160_NETPacketsOut",
+          "OSLinux-OSLinux_NETWORK_ens160_NETPacketsIn"
+        ],
+        "focus": "核实 IG02 在 19:04 CPU 峰值前后的网络流量及调用情况，确认高 CPU 是否由网络风暴或下游连接建立引起，排除网络原因导致 CPU 飙升的可能性。",
+        "basis_ids": [
+          "e11"
+        ]
+      },
+      {
+        "node_id": "device:apache01",
+        "start": "19:15:00.000",
+        "end": "19:20:00.000",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "检查 apache01 在 502 报错时段 (19:15-19:18) 的调用链，识别是否存在指向 Tomcat 或上游组件的长调用，以验证 502 错误是由后端处理超时或资源耗尽引起的。",
+        "basis_ids": [
+          "e305",
+          "e307",
+          "e308"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat02",
+        "start": "19:00:00.000",
+        "end": "19:10:00.000",
+        "tools": [
+          "get_metrics",
+          "get_calls"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "补查 Tomcat02 在 19:04 时段的 CPU 和内存指标，确认其是否受到 IG02 高负载的影响，或自身是否存在资源问题，以建立从 IG02 到 apache01 的因果链。",
+        "basis_ids": [
+          "e11"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17765,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 46,
+        "available_facts": 351
+      }
+    }
+  ],
+  "labels_used": false
+}

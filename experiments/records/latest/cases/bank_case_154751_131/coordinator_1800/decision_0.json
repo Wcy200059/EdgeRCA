@@ -1,0 +1,94 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat02",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "19:31:26.000",
+        "time_evidence_id": "e238",
+        "support_ids": [
+          "e238"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat02 在 19:31:26 发生 Allocation Failure 导致的 GC，随后在 19:59:05 再次发生。结合 apache02 内存持续 96% (e307) 及 Tomcat04 CPU 尖峰 (e267)，推断 Tomcat02 内存泄漏或分配失败导致频繁 GC 及潜在 OOM，是业务受阻的根因。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "apache02",
+        "reason": "high memory usage",
+        "time": "19:31:00.000",
+        "time_evidence_id": "e307",
+        "support_ids": [
+          "e307"
+        ],
+        "counter_ids": [],
+        "explanation": "apache02 内存自 19:31 起持续 96% 满载 (e307)。虽未直接观测到崩溃，但高内存可能引发下游 Tomcat 分配失败。需确认 apache02 是否因内存不足导致请求积压，或仅为被动表现。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat02",
+        "start": "19:31:00.000",
+        "end": "20:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc",
+          "JVM-Memory-Heap-Used"
+        ],
+        "focus": "核实 Tomcat02 内存使用率是否持续高位及是否存在 OOM 事件，确认 e238 中的 Allocation Failure 是否由内存耗尽引起。",
+        "basis_ids": [
+          "e238"
+        ]
+      },
+      {
+        "node_id": "device:apache02",
+        "start": "19:30:00.000",
+        "end": "20:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认 apache02 内存是否自 19:31 起持续满载，评估其对上游请求处理的影响。",
+        "basis_ids": [
+          "e307"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "19:45:00.000",
+        "end": "19:58:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "验证 Tomcat04 在 19:45 的 CPU 尖峰 (e267) 是否为偶发事件，排除其作为根因的可能性。",
+        "basis_ids": [
+          "e267"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17713,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 40,
+        "available_facts": 326
+      }
+    }
+  ],
+  "labels_used": false
+}

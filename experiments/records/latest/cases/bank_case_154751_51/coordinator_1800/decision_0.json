@@ -1,0 +1,134 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "候选IG01高CPU，但现有证据e16仅显示SysTime波动，未确认瞬时利用率或持续高位。需补查CPU利用率具体数值及趋势，以确认是否触发故障。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "IG02",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "候选IG02高CPU，证据e17仅显示JVM内存波动，无CPU直接证据。需补查IG02 CPU利用率，区分是内存问题还是CPU过载导致。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "MG01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "候选MG01高磁盘IO，但e54仅显示CPU利用率稳定在25%左右，未见明显飙升。需补查磁盘IO具体指标，确认是否存在IO瓶颈。"
+      },
+      {
+        "id": "h4",
+        "assessment": "unresolved",
+        "component": "MG02",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "候选MG02高磁盘IO，证据e58仅显示单核CPU利用波动。需补查磁盘IO指标，确认是否有IO压力导致下游延迟。"
+      },
+      {
+        "id": "h5",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "候选Mysql01高磁盘IO，但e112显示trace模态无记录。需补查磁盘IO指标，确认数据库是否存在IO瓶颈。"
+      },
+      {
+        "id": "h6",
+        "assessment": "unresolved",
+        "component": "Mysql02",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "候选Mysql02高磁盘IO，证据e142仅显示接收字节数波动。需补查磁盘IO指标，确认数据库IO压力是否导致业务失败。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:IG01",
+        "start": "22:00:00",
+        "end": "22:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "核实IG01 CPU利用率是否持续高位，以支持高CPU故障假设。",
+        "basis_ids": [
+          "e16"
+        ]
+      },
+      {
+        "node_id": "device:MG01",
+        "start": "22:00:00",
+        "end": "22:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadBps"
+        ],
+        "focus": "核实MG01磁盘读取速率，确认是否存在IO瓶颈。",
+        "basis_ids": [
+          "e54"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "basis_ids must use e IDs from current evidence",
+      "rejected_sections": [
+        {
+          "section": "requests",
+          "index": 1,
+          "item": {
+            "node_id": "device:IG02",
+            "start": "22:00:00",
+            "end": "22:30:00",
+            "tools": [
+              "get_metrics"
+            ],
+            "metrics": [
+              "OSLinux-CPU_CPU_CPUCpuUtil"
+            ],
+            "focus": "核实IG02 CPU利用率，区分内存问题与CPU过载。",
+            "basis_ids": [
+              "e17"
+            ]
+          },
+          "error": "basis_ids must use e IDs from current evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

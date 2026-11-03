@@ -1,0 +1,103 @@
+{
+  "case_id": "7d319e15e280ebfd",
+  "cutoff_ms": 1616686200000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 259
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 261
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 263
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 264
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Tomcat04",
+      "start": "23:00:00",
+      "end": "23:30:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "检查 Tomcat04 的 OS CPU 使用率，确认是否存在因频繁 GC 导致的 CPU 飙升，排除外部资源争用导致的 OOM。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Tomcat04",
+      "start": "23:00:00",
+      "end": "23:30:00",
+      "tools": [
+        "get_calls"
+      ],
+      "metrics": [],
+      "focus": "查看 Tomcat04 的调用关系，确认是否存在长调用或下游服务超时，判断 Redis02 的高 CPU (h2) 是否导致了 Tomcat04 的 OOM，或反之。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Redis02",
+      "start": "23:00:00",
+      "end": "23:30:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "获取 Redis02 CPU 使用率的详细数值曲线，确认 23:12 后的峰值具体数值及持续时间，验证是否为持续高负载。",
+      "basis_ids": [
+        "e170"
+      ]
+    }
+  ],
+  "peak_gpu_gib": 21.165232181549072,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e249",
+      "e250",
+      "e251",
+      "e252",
+      "e253",
+      "e254",
+      "e255",
+      "e256",
+      "e257",
+      "e258",
+      "e259"
+    ],
+    "notes": "filter invalid; retained all global evidence",
+    "attempts": [
+      {
+        "valid": false,
+        "error": "ids must be unique IDs from global evidence"
+      },
+      {
+        "valid": false,
+        "error": "ids must be unique IDs from global evidence"
+      }
+    ],
+    "fallback": true,
+    "available": 11
+  }
+}

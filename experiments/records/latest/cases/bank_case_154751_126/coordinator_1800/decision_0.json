@@ -1,0 +1,102 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "apache02",
+        "reason": "high CPU usage",
+        "time": "06:41:00.000",
+        "time_evidence_id": "e254",
+        "support_ids": [
+          "e254"
+        ],
+        "counter_ids": [],
+        "explanation": "apache02 在 06:41:00 触发 CPU 使用率告警 (e254)，峰值 99.98%，早于 Tomcat 异常。需确认该节点是否有长调用或下游依赖异常导致 CPU 飙升，并排查是否波及业务。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat01 本地保留大量未加载观测 (13 条)，仅加载 1 条且无明确时间标记。无法确认其 CPU 是否升高及具体发生时间，需补查具体指标以验证根因。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat02 本地保留 16 条未加载观测，仅加载 1 条无时间标记。需补查 CPU 指标确认是否发生高负载，并分析其与 apache02 的时序关系。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:apache02",
+        "start": "06:40:00.000",
+        "end": "06:50:00.000",
+        "tools": [
+          "get_calls",
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_NETWORK_NETWORK_TotalTcpConnNum"
+        ],
+        "focus": "确认 06:41:00 高 CPU 峰值是否由长调用或网络风暴引起，排除单纯资源争抢。",
+        "basis_ids": [
+          "e254"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "06:30:00.000",
+        "end": "07:00:00.000",
+        "tools": [
+          "list_metrics",
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "获取 Tomcat01 CPU 使用率具体数值及变化趋势，验证是否发生高负载故障。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat02",
+        "start": "06:30:00.000",
+        "end": "07:00:00.000",
+        "tools": [
+          "list_metrics",
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "获取 Tomcat02 CPU 使用率具体数值及变化趋势，验证是否发生高负载故障。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17642,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 40,
+        "available_facts": 277
+      }
+    }
+  ],
+  "labels_used": false
+}

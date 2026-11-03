@@ -1,0 +1,122 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat01",
+        "reason": "high CPU usage",
+        "time": "17:56:00.000",
+        "time_evidence_id": "e153",
+        "support_ids": [
+          "e153"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat01 CPU 在 17:56:00 从 26% 激增至 99.98%，并在 17:53-17:59 持续触发规则。该节点作为 IG 调用链的下游，其 CPU 饱和极可能导致处理延迟，进而引发上游 IG 的长调用（e12, e33）。"
+      },
+      {
+        "id": "h3",
+        "assessment": "supported",
+        "component": "Tomcat02",
+        "reason": "high CPU usage",
+        "time": "17:53:00.000",
+        "time_evidence_id": "e153",
+        "support_ids": [
+          "e153"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat02 的 CPU 规则在 17:53:00 再次触发（e153 显示其有两次发作），并在 17:56 达到 99.5%。虽然具体触发时间点在 e153 中未直接列出 17:53 的数值，但规则状态表明该时段存在持续的高 CPU 负载，导致下游延迟。"
+      },
+      {
+        "id": "h4",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "network latency",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "IG01 观测到 P95 高达 2152ms 的长调用，且与 Tomcat 存在父子连接。但现有证据无法区分是网络丢包/延迟还是下游 CPU 高负载导致的处理慢。需补查网络指标或确认 Tomcat 负载是否完全解释了延迟。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:IG01",
+        "start": "17:50:00",
+        "end": "18:00:00",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "NETWORK",
+          "OSLinux-CPU"
+        ],
+        "focus": "确认 IG01 是否存在网络延迟指标（如 RTT、丢包）或 CPU 飙升，以区分网络故障与下游处理慢。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat02",
+        "start": "17:50:00",
+        "end": "18:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "获取 Tomcat02 CPU 使用率的具体数值曲线，验证 17:53 和 17:56 是否确实存在持续的高负载，以支持其作为根因。",
+        "basis_ids": [
+          "e153"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "use unique e IDs from current evidence; node overviews are not evidence",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "supported",
+            "component": "Tomcat03",
+            "reason": "high CPU usage",
+            "time": "17:56:00.000",
+            "time_evidence_id": "e184",
+            "support_ids": [
+              "e184"
+            ],
+            "counter_ids": [],
+            "explanation": "Tomcat03 CPU 在 17:56:00 达到 100% 峰值，且早于 17:56 前已处于高位。作为 IG 的另一下游，其 CPU 满载同样会导致响应延迟，与 IG 观测到的长调用时间窗口吻合。"
+          },
+          "error": "use unique e IDs from current evidence; node overviews are not evidence"
+        },
+        {
+          "section": "requests",
+          "index": 2,
+          "item": {
+            "node_id": "device:Tomcat03",
+            "start": "17:50:00",
+            "end": "18:00:00",
+            "tools": [
+              "get_metrics"
+            ],
+            "metrics": [
+              "OSLinux-CPU_CPU_CPUCpuUtil"
+            ],
+            "focus": "获取 Tomcat03 CPU 使用率的具体数值，确认 17:56 达到 100% 的持续时间及前后趋势，排除瞬时抖动。",
+            "basis_ids": [
+              "e184"
+            ]
+          },
+          "error": "basis_ids must use e IDs from current evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

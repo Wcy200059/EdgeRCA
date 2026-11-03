@@ -1,0 +1,357 @@
+{
+  "case_id": "709860986d85aa4a",
+  "node_id": "device:Tomcat01",
+  "request_id": "q1d7c48512f2307f1",
+  "window_start_ms": 1616662800000,
+  "cutoff_ms": 1616664600000,
+  "query_end_ms": 1616664480000,
+  "scope": {
+    "start": "17:20:00.000",
+    "end": "17:28:00.000"
+  },
+  "requested_scope": {
+    "reference": {
+      "start_ms": 1616663700000,
+      "end_ms": 1616664000000,
+      "seconds": 300.0,
+      "bounds": "[start,end)"
+    },
+    "current": {
+      "start_ms": 1616664000000,
+      "end_ms": 1616664480000,
+      "seconds": 480.0,
+      "bounds": "[start,end)"
+    },
+    "rows_considered": 4625,
+    "prefix_rows": 12198,
+    "counts_by_modality": {
+      "log": 3766,
+      "metric": 859
+    },
+    "must_report_ids": [],
+    "raw_archive_preserved": true
+  },
+  "request": {
+    "node_id": "device:Tomcat01",
+    "start": "17:20:00.000",
+    "end": "17:28:00.000",
+    "tools": [
+      "get_metrics"
+    ],
+    "metrics": [
+      "OSLinux-CPU_CPU_CPUCpuUtil",
+      "JVM-Memory_7778_JVM_Memory_HeapMemoryUsage",
+      "JVM-Operating System_7778_JVM_JVM_CPULoad"
+    ],
+    "focus": "核实 Tomcat01 在 17:22 错误爆发时段是否存在 CPU 使用率飙升或 JVM 负载过高，以确认是否为根因。",
+    "basis_ids": []
+  },
+  "tools_executed": [
+    "get_metrics"
+  ],
+  "facts": [
+    {
+      "id": "f1",
+      "metric": "OSLinux-CPU_CPU_CPUCpuUtil",
+      "meaning": "OS CPU使用率",
+      "unit": "%",
+      "reference": {
+        "count": 2,
+        "median": 26.7515
+      },
+      "current": {
+        "count": 6,
+        "median": 26.4361,
+        "min": 25.9794,
+        "max": 27.0326
+      },
+      "early": {
+        "count": 4,
+        "median": 26.8455
+      },
+      "late": {
+        "count": 4,
+        "median": 26.1242
+      },
+      "early_late_change": {
+        "direction": "down",
+        "delta": -0.7213,
+        "ratio": 0.973131
+      },
+      "extremes": [
+        {
+          "time_ms": 1616664240000,
+          "value": 25.9794
+        },
+        {
+          "time_ms": 1616664060000,
+          "value": 27.0326
+        }
+      ],
+      "change": {
+        "direction": "down",
+        "delta": -0.31544999999999845,
+        "ratio": 0.9882081378614284
+      },
+      "quality": {
+        "invalid": 0,
+        "conflicts": 0,
+        "counter_resets": 0
+      }
+    },
+    {
+      "id": "f2",
+      "kind": "missing",
+      "modality": "metric"
+    }
+  ],
+  "catalog": {
+    "f1": {
+      "observation_id": "1b358bfdcc5bc208d057",
+      "modality": "metric",
+      "status": "available",
+      "name": "OSLinux-CPU_CPU_CPUCpuUtil",
+      "semantics": {
+        "kind": "gauge",
+        "analysis_unit": "%",
+        "meaning": "OS CPU使用率"
+      },
+      "record_count": 8,
+      "sample_count": 8,
+      "invalid_count": 0,
+      "conflicting_record_count": 0,
+      "counter_reset_count": 0,
+      "reference": {
+        "count": 2,
+        "mean": 26.7515,
+        "median": 26.7515,
+        "p50": 26.6389,
+        "p95": 26.8641,
+        "min": 26.6389,
+        "max": 26.8641
+      },
+      "current": {
+        "count": 6,
+        "mean": 26.465549999999997,
+        "median": 26.43605,
+        "p50": 26.1661,
+        "p95": 27.0326,
+        "min": 25.9794,
+        "max": 27.0326
+      },
+      "change": {
+        "direction": "down",
+        "delta": -0.31544999999999845,
+        "ratio": 0.9882081378614284
+      },
+      "early": {
+        "count": 4,
+        "mean": 26.840625,
+        "median": 26.8455,
+        "p50": 26.8269,
+        "p95": 27.0326,
+        "min": 26.6389,
+        "max": 27.0326
+      },
+      "late": {
+        "count": 4,
+        "mean": 26.233449999999998,
+        "median": 26.124200000000002,
+        "p50": 26.0823,
+        "p95": 26.706,
+        "min": 25.9794,
+        "max": 26.706
+      },
+      "early_late_change": {
+        "direction": "down",
+        "delta": -0.7212999999999994,
+        "ratio": 0.9731314372986162
+      },
+      "early_late_window_ms": 300000,
+      "comparison_status": "limited_history",
+      "sample_interval_median_ms": 60000,
+      "sample_interval_max_ms": 120000,
+      "current_first_last": {
+        "direction": "down",
+        "delta": -0.6607999999999983,
+        "ratio": 0.9753680074850244
+      },
+      "extremes": [
+        {
+          "time_ms": 1616664240000,
+          "value": 25.9794,
+          "evidence_ids": [
+            "Bank:2021_03_25/metric/metric_container.csv:000000946292"
+          ]
+        },
+        {
+          "time_ms": 1616664060000,
+          "value": 27.0326,
+          "evidence_ids": [
+            "Bank:2021_03_25/metric/metric_container.csv:000000943756"
+          ]
+        }
+      ],
+      "evidence_ids": [
+        "Bank:2021_03_25/metric/metric_container.csv:000000940455",
+        "Bank:2021_03_25/metric/metric_container.csv:000000941036",
+        "Bank:2021_03_25/metric/metric_container.csv:000000942851",
+        "Bank:2021_03_25/metric/metric_container.csv:000000949674",
+        "Bank:2021_03_25/metric/metric_container.csv:000000946292",
+        "Bank:2021_03_25/metric/metric_container.csv:000000943756"
+      ],
+      "quality_note": "相邻值与窗口变化是观测，不自动等于趋势或异常；参考段不保证正常。"
+    },
+    "f2": {
+      "missing_requested_names": [
+        "JVM-Memory_7778_JVM_Memory_HeapMemoryUsage",
+        "JVM-Operating System_7778_JVM_JVM_CPULoad"
+      ]
+    }
+  },
+  "available_metric_names": [
+    "OSLinux-CPU_CPU-0_SingleCpuUtil",
+    "OSLinux-CPU_CPU-0_SingleCpuidle",
+    "OSLinux-CPU_CPU-1_SingleCpuUtil",
+    "OSLinux-CPU_CPU-1_SingleCpuidle",
+    "OSLinux-CPU_CPU-2_SingleCpuUtil",
+    "OSLinux-CPU_CPU-2_SingleCpuidle",
+    "OSLinux-CPU_CPU-3_SingleCpuUtil",
+    "OSLinux-CPU_CPU-3_SingleCpuidle",
+    "OSLinux-CPU_CPU_CPUCpuUtil",
+    "OSLinux-CPU_CPU_CPULoad",
+    "OSLinux-CPU_CPU_CPUSysTime",
+    "OSLinux-CPU_CPU_CPUUserTime",
+    "OSLinux-CPU_CPU_CPUWio",
+    "OSLinux-CPU_CPU_CPUidleutil",
+    "OSLinux-OSLinux_FILESYSTEM_----_FSCapacity",
+    "OSLinux-OSLinux_FILESYSTEM_----_FSInodeUsedPercent",
+    "OSLinux-OSLinux_FILESYSTEM_----boot_FSCapacity",
+    "OSLinux-OSLinux_FILESYSTEM_----boot_FSInodeUsedPercent",
+    "OSLinux-OSLinux_FILESYSTEM_----cmbc_admin_FSCapacity",
+    "OSLinux-OSLinux_FILESYSTEM_----cmbc_admin_FSInodeUsedPercent",
+    "OSLinux-OSLinux_FILESYSTEM_----home_FSCapacity",
+    "OSLinux-OSLinux_FILESYSTEM_----home_FSInodeUsedPercent",
+    "OSLinux-OSLinux_FILESYSTEM_----tmp_FSCapacity",
+    "OSLinux-OSLinux_FILESYSTEM_----tmp_FSInodeUsedPercent",
+    "OSLinux-OSLinux_FILESYSTEM_----tomcat_FSCapacity",
+    "OSLinux-OSLinux_FILESYSTEM_----tomcat_FSInodeUsedPercent",
+    "OSLinux-OSLinux_FILESYSTEM_-_FSAvailableSpace",
+    "OSLinux-OSLinux_FILESYSTEM_-_FSCapacity",
+    "OSLinux-OSLinux_FILESYSTEM_-_FSInodeUsedPercent",
+    "OSLinux-OSLinux_FILESYSTEM_-_FSUsedSpace",
+    "OSLinux-OSLinux_FILESYSTEM_-boot_FSAvailableSpace",
+    "OSLinux-OSLinux_FILESYSTEM_-boot_FSCapacity",
+    "OSLinux-OSLinux_FILESYSTEM_-boot_FSInodeUsedPercent",
+    "OSLinux-OSLinux_FILESYSTEM_-boot_FSUsedSpace",
+    "OSLinux-OSLinux_FILESYSTEM_-cmbc_admin_FSAvailableSpace",
+    "OSLinux-OSLinux_FILESYSTEM_-cmbc_admin_FSCapacity",
+    "OSLinux-OSLinux_FILESYSTEM_-cmbc_admin_FSInodeUsedPercent",
+    "OSLinux-OSLinux_FILESYSTEM_-cmbc_admin_FSUsedSpace",
+    "OSLinux-OSLinux_FILESYSTEM_-home_FSAvailableSpace",
+    "OSLinux-OSLinux_FILESYSTEM_-home_FSCapacity",
+    "OSLinux-OSLinux_FILESYSTEM_-home_FSInodeUsedPercent",
+    "OSLinux-OSLinux_FILESYSTEM_-home_FSUsedSpace",
+    "OSLinux-OSLinux_FILESYSTEM_-tmp_FSAvailableSpace",
+    "OSLinux-OSLinux_FILESYSTEM_-tmp_FSCapacity",
+    "OSLinux-OSLinux_FILESYSTEM_-tmp_FSInodeUsedPercent",
+    "OSLinux-OSLinux_FILESYSTEM_-tmp_FSUsedSpace",
+    "OSLinux-OSLinux_FILESYSTEM_-tomcat_FSAvailableSpace",
+    "OSLinux-OSLinux_FILESYSTEM_-tomcat_FSCapacity",
+    "OSLinux-OSLinux_FILESYSTEM_-tomcat_FSInodeUsedPercent",
+    "OSLinux-OSLinux_FILESYSTEM_-tomcat_FSUsedSpace",
+    "OSLinux-OSLinux_FILE_-home-zabbix_DirSizeMB",
+    "OSLinux-OSLinux_FILE_-tmp-zabbix_agentd.log_FileSizeMB",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKAvgServ",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKBps",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKPercentBusy",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKRTps",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKRead",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadWrite",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKTps",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKWTps",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKWrite",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKAvgServ",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKBps",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKPercentBusy",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKRTps",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKRead",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKReadWrite",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKTps",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKWTps",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKWrite",
+    "OSLinux-OSLinux_MEMORY_MEMORY_CacheMem",
+    "OSLinux-OSLinux_MEMORY_MEMORY_MEMFreeMem",
+    "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc",
+    "OSLinux-OSLinux_MEMORY_MEMORY_NoCacheMemPerc",
+    "OSLinux-OSLinux_MEMORY_MEMORY_UserMem",
+    "OSLinux-OSLinux_NETWORK_NETWORK_TCP-CLOSE-WAIT",
+    "OSLinux-OSLinux_NETWORK_NETWORK_TCP-FIN-WAIT",
+    "OSLinux-OSLinux_NETWORK_NETWORK_TotalTcpConnNum",
+    "OSLinux-OSLinux_NETWORK_ens160_NETBandwidthUtil",
+    "OSLinux-OSLinux_NETWORK_ens160_NETInErr",
+    "OSLinux-OSLinux_NETWORK_ens160_NETInErrPrc",
+    "OSLinux-OSLinux_NETWORK_ens160_NETKBTotalPerSec",
+    "OSLinux-OSLinux_NETWORK_ens160_NETOutErr",
+    "OSLinux-OSLinux_NETWORK_ens160_NETOutErrPrcc",
+    "OSLinux-OSLinux_NETWORK_ens160_NETPacketsIn",
+    "OSLinux-OSLinux_NETWORK_ens160_NETPacketsOut",
+    "OSLinux-OSLinux_PROCESS_PROCESS_PROCNoZombies",
+    "OSLinux-OSLinux_PROCESS_PROCESS_PROCPPMem",
+    "OSLinux-OSLinux_PROCESS_PROCESS_PROCPPMemPerc",
+    "OSLinux-OSLinux_PROCESS_zabbix-zabbix_agentd_PROCPPCPUPerc",
+    "OSLinux-OSLinux_PROCESS_zabbix_PROCPPCount",
+    "OSLinux-OSLinux_SWAP_SWAP_SWPTotSwapUsedPercent",
+    "OSLinux-OSLinux_SWAP_SWAP_Si",
+    "OSLinux-OSLinux_SWAP_SWAP_So",
+    "OSLinux-OSLinux_SYSTEM_SYSTEM_Check-DefaultRoute",
+    "OSLinux-OSLinux_SYSTEM_SYSTEM_Check-Hostname",
+    "OSLinux-OSLinux_ZABBIX_Host_Uptime",
+    "Tomcat-MEMORY_7441-MEMORY_JVMFreeMemory",
+    "Tomcat-MEMORY_7441-MEMORY_JVMMaxMemory",
+    "Tomcat-MEMORY_7441-MEMORY_JVMMemoryUsedPercent",
+    "Tomcat-MEMORY_7441-MEMORY_JVMTotalMemory",
+    "Tomcat-MEMORY_7441-MEMORY_JVMUsedMemory",
+    "Tomcat-Requests_7441-\"http-nio-8003\"_ErrorCountRequestInfo",
+    "Tomcat-Requests_7441-\"http-nio-8003\"_MaxTimeRequestInfo",
+    "Tomcat-Requests_7441-\"http-nio-8003\"_ProcessingTimeRequestInfo",
+    "Tomcat-Requests_7441-\"http-nio-8003\"_RequestCountRequestInfo",
+    "Tomcat-Sessions_7441--UOCP_SESSIONActiveCounter",
+    "Tomcat-Sessions_7441--UOCP_SESSIONKeepaliveCounter",
+    "Tomcat-Sessions_7441--UOCP_SESSIONRejectedSessions",
+    "Tomcat-Sessions_7441--_SESSIONActiveCounter",
+    "Tomcat-Sessions_7441--_SESSIONKeepaliveCounter",
+    "Tomcat-Sessions_7441--_SESSIONRejectedSessions",
+    "Tomcat-Sessions_7441--logHome_IS_UNDEFINED_SESSIONActiveCounter",
+    "Tomcat-Sessions_7441--logHome_IS_UNDEFINED_SESSIONKeepaliveCounter",
+    "Tomcat-Sessions_7441--logHome_IS_UNDEFINED_SESSIONRejectedSessions",
+    "Tomcat-Threads_7441-\"http-nio-8003\"_CurrentThreadCountThreadInfo",
+    "Tomcat-Threads_7441-\"http-nio-8003\"_CurrentThreadsBusyThreadInfo",
+    "Tomcat-Threads_7441-\"http-nio-8003\"_MaxThreadsThreadInfo"
+  ],
+  "missing_metrics": [
+    "JVM-Memory_7778_JVM_Memory_HeapMemoryUsage",
+    "JVM-Operating System_7778_JVM_JVM_CPULoad"
+  ],
+  "limitations": [
+    "只检查请求节点、指定范围与最多前5分钟对照；参考段不保证正常。",
+    "请求之外的指标尚未检查；原始记录和工具完整结果保留。",
+    "没有相应字段或记录不能证明设备正常；慢调用不是网络RTT。"
+  ],
+  "labels_used": false,
+  "audit_directory": "/mnt/beegfs/home/wangchunyun25/Documents/EdgeRCA/outputs/bank_case_154751_106/coordinator_1800/queries/q1d7c48512f2307f1",
+  "already_checked": [
+    {
+      "start": "17:20:00.000",
+      "end": "17:28:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil",
+        "JVM-Memory_7778_JVM_Memory_HeapMemoryUsage",
+        "JVM-Operating System_7778_JVM_JVM_CPULoad"
+      ]
+    }
+  ]
+}

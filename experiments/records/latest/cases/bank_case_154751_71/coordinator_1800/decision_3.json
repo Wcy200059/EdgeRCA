@@ -1,0 +1,66 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": "03:40:00.000",
+        "time_evidence_id": "e263",
+        "support_ids": [
+          "e263",
+          "e4",
+          "e238",
+          "e240",
+          "e241",
+          "e242"
+        ],
+        "counter_ids": [],
+        "explanation": "IG01 在 03:40 出现 CPU 峰值 (99.78%)，早于下游长调用。连接观测显示 IG01 到下游存在高延迟，表明 IG01 处理瓶颈导致下游积压，符合根因特征。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "MG01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "MG01 磁盘写指标 (e265) 有波动但未确认显著升高；读指标 (e266) 全为 0。需确认磁盘读 I/O 是否异常，或是否因其他原因导致 docker 节点延迟。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:MG01",
+        "start": "03:30:00.000",
+        "end": "04:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKRead"
+        ],
+        "focus": "确认 MG01 磁盘读 I/O 在 03:30-04:00 期间是否存在显著升高，以验证是否因磁盘读瓶颈导致下游 docker 节点延迟。",
+        "basis_ids": [
+          "e266"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17690,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 41,
+        "available_facts": 255
+      }
+    }
+  ],
+  "labels_used": false
+}

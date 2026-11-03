@@ -1,0 +1,48 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat04",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "14:00:27.000",
+        "time_evidence_id": "e218",
+        "support_ids": [
+          "e213",
+          "e218"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 内存占用持续 97%-98% (e213)，且日志显示从 14:00:27 开始频繁发生 'Allocation Failure' 导致的 GC (e218)。资源耗尽与分配失败直接指向 OOM 根因，符合单一故障特征。"
+      },
+      {
+        "id": "h2",
+        "assessment": "not_supported",
+        "component": "MG01",
+        "reason": "network latency",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [
+          "e21"
+        ],
+        "explanation": "MG01 仅显示网络流出包计数激增 (e21)，未提供延迟或丢包指标。流量增加本身不等于网络故障，且无下游超时或业务失败证据支持其为根因。"
+      }
+    ],
+    "requests": []
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17662,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 38,
+        "available_facts": 236
+      }
+    }
+  ],
+  "labels_used": false
+}

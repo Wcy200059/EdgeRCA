@@ -1,0 +1,104 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "apache01",
+        "reason": "high JVM CPU load",
+        "time": "07:40:08.000",
+        "time_evidence_id": "e244",
+        "support_ids": [
+          "e244",
+          "e245",
+          "e246",
+          "e247",
+          "e248",
+          "e249",
+          "e250",
+          "e251",
+          "e260",
+          "e261",
+          "e262",
+          "e263",
+          "e264",
+          "e265",
+          "e266",
+          "e267",
+          "e268",
+          "e269"
+        ],
+        "counter_ids": [],
+        "explanation": "Apache 节点在 07:40:08 至 07:44:20 期间记录大量 502 错误（e244-e251, e260-e269），时间上早于 Tomcat 等下游组件的潜在故障表现。业务流中断与高负载导致的资源耗尽（如 JVM CPU 满载）直接相关。"
+      },
+      {
+        "id": "h2",
+        "assessment": "supported",
+        "component": "apache02",
+        "reason": "high JVM CPU load",
+        "time": "07:40:31.000",
+        "time_evidence_id": "e263",
+        "support_ids": [
+          "e260",
+          "e261",
+          "e262",
+          "e263",
+          "e264",
+          "e265",
+          "e266",
+          "e267",
+          "e268",
+          "e269"
+        ],
+        "counter_ids": [],
+        "explanation": "Apache02 同样在 07:40:31 至 07:43:47 间出现密集 502 错误（e260-e269）。双 Apache 节点同时报错表明根因可能位于共享资源（如数据库、网络）或负载均衡层，而非单一节点。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "07:30:00.000",
+        "end": "07:45:00.000",
+        "tools": [
+          "get_calls",
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUUserTime",
+          "OSLinux-CPU_CPU_CPULoad",
+          "JVM-Operating System_7778_JVM_JVM_CPULoad"
+        ],
+        "focus": "验证 Tomcat01 在 Apache 报错期间（07:40-07:44）是否存在 CPU 飙升或线程阻塞，确认是否为上游请求积压导致的资源耗尽。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "07:30:00.000",
+        "end": "07:45:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Mysql-MySQL_3306_Connections",
+          "Mysql-MySQL_3306_QueriesPerSec"
+        ],
+        "focus": "检查 MySQL01 连接数和查询负载在 07:40-07:44 期间是否异常激增，以确认数据库过载是否为导致 Apache 返回 502 的根本原因。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17666,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 53,
+        "available_facts": 289
+      }
+    }
+  ],
+  "labels_used": false
+}

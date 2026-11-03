@@ -1,0 +1,109 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "MG02",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [
+          "e57"
+        ],
+        "counter_ids": [],
+        "explanation": "e57显示MG02 CPU在13:53-13:57期间显著上升（27%->51%），符合故障特征。但缺乏下游业务失败或资源耗尽的直接证据，且需确认是否导致上游调用超时。需补查MG02详细日志及关联调用链。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Tomcat03",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "候选基于公开组件列表。虽Tomcat03有较多未加载观测（21条），但当前证据中无明确JVM CPU高负载指标或日志。需定向补查Tomcat03的JVM相关指标和日志以验证或排除。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:MG02",
+        "start": "13:53:00",
+        "end": "13:57:00",
+        "tools": [
+          "get_logs",
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "JVM-Memory_7778_JVM_Memory_HeapMemoryUsed",
+          "JVM-CPU_CPU_CPUUserTime"
+        ],
+        "focus": "核实e57中CPU突增期间是否有JVM压力或应用日志报错，确认是否导致服务响应变慢。",
+        "basis_ids": [
+          "e57"
+        ]
+      },
+      {
+        "node_id": "device:dockerB2",
+        "start": "13:30:00",
+        "end": "14:00:00",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "获取dockerB2的完整调用链详情，特别是e280/e284中记录的长调用，分析其父子节点及耗时分布，定位延迟源头。",
+        "basis_ids": [
+          "e280",
+          "e281",
+          "e284"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat03",
+        "start": "13:30:00",
+        "end": "14:00:00",
+        "tools": [
+          "list_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "JVM-CPU_CPU_CPUUserTime"
+        ],
+        "focus": "确认Tomcat03是否有JVM CPU高负载指标，并检查该时段是否有GC频繁或应用线程阻塞日志。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "component must use a public candidate or null",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "unresolved",
+            "component": "dockerB2",
+            "reason": "network latency",
+            "time": null,
+            "time_evidence_id": null,
+            "support_ids": [
+              "e280",
+              "e281",
+              "e284"
+            ],
+            "counter_ids": [],
+            "explanation": "e280/e281显示dockerB2在13:31-13:58多次触发P95/最大调用时长规则，e284记录到19682ms的超长调用。这表明存在严重延迟，可能是根因或结果。需确认延迟是否由网络丢包或后端服务（如MG）引起。"
+          },
+          "error": "component must use a public candidate or null"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

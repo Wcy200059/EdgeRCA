@@ -1,0 +1,103 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat03",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e150 显示 Tomcat03 在 19:47:00 出现 CPU 99.8% 峰值，符合高 CPU 故障特征。但缺乏该节点与其他组件（如 MG、IG）的调用延迟关联证据，无法确认是否导致业务失败。需补查 Tomcat03 的调用链及资源指标趋势。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "node_summary 提示 Tomcat02 有未处理观测。候选列表含 CPU 指标，但当前证据 e147 仅显示连接延迟，无 CPU 具体数值。需确认 Tomcat02 是否存在 CPU 飙升及是否影响下游。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "MG01",
+        "reason": "high memory usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e29 显示 MG01 堆内存使用率波动（max 1059MB），但未确认是否达到 OOM 阈值或导致服务中断。缺乏日志或完整指标趋势支持。需补查 MG01 内存详细指标及 GC 日志。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat03",
+        "start": "19:30:00.000",
+        "end": "20:00:00.000",
+        "tools": [
+          "get_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "JVM-Memory_7779_JVM_Memory_HeapMemoryUsed"
+        ],
+        "focus": "确认 Tomcat03 在 19:47 附近的 CPU 使用率是否持续高位，以及内存是否耗尽，验证高 CPU 故障假设。",
+        "basis_ids": [
+          "e150"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat02",
+        "start": "19:30:00.000",
+        "end": "20:00:00.000",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "CPU"
+        ],
+        "focus": "列出 Tomcat02 可用的 CPU 相关指标名称，以便后续查询具体数值，验证是否存在高 CPU 故障。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "basis_ids must use e IDs from current evidence",
+      "rejected_sections": [
+        {
+          "section": "requests",
+          "index": 1,
+          "item": {
+            "node_id": "device:MG01",
+            "start": "19:30:00.000",
+            "end": "20:00:00.000",
+            "tools": [
+              "get_metrics",
+              "get_logs"
+            ],
+            "metrics": [
+              "JVM-Memory_7779_JVM_Memory_HeapMemoryUsed",
+              "JVM-CPU_CPU_CPUUserTime"
+            ],
+            "focus": "获取 MG01 完整的内存和 CPU 指标趋势，确认 e29 中的波动是否为故障根因，并检查是否有 OOM 或高负载日志。",
+            "basis_ids": [
+              "e29"
+            ]
+          },
+          "error": "basis_ids must use e IDs from current evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

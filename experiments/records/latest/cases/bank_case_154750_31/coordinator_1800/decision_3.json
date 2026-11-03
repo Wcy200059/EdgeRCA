@@ -1,0 +1,91 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high CPU usage",
+        "time": "10:32:00.000",
+        "time_evidence_id": "e318",
+        "support_ids": [
+          "e318"
+        ],
+        "counter_ids": [],
+        "explanation": "Mysql01 在 10:32 出现 CPU 峰值 16.5% (e318)，早段中位数较高。但缺乏业务失败直接关联证据，且 Mysql02 状态未完全确认。需核实该峰值是否导致下游延迟或业务中断，并确认 Mysql02 是否同步异常。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql02",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql02 已有 CPU 指标显示早段中位数 33.4% (e322)，但未明确触发故障的时间点。需确认其是否同步出现异常或保持正常，以区分单点故障还是集群级资源问题。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "10:30:00",
+        "end": "10:35:00",
+        "tools": [
+          "get_metrics",
+          "get_calls"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "核实 Mysql01 在 10:32 CPU 峰值后的具体数值趋势，确认是否持续高负载；同时获取该时段内是否有慢调用或连接超时，以验证 CPU 高是否导致业务失败。",
+        "basis_ids": [
+          "e318"
+        ]
+      },
+      {
+        "node_id": "device:Mysql02",
+        "start": "10:30:00",
+        "end": "10:35:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "检查 Mysql02 内存占用比例，确认是否存在内存耗尽导致的性能下降，作为 CPU 异常的潜在原因或并发问题。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "basis_ids must use e IDs from current evidence",
+      "rejected_sections": [
+        {
+          "section": "requests",
+          "index": 1,
+          "item": {
+            "node_id": "device:Mysql02",
+            "start": "10:30:00",
+            "end": "10:35:00",
+            "tools": [
+              "get_metrics"
+            ],
+            "metrics": [
+              "OSLinux-CPU_CPU_CPUCpuUtil"
+            ],
+            "focus": "获取 Mysql02 在 10:30-10:35 的 CPU 使用率，确认其是否与 Mysql01 同步出现异常，或保持正常。若 Mysql02 正常，则排除数据库整体故障。",
+            "basis_ids": [
+              "e322"
+            ]
+          },
+          "error": "basis_ids must use e IDs from current evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

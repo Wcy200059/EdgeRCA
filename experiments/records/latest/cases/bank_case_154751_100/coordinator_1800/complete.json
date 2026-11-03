@@ -1,0 +1,115 @@
+{
+  "case_id": "873ad13846f97e7a",
+  "cutoff_ms": 1616585400000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 299
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 303
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 305
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 307
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Mysql02",
+      "start": "19:20:00.000",
+      "end": "19:25:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "Mysql-MySQL_3306_DiskReadBytes",
+        "Mysql-MySQL_3306_DiskReads"
+      ],
+      "focus": "确认 Mysql02 磁盘读取量是否在 19:23 网络激增后出现显著飙升，以验证是否为磁盘 IO 瓶颈根因。",
+      "basis_ids": [
+        "e252",
+        "e306"
+      ]
+    },
+    {
+      "node_id": "device:Tomcat01",
+      "start": "19:00:00.000",
+      "end": "19:30:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "JVM-Operating System_JVM_CPULoad"
+      ],
+      "focus": "获取 Tomcat01 本地 JVM CPU 负载，确认是否如 MG01 报告般存在高负载，排除代理误差。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Mysql02",
+      "start": "19:00:00.000",
+      "end": "19:30:00.000",
+      "tools": [
+        "list_metrics",
+        "get_metrics"
+      ],
+      "metrics": [
+        "Mysql-MySQL_3306_DiskReads",
+        "Mysql-MySQL_3306_DiskReadBytes"
+      ],
+      "focus": "确认 Mysql02 磁盘读取量是否在故障时段显著升高，以验证是否为磁盘 IO 瓶颈根因。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:apache02",
+      "start": "19:00:00.000",
+      "end": "19:30:00.000",
+      "tools": [
+        "get_calls"
+      ],
+      "metrics": [],
+      "focus": "获取 Apache02 的调用链样本，确认是否存在长调用或阻塞，以排除其作为根因的可能性。",
+      "basis_ids": []
+    }
+  ],
+  "peak_gpu_gib": 21.076414108276367,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e289",
+      "e290",
+      "e291",
+      "e292",
+      "e293",
+      "e294",
+      "e295",
+      "e296",
+      "e297",
+      "e298",
+      "e299"
+    ],
+    "notes": "保留所有 ServiceTest 业务观测（e289-e299）。虽未直接关联具体设备，但作为全局业务流事实，是区分正常背景与异常传播链的基础证据。当前全局证据仅含业务统计，无直接资源指标或调用链路，故先全量保留以支撑后续关联分析。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 11
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Tomcat02",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "09:17:24.000",
+        "evidence_ids": [
+          "e27",
+          "e26",
+          "e86",
+          "e87"
+        ],
+        "explanation": "e27 显示 Tomcat02 在 09:17:24 收到 500 错误。e26 同时触发最大调用时长告警 (10351700ms)，表明服务严重阻塞。e86/e87 显示同一时段发生多次 Full GC 且暂停时间较长 (约 1.9s)，符合 OOM 触发 Full GC 的特征。资源耗尽导致线程等待 GC，引发业务失败和长调用。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615253400000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1"
+}

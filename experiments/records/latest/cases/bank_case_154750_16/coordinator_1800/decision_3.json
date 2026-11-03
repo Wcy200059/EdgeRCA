@@ -1,0 +1,120 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "09:17:24.000",
+        "time_evidence_id": "e173",
+        "support_ids": [
+          "e173"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat01 在 09:17:24 返回 500 错误 (e173)。该节点存在 JVM 内存指标波动 (e147)，但具体数值未达溢出阈值。需获取 HeapMemoryUsage 具体数值以确认是否 OOM。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "apache01",
+        "reason": "high CPU usage",
+        "time": "09:17:48.000",
+        "time_evidence_id": "e215",
+        "support_ids": [
+          "e215"
+        ],
+        "counter_ids": [],
+        "explanation": "apache01 在 09:17:48 返回 502 错误 (e215)，时间紧随 Tomcat01 之后，符合下游受影响时序。该节点 CPU 指标 (e207) 有波动，但需确认具体数值是否耗尽。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "apache02",
+        "reason": "high CPU usage",
+        "time": "09:17:50.000",
+        "time_evidence_id": "e226",
+        "support_ids": [
+          "e226"
+        ],
+        "counter_ids": [],
+        "explanation": "apache02 在 09:17:50 返回 502 错误 (e226)，时间最晚，符合故障扩散逻辑。该节点 CPU 指标 (e216) 有波动，但需确认具体数值是否耗尽。"
+      },
+      {
+        "id": "h4",
+        "assessment": "not_supported",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [
+          "e297"
+        ],
+        "explanation": "Mysql01 的磁盘 IO 相关指标 (e297) 在故障时段完全缺失，无法获取具体数值。虽然存在 Bytes Sent/Received 变化 (e83)，但不足以证明磁盘 IO 是根因，且关键指标不可用。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "09:17:00",
+        "end": "09:18:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-Memory_7779_JVM_Memory_HeapMemoryUsage"
+        ],
+        "focus": "获取 Tomcat01 在 09:17:24 错误发生时的 JVM 堆内存具体使用数值，确认是否达到溢出阈值以验证 OOM 假设。",
+        "basis_ids": [
+          "e173",
+          "e299"
+        ]
+      },
+      {
+        "node_id": "device:apache01",
+        "start": "09:17:00",
+        "end": "09:18:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU-0_SingleCpuUtil"
+        ],
+        "focus": "获取 apache01 在 09:17:48 错误发生时的 CPU 使用率具体数值，确认是否达到耗尽阈值以验证高 CPU 导致 502 错误的假设。",
+        "basis_ids": [
+          "e215"
+        ]
+      },
+      {
+        "node_id": "device:apache02",
+        "start": "09:17:00",
+        "end": "09:18:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU-0_SingleCpuUtil"
+        ],
+        "focus": "获取 apache02 在 09:17:50 错误发生时的 CPU 使用率具体数值，确认是否达到耗尽阈值以验证高 CPU 导致 502 错误的假设。",
+        "basis_ids": [
+          "e226"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17752,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 47,
+        "available_facts": 302
+      }
+    }
+  ],
+  "labels_used": false
+}

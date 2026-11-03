@@ -1,0 +1,65 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "apache01",
+        "reason": "high CPU usage",
+        "time": "07:36:21.000",
+        "time_evidence_id": "e193",
+        "support_ids": [
+          "e192",
+          "e193",
+          "e194",
+          "e195",
+          "e206",
+          "e254",
+          "e255"
+        ],
+        "counter_ids": [],
+        "explanation": "apache01 在 07:36:21-07:36:25 连续出现 502 错误，且 CPU 使用率在 07:31 已达 29%，内存 97%，符合资源耗尽导致服务不可用特征。其他节点仅有个别慢调用或波动，未形成系统性阻断。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "IG01 存在 CPU 波动证据，且作为上游网关，其高负载可能导致下游 Tomcat 延迟。但缺乏明确的高 CPU 阈值确认及与 07:36 错误时间的直接因果链。需补查 IG01 具体 CPU 数值及与 07:36 错误的时间关联。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:IG01",
+        "start": "07:36:00.000",
+        "end": "07:37:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "核实 07:36 时刻 IG01 的 CPU 使用率是否突增，以确认是否为导致下游 502 错误的根因。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17777,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 50,
+        "available_facts": 244
+      }
+    }
+  ],
+  "labels_used": false
+}

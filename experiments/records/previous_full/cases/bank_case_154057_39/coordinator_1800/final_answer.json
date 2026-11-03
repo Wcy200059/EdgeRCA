@@ -1,0 +1,29 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "MG01",
+        "reason": "high CPU usage",
+        "time": "14:16:00",
+        "evidence_ids": [
+          "e9"
+        ],
+        "explanation": "MG01 在 14:16:00 出现 CPU 100% 峰值 (e9)，且状态为 triggered。相比 IG02 和 Mysql02 的磁盘指标，CPU 饱和更直接地阻塞了业务线程。虽缺调用日志确认是计算还是等待，但在资源型故障中，CPU 100% 是最强信号。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "time must match this fault's cited time_mark, otherwise null"
+    },
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1616481000000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1"
+}

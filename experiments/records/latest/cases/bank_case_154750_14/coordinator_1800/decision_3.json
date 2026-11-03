@@ -1,0 +1,71 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "high memory usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "IG01 存在严重延迟，可能是内存不足导致 GC 停顿或 OOM。但当前证据仅显示延迟，无内存指标数据支持。需补查内存使用率以区分是 CPU 负载还是内存问题。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:IG01",
+        "start": "21:36:00.000",
+        "end": "21:40:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-CPU_CPU_CPUCpuUtil",
+          "JVM-Memory_7779_JVM_Memory_HeapMemoryUsage"
+        ],
+        "focus": "确认 IG01 在 21:36-21:40 期间是否存在 JVM CPU 飙升或内存 OOM，以验证其是否为导致下游延迟和 502 错误的根因。",
+        "basis_ids": [
+          "e316",
+          "e332"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "h1: time 21:36:00.000 requires e316 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 0,
+          "item": {
+            "id": "h1",
+            "assessment": "supported",
+            "component": "IG01",
+            "reason": "high JVM CPU load",
+            "time": "21:36:00.000",
+            "time_evidence_id": "e316",
+            "support_ids": [
+              "e316",
+              "e317",
+              "e318",
+              "e319",
+              "e320",
+              "e321",
+              "e234",
+              "e254"
+            ],
+            "counter_ids": [],
+            "explanation": "IG01 在 21:36-21:40 期间 P95 延迟剧烈飙升（6 万 -8 万 ms），伴随长调用。下游 Apache 在 21:36-21:38 出现 502 错误，时间吻合。虽缺 JVM 指标直接证明，但延迟特征与下游失败构成强因果链，需补查 JVM 确认。"
+          },
+          "error": "h1: time 21:36:00.000 requires e316 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

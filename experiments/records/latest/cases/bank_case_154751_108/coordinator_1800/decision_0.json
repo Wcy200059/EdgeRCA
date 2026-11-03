@@ -1,0 +1,97 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "high CPU usage",
+        "time": "19:04:00",
+        "time_evidence_id": "e11",
+        "support_ids": [
+          "e11"
+        ],
+        "counter_ids": [],
+        "explanation": "IG02 (e11) 显示 CPU 在 19:04 飙升至 94.4%，随后下降。Tomcat02 报告保留 22 条未加载事实，可能包含下游影响或更深层原因。需补查 Tomcat02 资源指标及调用链以确认是否为此故障根因或受累者。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "apache01",
+        "reason": "network latency",
+        "time": "19:15:04",
+        "time_evidence_id": "e305",
+        "support_ids": [
+          "e305",
+          "e307"
+        ],
+        "counter_ids": [],
+        "explanation": "apache01 在 19:15-19:18 出现多路 502 错误（e305, e307 等），时间早于部分资源峰值。可能是上游资源耗尽导致的网络延迟/超时，也可能是独立网络故障。需补查 apache01 网络指标及上游 Tomcat 连接状态。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat02",
+        "start": "19:00:00.000",
+        "end": "19:30:00.000",
+        "tools": [
+          "list_metrics",
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-CPU_CPU_CPUMemUsedMemPerc"
+        ],
+        "focus": "确认 Tomcat02 是否存在 CPU 或内存高负载，以及是否有长调用导致业务失败，以验证其是否为 h1 所述 CPU 故障的根因。",
+        "basis_ids": [
+          "e11"
+        ]
+      },
+      {
+        "node_id": "device:apache01",
+        "start": "19:15:00.000",
+        "end": "19:20:00.000",
+        "tools": [
+          "list_metrics",
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_NETWORK_ens160_NETPacketsOut",
+          "OSLinux-OSLinux_NETWORK_ens160_NETPacketsIn"
+        ],
+        "focus": "检查 apache01 在 502 报错时段（19:15-19:18）的网络流量变化，确认是否存在网络拥塞或丢包，以验证 h2 的网络延迟假设。",
+        "basis_ids": [
+          "e305",
+          "e307"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat02",
+        "start": "19:00:00.000",
+        "end": "19:30:00.000",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "获取 Tomcat02 的调用链详情，识别是否存在长调用或死锁，解释高 CPU 使用率的原因，并确认是否影响了下游 apache 节点。",
+        "basis_ids": [
+          "e11"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17406,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 47,
+        "available_facts": 348
+      }
+    }
+  ],
+  "labels_used": false
+}

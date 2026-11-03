@@ -1,0 +1,76 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": "15:50:00.000",
+        "time_evidence_id": "e276",
+        "support_ids": [
+          "e276"
+        ],
+        "counter_ids": [],
+        "explanation": "e276 显示 Mysql01 磁盘繁忙百分比在 15:50:00 骤升至 46.8%，而其他时段为 0。该时间点与 e30 记录的 IG01 长调用窗口（15:28-15:30 后仍有影响）及 Tomcat 端高延迟（P95>3s）在时间轴上吻合。磁盘 I/O 瓶颈导致下游 Tomcat 等待，进而引发业务慢调用，符合因果链。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "network latency",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e30 显示 IG01 存在 P95=3092ms 的长调用，e22 显示 IG01 到 Tomcat01 连接延迟高。但 e30 的 slow_calls 时间戳（15:28-15:30）早于当前主要故障窗口，且 e22 未明确网络丢包。需确认当前窗口内 IG01 网络指标是否异常，以区分是网络问题还是下游磁盘 I/O 导致的延迟。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "15:30:00.000",
+        "end": "16:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadsSec"
+        ],
+        "focus": "获取 Mysql01 每秒读取量具体数值，确认 15:50 附近是否存在持续的高读 I/O 负载，以验证磁盘 I/O 瓶颈假设。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:IG01",
+        "start": "15:30:00.000",
+        "end": "16:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-NETWORK_NETWORK-NET_RXBytes",
+          "OSLinux-NETWORK_NETWORK-NET_TXBytes"
+        ],
+        "focus": "检查 IG01 网卡收发字节数趋势，确认是否存在网络拥塞或丢包导致的延迟，以区分是网络故障还是下游处理慢。",
+        "basis_ids": [
+          "e30",
+          "e22"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17754,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 50,
+        "available_facts": 269
+      }
+    }
+  ],
+  "labels_used": false
+}

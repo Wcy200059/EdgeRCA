@@ -1,0 +1,37 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "apache01",
+        "reason": "high JVM CPU load",
+        "time": "20:37:39.000",
+        "evidence_ids": [
+          "e236",
+          "e237",
+          "e238",
+          "e239",
+          "e240",
+          "e242",
+          "e243",
+          "e244",
+          "e245",
+          "e246",
+          "e247"
+        ],
+        "explanation": "apache01 在 20:37:32-47 间出现多次 502 错误（e236-e240）。apache02 同期 CPU Load 触发（e243）、UserTime 触发（e244）且内存 96%（e247）。资源耗尽导致下游服务超时，符合高 CPU 负载引发业务失败的因果链。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1616590800000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1",
+  "field_repairs": [],
+  "warnings": []
+}

@@ -1,0 +1,74 @@
+{
+  "case_id": "4db0bad4ff3aa794",
+  "cutoff_ms": 1616484600000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 254
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 255
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 256
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 258
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:apache01",
+      "start": "15:15:00",
+      "end": "15:17:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+      ],
+      "focus": "确认 apache01 CPU 飙升期间内存是否同步耗尽，排除单纯应用逻辑导致的高 CPU 可能性。",
+      "basis_ids": [
+        "e233"
+      ]
+    }
+  ],
+  "peak_gpu_gib": 21.148773193359375,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e244",
+      "e245",
+      "e246",
+      "e247",
+      "e248",
+      "e249",
+      "e250",
+      "e251",
+      "e252",
+      "e253",
+      "e254"
+    ],
+    "notes": "所有e244-e254均为ServiceTest业务流的观测记录。根据任务背景，ServiceTest是系统故障期间的核心业务，且提示中明确“ServiceTest业务流独立汇总”。这些证据直接关联到受影响的业务场景，是分析故障对业务影响及定位根因的基础事实。其他未列出的证据（如部分指标异常）缺乏明确的业务上下文或组件映射，故优先保留业务流观测。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 11
+  }
+}

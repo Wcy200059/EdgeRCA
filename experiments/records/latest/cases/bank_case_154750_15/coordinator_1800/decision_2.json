@@ -1,0 +1,50 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "IG01",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "08:04:00.000",
+        "time_evidence_id": "e353",
+        "support_ids": [
+          "e353",
+          "e38",
+          "e323",
+          "e326"
+        ],
+        "counter_ids": [],
+        "explanation": "IG01 在 08:04:00 出现 JVM 内存峰值 (868793000.0)，随后显著下降，符合 OOM 后回收特征。该节点存在长调用 (e38)，且是 Tomcat01/03/04 的上游 (e323, e326)，时间先于下游报错。虽无直接 OOM 报错，但资源耗尽导致的长调用和下游级联失败机制吻合。"
+      },
+      {
+        "id": "h2",
+        "assessment": "not_supported",
+        "component": "IG02",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [
+          "e353"
+        ],
+        "explanation": "IG02 虽有长调用和下游报错，但缺乏 CPU 过载的直接指标证据。更重要的是，IG01 已表现出更明确的内存异常迹象 (e353)，且 IG01 位于调用链更上游 (IG01->Tomcat->IG02 或并行)，IG01 的故障足以解释下游现象，无需引入 IG02 资源问题。"
+      }
+    ],
+    "requests": []
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17774,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 57,
+        "available_facts": 354
+      }
+    }
+  ],
+  "labels_used": false
+}

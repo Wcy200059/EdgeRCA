@@ -1,0 +1,91 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Mysql01",
+        "reason": "high memory usage",
+        "time": "06:30:00.000",
+        "time_evidence_id": "e255",
+        "support_ids": [
+          "e255",
+          "e141"
+        ],
+        "counter_ids": [],
+        "explanation": "Mysql01 内存自 06:30 起锁定在 96%（e255），无释放迹象。Tomcat01 出现长调用（e141，06:49），符合高内存导致数据库响应延迟进而阻塞上游的因果链。时间上内存先于或同步于长调用异常，支持其为根因。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "IG02",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "IG02 CPU 在 06:40 有波动（e18），但峰值时间晚于 Tomcat 长调用（06:49），且缺乏明确故障阈值触发证据。需确认具体数值及趋势，排除其为无关波动或下游影响的可能性。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "06:30:00.000",
+        "end": "07:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKBps"
+        ],
+        "focus": "核实 Mysql01 在长调用发生前是否存在 CPU 飙升或磁盘 I/O 激增，以区分是内存问题还是多资源耗尽导致下游延迟。",
+        "basis_ids": [
+          "e255"
+        ]
+      },
+      {
+        "node_id": "device:IG02",
+        "start": "06:30:00.000",
+        "end": "07:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "获取 IG02 CPU 使用率的具体数值和变化趋势，确认 06:40 附近的峰值是否构成故障，并观察其持续时间及与 Tomcat 长调用的时间关联。",
+        "basis_ids": [
+          "e18"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "06:30:00.000",
+        "end": "07:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "检查 Tomcat01 自身内存状态，确认长调用是否由本地内存不足引起，还是完全由下游 Mysql01 高内存导致。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17713,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 49,
+        "available_facts": 244
+      }
+    }
+  ],
+  "labels_used": false
+}

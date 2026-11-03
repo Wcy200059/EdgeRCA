@@ -1,0 +1,93 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [
+          "e5"
+        ],
+        "counter_ids": [],
+        "explanation": "IG01 存在 CPU 使用率波动（e5），但缺乏明确故障触发点及持续时间证据。需确认是否达到故障阈值及具体发生时间。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:IG01",
+        "start": "00:00:00",
+        "end": "00:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认 IG01 CPU 使用率是否超过故障阈值，以及高负载的具体起止时间。",
+        "basis_ids": [
+          "e5"
+        ]
+      },
+      {
+        "node_id": "device:dockerB1",
+        "start": "00:00:00",
+        "end": "00:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-NET_RX_BYTES",
+          "OSLinux-NET_TX_BYTES"
+        ],
+        "focus": "检查 dockerB1 网络流量是否存在异常突增或抖动，以验证长调用是否由网络拥塞引起。",
+        "basis_ids": [
+          "e226"
+        ]
+      },
+      {
+        "node_id": "device:dockerB1",
+        "start": "00:00:00",
+        "end": "00:30:00",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "检索 dockerB1 日志，确认长调用期间是否有超时、重试或错误类型的记录。",
+        "basis_ids": [
+          "e226"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "component must use a public candidate or null",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "unresolved",
+            "component": "dockerB1",
+            "reason": "network latency",
+            "time": null,
+            "time_evidence_id": null,
+            "support_ids": [
+              "e226"
+            ],
+            "counter_ids": [],
+            "explanation": "dockerB1 观测到单次长调用（e226），但无法确定是否为系统性网络延迟或偶发异常，且缺乏关联上游资源指标。"
+          },
+          "error": "component must use a public candidate or null"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

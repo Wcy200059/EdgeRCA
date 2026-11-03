@@ -1,0 +1,83 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat04",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "02:46:29.000",
+        "time_evidence_id": "e308",
+        "support_ids": [
+          "e308",
+          "e307"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 在 02:46:29 因 Allocation Failure 触发 GC(e308)，且明确缺失 JVM Heap 指标(e307)。Allocation Failure 通常由堆内存耗尽引发，符合 OOM 特征。日志补查将确认是否存在 OOM 错误堆栈。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat04",
+        "start": "02:46:29",
+        "end": "02:46:50",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "检索 Tomcat04 在 02:46:29 GC 发生前后的日志，确认是否存在明确的 OOM 错误（如 OutOfMemoryError）或堆内存耗尽的堆栈信息，以确证 h1 假设。",
+        "basis_ids": [
+          "e308"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "h2: time 02:47:00.000 requires e311 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "not_supported",
+            "component": "Mysql01",
+            "reason": "high disk I/O read usage",
+            "time": "02:47:00.000",
+            "time_evidence_id": "e311",
+            "support_ids": [],
+            "counter_ids": [
+              "e311",
+              "e312"
+            ],
+            "explanation": "Mysql01 磁盘指标 e311(e312)显示虽有波动但数值极低（max 4.4/4.0），且状态为 unchanged。此水平远低于故障阈值，无法支持高 I/O 导致业务失败的假设。"
+          },
+          "error": "h2: time 02:47:00.000 requires e311 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        },
+        {
+          "section": "hypotheses",
+          "index": 2,
+          "item": {
+            "id": "h3",
+            "assessment": "not_supported",
+            "component": "apache01",
+            "reason": "high disk I/O read usage",
+            "time": "02:47:00.000",
+            "time_evidence_id": "e285",
+            "support_ids": [],
+            "counter_ids": [
+              "e285",
+              "e286"
+            ],
+            "explanation": "apache01 磁盘指标 e285(e286)虽显示 triggered 状态，但 e285 为 Bps 指标，最大值仅 3.0，e286 为 ReadWrite 计数，最大值 8.0。数值量级过小，不足以构成导致业务中断的高负载根因。"
+          },
+          "error": "h3: time 02:47:00.000 requires e285 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

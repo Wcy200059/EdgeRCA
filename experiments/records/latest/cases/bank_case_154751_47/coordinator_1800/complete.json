@@ -1,0 +1,154 @@
+{
+  "case_id": "973dd097b6a014f7",
+  "cutoff_ms": 1614864600000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 269
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 272
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 274
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 275
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Tomcat03",
+      "start": "21:18:00",
+      "end": "21:27:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "确认Tomcat03在21:18:00峰值后CPU使用率是否持续高位，以验证是否为长调用(e269)的直接原因。",
+      "basis_ids": [
+        "e208",
+        "e269"
+      ]
+    },
+    {
+      "node_id": "device:IG01",
+      "start": "21:15:00",
+      "end": "21:20:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "确认IG01在21:15:00峰值期间CPU使用率的具体数值和持续时间，判断是否足以导致下游Tomcat03出现异常。",
+      "basis_ids": [
+        "e286"
+      ]
+    },
+    {
+      "node_id": "device:MG01",
+      "start": "21:20:00",
+      "end": "21:27:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "确认MG01在接收Tomcat03长调用(e269)时段内的CPU使用率，排除其自身资源瓶颈导致延迟的可能性。",
+      "basis_ids": [
+        "e269",
+        "e285"
+      ]
+    },
+    {
+      "node_id": "device:MG01",
+      "start": "21:00:00",
+      "end": "21:30:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "确认MG01在21:00-21:30期间CPU使用率是否出现异常峰值，以验证其是否为导致Tomcat03长调用的根因。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:IG01",
+      "start": "21:00:00",
+      "end": "21:30:00",
+      "tools": [
+        "list_metrics",
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "确认IG01在21:00-21:30期间的CPU使用率，排除其自身高负载导致整个业务链延迟的可能性。",
+      "basis_ids": []
+    }
+  ],
+  "peak_gpu_gib": 21.151888847351074,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e249",
+      "e250",
+      "e251",
+      "e252",
+      "e253",
+      "e254",
+      "e255",
+      "e256",
+      "e257",
+      "e258",
+      "e259",
+      "e260",
+      "e261",
+      "e262",
+      "e263",
+      "e264",
+      "e265",
+      "e266",
+      "e267",
+      "e268",
+      "e269",
+      "e270",
+      "e271",
+      "e272",
+      "e273",
+      "e274",
+      "e275",
+      "e276",
+      "e277",
+      "e278",
+      "e279",
+      "e280"
+    ],
+    "notes": "保留所有涉及候选组件（IG, MG, Tomcat, docker）间实际父子调用匹配的观测。这些边直接反映服务依赖关系及延迟传播（P95/Max值异常），是区分资源故障与调用链问题的关键。e238-e248为业务统计，无组件映射，故拒绝。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 43
+  }
+}

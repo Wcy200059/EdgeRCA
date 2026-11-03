@@ -1,0 +1,111 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "候选IG01高JVM CPU。证据e15显示IG01→Tomcat01延迟高（P95 752ms），但无IG01自身CPU指标。需补查IG01 CPU使用率及日志确认是否因计算过载导致下游延迟。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "IG02",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "候选IG02高JVM CPU。证据e28显示IG02有极慢调用（6618ms），但无自身CPU指标。需补查IG02 CPU使用率及日志，确认是否为计算瓶颈引发。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "候选Tomcat01高JVM CPU。证据e131显示Tomcat01有慢调用（5465ms），e144显示线程繁忙数波动。但无明确CPU指标，需补查Tomcat01 CPU及日志确认。"
+      },
+      {
+        "id": "h4",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "候选Tomcat02高JVM CPU。证据e239显示IG02→Tomcat02延迟高（P95 808ms）。需补查Tomcat02自身CPU指标及日志，确认是否因处理过载导致。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:IG01",
+        "start": "19:30:00",
+        "end": "20:00:00",
+        "tools": [
+          "get_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-CPU_CPU_CPUUserTime"
+        ],
+        "focus": "验证IG01是否存在高CPU使用率或用户态时间激增，以支持或排除其作为高JVM CPU负载导致下游延迟的根因。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:IG02",
+        "start": "19:30:00",
+        "end": "20:00:00",
+        "tools": [
+          "get_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-CPU_CPU_CPUUserTime"
+        ],
+        "focus": "验证IG02是否存在高CPU使用率，解释e28中观察到的6618ms长调用是否由本地计算过载引起。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "19:30:00",
+        "end": "20:00:00",
+        "tools": [
+          "get_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-CPU_CPU_CPUUserTime"
+        ],
+        "focus": "验证Tomcat01 CPU负载情况，确认e131中的慢调用（5465ms）是否源于本地资源耗尽或JVM高负载。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17470,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 49,
+        "available_facts": 254
+      }
+    }
+  ],
+  "labels_used": false
+}

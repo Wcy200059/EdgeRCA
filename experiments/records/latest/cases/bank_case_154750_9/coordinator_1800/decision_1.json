@@ -1,0 +1,95 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Mysql01",
+        "reason": "high memory usage",
+        "time": "00:41:00.000",
+        "time_evidence_id": "e235",
+        "support_ids": [
+          "e235",
+          "e41",
+          "e185",
+          "e184"
+        ],
+        "counter_ids": [],
+        "explanation": "Mysql01 内存占比在 00:41:00 达到 98% 峰值（e235）。该时间点前后出现大量慢调用（e41, e185, e184），且慢调用源指向 Mysql01 下游或相关组件。高内存占用导致分配失败或延迟，符合根因特征。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "00:30:00",
+        "end": "01:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认 Mysql01 内存占用是否在 00:41:00 后持续高位或出现 OOM 事件，以验证内存耗尽导致下游延迟的因果链。",
+        "basis_ids": [
+          "e235"
+        ]
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "00:30:00",
+        "end": "01:00:00",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "检查 Mysql01 日志中是否存在 OutOfMemoryError 或长时间的 GC 暂停记录，以佐证内存压力导致的性能下降。",
+        "basis_ids": [
+          "e235"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "00:30:00",
+        "end": "01:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "获取 Tomcat04 系统 CPU 使用率，排除其自身资源耗尽导致慢调用的可能性，确认是否为下游瓶颈。",
+        "basis_ids": [
+          "e147"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "use unique e IDs from current evidence; node overviews are not evidence",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "not_supported",
+            "component": "Tomcat04",
+            "reason": "high JVM CPU load",
+            "time": null,
+            "time_evidence_id": null,
+            "support_ids": [],
+            "counter_ids": [
+              "e119"
+            ],
+            "explanation": "Tomcat04 虽有关联慢调用，但 e119 显示其 JVM 内存（JVMUsedMemory）在窗口内无显著上升趋势，且无 CPU 指标直接支持高负载。慢调用更可能由下游 Mysql01 内存耗尽引起，而非 Tomcat04 自身 CPU 问题。"
+          },
+          "error": "use unique e IDs from current evidence; node overviews are not evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

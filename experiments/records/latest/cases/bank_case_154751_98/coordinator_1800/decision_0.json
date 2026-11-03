@@ -1,0 +1,75 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat04",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat04 在窗口内发生 25 次 GC（e231），且原因为'Allocation Failure'，通常预示 OOM 风险。但缺乏 Heap 使用率或 OOM 错误日志的直接证据，无法确认已发生 OOM 崩溃。需补查内存指标及日志。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 拥有大量未加载的观测（547 条），且 Mysql 故障常伴随高磁盘 I/O。当前证据仅显示其 CPU 正常，无磁盘 I/O 数据。需补查磁盘指标以确认是否存在高 I/O 导致下游延迟或业务失败。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat04",
+        "start": "14:30:00.000",
+        "end": "15:00:00.000",
+        "tools": [
+          "get_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "JVM-Memory_7779_JVM_Memory_HeapMemoryUsage",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认 Tomcat04 在 Allocation Failure 期间是否出现内存堆满（OOM）或内存使用率异常升高。",
+        "basis_ids": [
+          "e231"
+        ]
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "14:30:00.000",
+        "end": "15:00:00.000",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "DISK",
+          "IO"
+        ],
+        "focus": "获取 Mysql01 可用的磁盘 I/O 相关指标名称列表，以便后续查询是否存在高 I/O 使用率。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17730,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 42,
+        "available_facts": 261
+      }
+    }
+  ],
+  "labels_used": false
+}

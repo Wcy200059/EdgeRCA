@@ -1,0 +1,39 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "IG02",
+        "reason": "high CPU usage",
+        "time": "16:16:00.000",
+        "evidence_ids": [
+          "e4",
+          "e46",
+          "e47",
+          "e48"
+        ],
+        "explanation": "e4 证实 IG02 于 16:16:00 CPU 从 26% 激增至 51%。e46/e47/e48 显示此时 dockerB1 出现严重延迟（P95 3275ms，Max 64659ms），且延迟源指向 IG02。因果链完整：IG02 CPU 飙升导致处理延迟，阻塞下游业务。"
+      },
+      {
+        "component": "IG02",
+        "reason": "high memory usage",
+        "time": "16:16:00.000",
+        "evidence_ids": [
+          "e4",
+          "e100",
+          "e46"
+        ],
+        "explanation": "e4 记录 16:16:00 时 IG02 CPU 飙升。e100 显示 IG02 内存占比在 16:16:00 降至 93%（此前稳定 98%），结合 e46 中 dockerB1 的长尾延迟，表明 IG02 可能因内存压力（如 GC 停顿或分配失败）导致处理变慢，引发下游延迟。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615537800000,
+  "model_judgment_verified": false,
+  "expected_failures": 2,
+  "answer_schema": "faults_v1"
+}

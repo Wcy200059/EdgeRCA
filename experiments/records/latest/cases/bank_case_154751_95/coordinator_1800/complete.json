@@ -1,0 +1,143 @@
+{
+  "case_id": "ceca0c07e22f8abc",
+  "cutoff_ms": 1616513400000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 235
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 237
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 238
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 240
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:apache01",
+      "start": "23:00:00",
+      "end": "23:30:00",
+      "tools": [
+        "get_calls"
+      ],
+      "metrics": [],
+      "focus": "获取 apache01 到 Tomcat04 的调用链及长调用样本，确认 23:16 CPU 激增时是否有大量请求转发至 Tomcat04 导致其过载。",
+      "basis_ids": [
+        "e214"
+      ]
+    },
+    {
+      "node_id": "device:Tomcat04",
+      "start": "23:00:00",
+      "end": "23:30:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "Tomcat-Threads_7441-\"http-nio-8003\"_CurrentThreadsBusyThreadInfo",
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKTps"
+      ],
+      "focus": "获取 Tomcat04 线程繁忙度及磁盘 I/O 详细数值趋势，验证高 CPU 是计算负载还是线程阻塞，并确认 I/O 是否与 OOM 事件同步。",
+      "basis_ids": [
+        "e211",
+        "e209"
+      ]
+    },
+    {
+      "node_id": "device:Tomcat04",
+      "start": "23:00:00",
+      "end": "23:30:00",
+      "tools": [
+        "get_calls"
+      ],
+      "metrics": [],
+      "focus": "获取 Tomcat04 的调用统计及父子连接信息，确认是否存在来自 apache01 或其他组件的长调用或流量激增，以排查上游资源耗尽导致的连锁反应。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Tomcat04",
+      "start": "23:00:00",
+      "end": "23:30:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "Tomcat-Threads_7441-\"http-nio-8003\"_CurrentThreadsBusyThreadInfo",
+        "Tomcat-MEMORY_7441-MEMORY_JVMUsedMemory",
+        "OSLinux-CPU_CPU_CPUSysTime"
+      ],
+      "focus": "获取 Tomcat04 线程状态、JVM 内存详细数值及系统 CPU 时间的完整趋势，以区分是 CPU 计算负载高还是线程阻塞导致，并确认内存增长是否达到 OOM 阈值。",
+      "basis_ids": [
+        "e211",
+        "e210",
+        "e212"
+      ]
+    },
+    {
+      "node_id": "device:Tomcat04",
+      "start": "23:00:00.000",
+      "end": "23:30:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "Tomcat-Threads_7441-\\\"http-nio-8003\\\"_CurrentThreadsBusyThreadInfo",
+        "Tomcat-MEMORY_7441-MEMORY_JVMUsedMemory",
+        "OSLinux-CPU_CPU_CPUSysTime"
+      ],
+      "focus": "获取 Tomcat04 线程状态、JVM 内存详细数值及系统 CPU 时间的完整趋势，以区分是 CPU 计算负载高还是线程阻塞导致，并确认内存增长是否达到 OOM 阈值。",
+      "basis_ids": [
+        "e211",
+        "e210",
+        "e212"
+      ]
+    }
+  ],
+  "peak_gpu_gib": 21.166222095489502,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e225",
+      "e226",
+      "e227",
+      "e228",
+      "e229",
+      "e230",
+      "e231",
+      "e232",
+      "e233",
+      "e234",
+      "e235"
+    ],
+    "notes": "filter invalid; retained all global evidence",
+    "attempts": [
+      {
+        "valid": false,
+        "error": "ids must be unique IDs from global evidence"
+      },
+      {
+        "valid": false,
+        "error": "ids must be unique IDs from global evidence"
+      }
+    ],
+    "fallback": true,
+    "available": 11
+  }
+}

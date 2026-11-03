@@ -1,0 +1,28 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": "11:12:00",
+        "evidence_ids": [
+          "e5",
+          "e8",
+          "e25",
+          "e26"
+        ],
+        "explanation": "Mysql01 在 11:12 出现 max trx lock memory 峰值 (e5) 及 InnoDB page_cleaner 慢日志 (e8)，表明磁盘 I/O 阻塞。此时 apache01 开始报告 502 错误 (e25, e26)，时间吻合。I/O 瓶颈导致数据库锁等待，进而引发下游业务失败。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1616556600000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1"
+}

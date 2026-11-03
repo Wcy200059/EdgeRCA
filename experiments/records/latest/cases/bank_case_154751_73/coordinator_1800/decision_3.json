@@ -1,0 +1,85 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h2",
+        "assessment": "supported",
+        "component": "Redis01",
+        "reason": "high CPU usage",
+        "time": "01:52:00",
+        "time_evidence_id": "e95",
+        "support_ids": [
+          "e95"
+        ],
+        "counter_ids": [],
+        "explanation": "e95 明确显示 Redis01 在 01:52:00 CPU 从 0.56% 飙升至 65% 并触及 99.98%，触发高 CPU 规则。这是窗口内唯一明确的资源故障指标，时间早于多数长调用峰值，符合根因特征。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "现有证据仅显示 Tomcat01 OS CPU 稳定（e237），缺乏 JVM 层具体负载数据。虽存在长调用（e140），但无法区分是 JVM 内部问题还是外部资源耗尽导致。需补查 JVM 指标。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Redis01",
+        "start": "01:30:00",
+        "end": "02:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-Heap-Used",
+          "JVM-Threads-Count"
+        ],
+        "focus": "核实 Redis01 在 01:52 高 CPU 期间是否存在 JVM 内存泄漏或线程阻塞，确认是否因应用层问题导致 CPU 飙升。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "01:30:00",
+        "end": "02:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-CPU-Load",
+          "JVM-Memory-Heap-Used"
+        ],
+        "focus": "检查 Tomcat01 的 JVM 层 CPU 和内存使用情况，排除应用层资源耗尽导致的下游延迟可能性。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:IG01",
+        "start": "01:30:00",
+        "end": "02:00:00",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "检索 IG01 日志，查看 01:52 前后是否有连接超时或重试错误，验证 Redis01 故障是否导致 IG01 业务中断。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17703,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 38,
+        "available_facts": 229
+      }
+    }
+  ],
+  "labels_used": false
+}

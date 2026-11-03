@@ -1,0 +1,83 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat01",
+        "reason": "high CPU usage",
+        "time": "05:40:00.000",
+        "time_evidence_id": "e161",
+        "support_ids": [
+          "e161"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat01 在 05:40:00 触发 CPU 高使用率规则，且 05:40-05:51 期间持续触发。该组件处于调用链上游（IG->Tomcat），资源瓶颈可导致下游延迟。无直接反证。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat02 本地保留 CPU 指标观测（e179 等），但当前未加载具体数值及触发时间。需补查确认是否触发高 CPU 规则及具体时间点，以判断是否为根因。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Tomcat03",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat03 本地保留 CPU 指标观测（e196 等），但当前未加载具体数值及触发时间。需补查确认是否触发高 CPU 规则及具体时间点，以判断是否为根因。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat02",
+        "start": "05:30:00",
+        "end": "06:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认 Tomcat02 在 05:30-06:00 期间 CPU 使用率是否触发高负载规则，以及具体的触发时间和数值峰值。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat03",
+        "start": "05:30:00",
+        "end": "06:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认 Tomcat03 在 05:30-06:00 期间 CPU 使用率是否触发高负载规则，以及具体的触发时间和数值峰值。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17767,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 43,
+        "available_facts": 249
+      }
+    }
+  ],
+  "labels_used": false
+}

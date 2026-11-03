@@ -1,0 +1,93 @@
+{
+  "case_id": "b7ebf09889068b04",
+  "cutoff_ms": 1615285800000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 257
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 378
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 380
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 381
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:dockerA1",
+      "start": "18:05:00",
+      "end": "18:10:00",
+      "tools": [
+        "get_calls"
+      ],
+      "metrics": [],
+      "focus": "核查 dockerA1 在 18:05 出现 5010ms 长调用时的父子调用链，确认该慢调用是否源自上游 Mysql01 的 I/O 阻塞，以建立因果联系。",
+      "basis_ids": [
+        "e213"
+      ]
+    }
+  ],
+  "peak_gpu_gib": 21.137616634368896,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e237",
+      "e238",
+      "e239",
+      "e240",
+      "e241",
+      "e242",
+      "e243",
+      "e244",
+      "e245",
+      "e246",
+      "e247",
+      "e248",
+      "e249",
+      "e250",
+      "e251",
+      "e252",
+      "e253",
+      "e254",
+      "e255",
+      "e256",
+      "e257",
+      "e258",
+      "e259",
+      "e260",
+      "e261",
+      "e262",
+      "e263",
+      "e264",
+      "e265",
+      "e266",
+      "e267",
+      "e268"
+    ],
+    "notes": "保留所有涉及候选组件（IG, MG, Tomcat, docker）间实际父子调用匹配的观测。这些证据提供了调用链结构、P95/最大值及时间区间不匹配数量，是区分资源故障与传播链、定位异常时间窗口的关键依据。其他业务统计观测（e226-e236）因未关联具体组件且无异常指标，予以拒绝。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 43
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "high JVM CPU load",
+        "time": "21:39:31.581",
+        "time_evidence_id": "e309",
+        "support_ids": [
+          "e309",
+          "e317",
+          "e318",
+          "e319"
+        ],
+        "counter_ids": [],
+        "explanation": "IG01 在 21:36-21:40 期间 P95 延迟飙升至 6 万 -8 万 ms，且 21:39:31 出现 89 秒长调用。此资源耗尽模式符合高 CPU 负载导致下游 Tomcat 无法响应，进而引发 Apache 502 错误的因果链。需确认 IG01 具体资源指标。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "IG02",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Apache 502 错误发生在 21:36-21:38，而 IG02 的慢调用证据 (e30) 显示长调用始于 21:38:17，时间上晚于故障发生点，暂无法支持其为根因。需补查 IG02 早期资源状态。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:IG01",
+        "start": "21:30:00",
+        "end": "21:45:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "JVM-CPU_CPU_CPUCpuUtil",
+          "JVM-Memory_7779_JVM_Memory_HeapMemoryUsage"
+        ],
+        "focus": "核实 IG01 在 21:36-21:40 期间是否存在 CPU 飙升或内存 OOM，以验证其是否为导致下游延迟和 502 错误的根因。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:IG02",
+        "start": "21:30:00",
+        "end": "21:45:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "JVM-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "检查 IG02 在 21:36 之前是否有 CPU 或内存异常，排除其作为早期故障源的可能性，并确认 e30 中长调用的具体上下文。",
+        "basis_ids": [
+          "e30"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "21:30:00",
+        "end": "21:45:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-CPU_CPU_CPUCpuUtil",
+          "JVM-Memory_7779_JVM_Memory_HeapMemoryUsage"
+        ],
+        "focus": "确认 Tomcat01 在 21:36-21:38 期间是否因上游 IG01 压力导致高负载，或自身存在资源瓶颈，以完善从 IG 到 Apache 的故障传播路径。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17752,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 67,
+        "available_facts": 328
+      }
+    }
+  ],
+  "labels_used": false
+}

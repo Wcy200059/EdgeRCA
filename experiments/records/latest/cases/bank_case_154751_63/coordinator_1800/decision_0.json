@@ -1,0 +1,97 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat01 在 candidate_slate 中显示 CPU 指标（OSLinux-CPU_CPU-1_SingleCpuUtil）存在波动（e158），且作为上游被 IG01/IG02 调用时 P95 延迟较高（e293, e297）。但缺乏具体数值证明其达到故障阈值，也未观测到其下游 MG 节点的明确资源耗尽或超时证据。需补查具体 CPU 使用率数值及日志确认是否过载。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat04",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat04 在 candidate_slate 中显示 CPU 指标（OSLinux-CPU_CPU-1_SingleCpuUtil）最大值高达 100%（e218），且被 IG02 调用时 P95 延迟较高（e300）。虽 CPU 高是强信号，但缺乏日志或下游节点（MG01/MG02）的超时/失败证据来确认这是导致系统级故障的根因，还是并发压力下的正常高负载。需补查日志和下游影响。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "14:00:00",
+        "end": "14:30:00",
+        "tools": [
+          "get_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认 Tomcat01 在故障窗口内的 CPU 使用率是否持续超过阈值，以及内存是否充足，以验证高 CPU 假设。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "14:00:00",
+        "end": "14:30:00",
+        "tools": [
+          "get_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认 Tomcat04 的 CPU 峰值是否持续，并检查是否有 OOM 或线程阻塞日志，以区分瞬时高负载与持续性故障。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:dockerB1",
+        "start": "14:00:00",
+        "end": "14:30:00",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "检查 dockerB1 日志中是否存在网络连接错误、超时或 DNS 解析失败，以排除网络延迟假设。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "component must use a public candidate or null",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 2,
+          "item": {
+            "id": "h3",
+            "assessment": "unresolved",
+            "component": "dockerB1",
+            "reason": "network latency",
+            "time": null,
+            "time_evidence_id": null,
+            "support_ids": [],
+            "counter_ids": [],
+            "explanation": "dockerB1 观测到个别长调用（e269），且与 MG01/MG02 的连接 P95 延迟较高（e303, e307）。但长调用仅为个例，不足以证明网络故障。且 dockerB1 是边缘节点，其延迟可能是下游 Tomcat/MG 处理慢的反映，而非网络本身问题。需补查 dockerB1 日志及与 MG 节点的具体连接延迟分布。"
+          },
+          "error": "component must use a public candidate or null"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

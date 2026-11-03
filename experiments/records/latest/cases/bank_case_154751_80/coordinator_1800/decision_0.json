@@ -1,0 +1,116 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e17显示IG01存在长调用（11s），但e35/e145/e180显示其下游Tomcat节点也有高延迟，且e17仅展示单条慢调用，无法证明是IG01自身JVM负载过高导致。需确认IG01资源指标及JVM状态。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e17显示IG01有长调用，可能由CPU瓶颈引起。但e17未提供CPU使用率数值，且下游Tomcat同样存在高延迟，需排除下游问题。需补查IG01 CPU指标。"
+      },
+      {
+        "id": "h4",
+        "assessment": "unresolved",
+        "component": "Redis01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e121显示Redis01在查询范围内无trace记录，无法判断其状态。虽然e125显示Redis02 CPU曾飙升至99%，但Redis01无直接观测，且e121缺失数据不能直接推断为磁盘IO故障，需补查。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:IG01",
+        "start": "14:30:00.000",
+        "end": "15:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "JVM-Memory_7778_JVM_Memory_HeapMemoryUsage"
+        ],
+        "focus": "确认IG01在14:36长调用期间的CPU使用率及JVM内存使用情况，以验证是否因资源耗尽导致下游延迟。",
+        "basis_ids": [
+          "e17"
+        ]
+      },
+      {
+        "node_id": "device:dockerB1",
+        "start": "14:36:00.000",
+        "end": "14:36:30.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认dockerB1在14:36:03长调用期间是否因CPU或内存资源耗尽导致处理延迟。",
+        "basis_ids": [
+          "e233"
+        ]
+      },
+      {
+        "node_id": "device:Redis01",
+        "start": "14:30:00.000",
+        "end": "15:00:00.000",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "DISK"
+        ],
+        "focus": "列出Redis01可用的磁盘相关指标名称，以便后续查询磁盘IO使用情况。",
+        "basis_ids": [
+          "e121"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "component must use a public candidate or null",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 2,
+          "item": {
+            "id": "h3",
+            "assessment": "unresolved",
+            "component": "dockerB1",
+            "reason": "high CPU usage",
+            "time": "14:36:03.445",
+            "time_evidence_id": "e233",
+            "support_ids": [
+              "e233"
+            ],
+            "counter_ids": [],
+            "explanation": "e233显示dockerB1在14:36:03出现17.5s长调用，且e263显示其上游MG01到dockerB1的P95高达4172ms，存在明显延迟。但e233未提供CPU/内存具体数值，无法确认是否为资源耗尽导致。"
+          },
+          "error": "component must use a public candidate or null"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

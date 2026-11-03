@@ -1,0 +1,74 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat04",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "14:30:48.000",
+        "time_evidence_id": "e264",
+        "support_ids": [
+          "e264",
+          "e262"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 在窗口起始即发生 25 次 GC 且原因为'Allocation Failure'(e264)，同时内存使用率稳定在 98%(e262)，表明堆内存耗尽。这符合 OOM 特征，是业务失败的可能根因。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 有大量未加载的磁盘 I/O 相关日志（约 449 条），且 Mysql 故障常伴随高 I/O。当前仅知 CPU 正常，缺乏具体的 I/O 指标数值或错误日志证据。需补查磁盘指标以确认是否存在高 I/O 导致下游延迟。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "14:30:00.000",
+        "end": "15:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadBps",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadPercentBusy"
+        ],
+        "focus": "验证 Mysql01 在故障窗口内是否存在高磁盘读取 I/O 或读取忙碌度，以确认是否为根因。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "14:30:00.000",
+        "end": "15:00:00.000",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "检查 Tomcat04 日志中是否有明确的 OOM 错误（如 OutOfMemoryError）或堆转储（Heap Dump）记录，以证实 e264 中的 Allocation Failure 导致了进程崩溃。",
+        "basis_ids": [
+          "e264"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17637,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 40,
+        "available_facts": 266
+      }
+    }
+  ],
+  "labels_used": false
+}

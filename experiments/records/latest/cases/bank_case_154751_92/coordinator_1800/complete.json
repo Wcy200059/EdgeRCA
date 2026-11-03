@@ -1,0 +1,171 @@
+{
+  "case_id": "764e23bdb2fa8f8f",
+  "cutoff_ms": 1615305600000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 371
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 373
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 376
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 379
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Mysql01",
+      "start": "23:30:00.000",
+      "end": "23:31:10.000",
+      "tools": [
+        "list_metrics"
+      ],
+      "metrics": [
+        "DISK",
+        "IO"
+      ],
+      "focus": "确认 Mysql01 是否有磁盘 I/O 相关指标可用，以排查数据库是否因磁盘过载导致上游服务失败。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Tomcat01",
+      "start": "23:30:00.000",
+      "end": "23:31:10.000",
+      "tools": [
+        "list_metrics"
+      ],
+      "metrics": [
+        "JVM",
+        "CPU"
+      ],
+      "focus": "确认 Tomcat01 是否有可用的 JVM CPU 或 Heap 内存指标，以排查是否因资源耗尽导致长调用和 502 错误。",
+      "basis_ids": [
+        "e205"
+      ]
+    },
+    {
+      "node_id": "device:apache01",
+      "start": "23:30:00.000",
+      "end": "23:31:10.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKRead"
+      ],
+      "focus": "获取 apache01 在 502 错误发生时刻的磁盘读取吞吐量具体数值，确认是否达到过载阈值或是否存在异常波动。",
+      "basis_ids": [
+        "e377"
+      ]
+    },
+    {
+      "node_id": "device:Mysql01",
+      "start": "23:30:00.000",
+      "end": "00:00:00.000",
+      "tools": [
+        "list_metrics"
+      ],
+      "metrics": [
+        "DISK",
+        "IO"
+      ],
+      "focus": "确认 Mysql01 是否有磁盘 I/O 相关的指标可用，以排查数据库是否因磁盘过载导致上游服务失败。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Tomcat01",
+      "start": "23:30:00.000",
+      "end": "00:00:00.000",
+      "tools": [
+        "list_metrics"
+      ],
+      "metrics": [
+        "JVM",
+        "CPU"
+      ],
+      "focus": "确认 Tomcat01 是否有可用的 JVM CPU 或 Heap 内存指标，以排查是否因资源耗尽导致长调用和 502 错误。",
+      "basis_ids": [
+        "e205"
+      ]
+    }
+  ],
+  "peak_gpu_gib": 21.151902675628662,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e329",
+      "e330",
+      "e331",
+      "e332",
+      "e333",
+      "e334",
+      "e335",
+      "e336",
+      "e337",
+      "e338",
+      "e339",
+      "e340",
+      "e341",
+      "e342",
+      "e343",
+      "e344",
+      "e345",
+      "e346",
+      "e347",
+      "e348",
+      "e349",
+      "e350",
+      "e351",
+      "e352",
+      "e353",
+      "e354",
+      "e355",
+      "e356",
+      "e357",
+      "e358",
+      "e359",
+      "e360",
+      "e361",
+      "e362",
+      "e363",
+      "e364",
+      "e365",
+      "e366",
+      "e367",
+      "e368",
+      "e369",
+      "e370",
+      "e371"
+    ],
+    "notes": "filter invalid; retained all global evidence",
+    "attempts": [
+      {
+        "valid": false,
+        "error": "Unterminated string starting at: line 1 column 1262 (char 1261)"
+      },
+      {
+        "valid": false,
+        "error": "ids must be unique IDs from global evidence"
+      }
+    ],
+    "fallback": true,
+    "available": 43
+  }
+}

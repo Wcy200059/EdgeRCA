@@ -1,0 +1,29 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Tomcat04",
+        "reason": "high JVM CPU load",
+        "time": "14:31:36.000",
+        "evidence_ids": [
+          "e101"
+        ],
+        "explanation": "e101 显示 Tomcat04 存在 Allocation Failure 导致的 GC，且 GC 暂停时间较长。这通常由高 CPU 负载或内存分配压力引起，解释了 e35 中的长调用。虽无直接 CPU 指标，但 Allocation Failure 是 JVM 高负载的直接证据，且其他组件（如 Mysql02）缺乏直接 I/O 或网络异常证据。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "evidence_ids must use current e IDs"
+    },
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1614841200000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1"
+}

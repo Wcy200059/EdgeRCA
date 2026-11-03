@@ -1,0 +1,60 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high CPU usage",
+        "time": "10:32:00.000",
+        "time_evidence_id": "e92",
+        "support_ids": [
+          "e92"
+        ],
+        "counter_ids": [],
+        "explanation": "Mysql01 CPU 在 10:32 出现峰值 16.5%，早段中位数 14.5%。虽随后下降，但缺乏业务失败直接关联证据。需确认该峰值是否导致下游延迟或业务中断，且需排查 Mysql02 状态。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql02",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql02 无已到达 CPU 指标记录（e136）。若 Mysql01 故障，Mysql02 可能正常或也故障。需补查 Mysql02 CPU 及内存状态，确认是否同步异常或独立故障。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql02",
+        "start": "10:30:00",
+        "end": "11:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "获取 Mysql02 的 CPU 使用率和内存占比，确认其在该时段是否出现类似 Mysql01 的高负载或异常，以区分是单点故障还是集群级资源问题。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17709,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 48,
+        "available_facts": 310
+      }
+    }
+  ],
+  "labels_used": false
+}

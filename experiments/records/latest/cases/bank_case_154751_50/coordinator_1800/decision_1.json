@@ -1,0 +1,102 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": "22:07:00.000",
+        "time_evidence_id": "e54",
+        "support_ids": [
+          "e54",
+          "e297",
+          "e265",
+          "e266"
+        ],
+        "counter_ids": [],
+        "explanation": "MG01 CPU 在 22:07 达到峰值 40% (e54)，随后 IG01 CPU 在 22:13 前维持在高位 (e297)。IG01 向 Tomcat 发出大量调用 (e265, e266)，P95 延迟显著 (329-355ms)。时间线吻合：资源高→计算负载高→下游延迟。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "IG02",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "IG02 有 JVM Heap 波动证据 (e17)，且向 Tomcat 发起大量调用 (e270, e272)，P95 延迟高。但缺乏 IG02 自身 CPU 高负载的直接指标证据，需补查确认是否由 CPU 过高引发。"
+      },
+      {
+        "id": "h3",
+        "assessment": "not_supported",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [
+          "e112",
+          "e147"
+        ],
+        "explanation": "Mysql01 和 Mysql02 在窗口期内无任何 Trace 记录到达 (e112, e147)，无法确认其负载状态或 I/O 情况。现有证据不支持其作为根因，且上游 Tomcat 延迟更显著。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:IG02",
+        "start": "22:00:00",
+        "end": "22:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认 IG02 在窗口期内 CPU 使用率是否出现显著升高或持续高位，以验证高 CPU 导致下游 Tomcat 延迟的假设。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "22:00:00",
+        "end": "22:30:00",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "DISK"
+        ],
+        "focus": "获取 Mysql01 可用的磁盘相关指标名称，以便后续核查是否存在 I/O 瓶颈导致业务失败。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql02",
+        "start": "22:00:00",
+        "end": "22:30:00",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "DISK"
+        ],
+        "focus": "获取 Mysql02 可用的磁盘相关指标名称，以便后续核查是否存在 I/O 瓶颈导致业务失败。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17324,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 45,
+        "available_facts": 270
+      }
+    }
+  ],
+  "labels_used": false
+}

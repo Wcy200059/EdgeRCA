@@ -1,0 +1,96 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "apache01",
+        "reason": "high JVM CPU load",
+        "time": "18:59:46.000",
+        "time_evidence_id": "e178",
+        "support_ids": [
+          "e178"
+        ],
+        "counter_ids": [],
+        "explanation": "e178 确认 apache01 在 18:59:46 返回 502 错误。e27 显示上游 IG02 到 Tomcat02 存在 76s 超长调用，且 e211 显示 dockerB2 持续高延迟。推测 Tomcat 端（如 apache01 后端服务）因 JVM CPU 或内存过载导致处理超时，最终引发网关 502。需确认 Tomcat 端资源峰值。"
+      },
+      {
+        "id": "h2",
+        "assessment": "supported",
+        "component": "Tomcat02",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "18:57:49.237",
+        "time_evidence_id": "e27",
+        "support_ids": [
+          "e27"
+        ],
+        "counter_ids": [],
+        "explanation": "e27 记录 IG02 到 Tomcat02 在 18:57:49 至 18:59:05 间出现 76491ms 的超长调用。结合 e211 中 dockerB2 的持续高延迟，推断 Tomcat02 可能因 Heap 内存耗尽（OOM）导致请求阻塞或超时，进而引发下游 502 故障。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat02",
+        "start": "18:57:49",
+        "end": "18:59:05",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Tomcat-MEMORY_7441-MEMORY_JVMMaxMemory",
+          "Tomcat-MEMORY_7441-MEMORY_JVMMemoryUsedPercent"
+        ],
+        "focus": "核实 Tomcat02 在 e27 长调用期间（18:57:49-18:59:05）的 JVM 堆内存使用率是否达到上限，以验证 OOM 假设。",
+        "basis_ids": [
+          "e27"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "18:57:49",
+        "end": "18:59:05",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Tomcat-MEMORY_7441-MEMORY_JVMMaxMemory",
+          "Tomcat-MEMORY_7441-MEMORY_JVMMemoryUsedPercent"
+        ],
+        "focus": "检查 Tomcat01 在同一时段的 JVM 内存状态，排除其作为根因的可能性，确认是否为多节点并发过载。",
+        "basis_ids": [
+          "e178",
+          "e27"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat02",
+        "start": "18:57:49",
+        "end": "18:59:05",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU-0_SingleCpuUtil"
+        ],
+        "focus": "补充检查 Tomcat02 在该时段的 OS 级 CPU 使用率，判断是否存在 CPU 耗尽导致的系统级延迟。",
+        "basis_ids": [
+          "e27"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17766,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 52,
+        "available_facts": 256
+      }
+    }
+  ],
+  "labels_used": false
+}

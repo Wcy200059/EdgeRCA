@@ -1,0 +1,104 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "apache02",
+        "reason": "high CPU usage",
+        "time": "11:21:00",
+        "time_evidence_id": "e143",
+        "support_ids": [
+          "e143",
+          "e150",
+          "e151",
+          "e152",
+          "e153",
+          "e154",
+          "e155",
+          "e156",
+          "e157",
+          "e158",
+          "e159",
+          "e160"
+        ],
+        "counter_ids": [],
+        "explanation": "e143显示apache02 CPU在11:21触发高负载规则，峰值2.06远超基线0.41，11:25解除。同期e150-160显示大量502错误发生在11:08-11:12。虽然502早于CPU高负载，但CPU高负载发生在业务持续报错期间，可能是后端处理积压导致的资源耗尽，或存在并发问题。e143是唯一明确的高CPU证据，且502持续存在，暂定为supported，需确认CPU高是否导致后续服务不可用或掩盖了其他原因。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "apache02",
+        "reason": "network latency",
+        "time": "11:12:00",
+        "time_evidence_id": "e146",
+        "support_ids": [
+          "e146",
+          "e147"
+        ],
+        "counter_ids": [
+          "e150",
+          "e151"
+        ],
+        "explanation": "e146显示apache02 TCP-CLOSE-WAIT在11:12触发，e147显示TotalTcpConnNum在11:10触发。这暗示网络连接问题。但502错误最早出现在11:08，早于网络指标触发时间。且e146在11:14解除，而502持续到11:12以后。时间先后关系不明确，且502通常由后端超时引起，而非单纯的连接等待。需补查调用链确认延迟来源。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:apache02",
+        "start": "11:00:00",
+        "end": "11:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUSysTime",
+          "OSLinux-CPU_CPU_CPUUserTime",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "获取apache02的CPU系统时间、用户时间和内存使用率的具体数值，确认11:21的高CPU是否伴随内存压力或系统负载过高，以及502错误期间资源是否持续紧张。",
+        "basis_ids": [
+          "e143"
+        ]
+      },
+      {
+        "node_id": "device:apache02",
+        "start": "11:00:00",
+        "end": "11:30:00",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "获取apache02在11:00-11:30期间的日志，特别是502错误发生时的详细错误信息，确认是后端超时、连接拒绝还是其他原因导致。",
+        "basis_ids": [
+          "e150"
+        ]
+      },
+      {
+        "node_id": "device:apache02",
+        "start": "11:00:00",
+        "end": "11:30:00",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "检查apache02在502错误发生期间（11:08-11:12）的调用链，确认是否存在长调用、未匹配父调用或后端超时，以验证是否由下游服务故障引起。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17671,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 50,
+        "available_facts": 183
+      }
+    }
+  ],
+  "labels_used": false
+}

@@ -1,0 +1,83 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Mysql02",
+        "reason": "high disk I/O read usage",
+        "time": "01:03:00.000",
+        "time_evidence_id": "e68",
+        "support_ids": [
+          "e68"
+        ],
+        "counter_ids": [],
+        "explanation": "Mysql02 磁盘指标 e68 在 01:03:00 出现极值 0.918，且早晚期趋势显著。结合其 45 个观测量远高于其他节点，强烈暗示磁盘 I/O 瓶颈。需确认是否为读负载，但写负载已证实资源紧张足以导致下游延迟。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql02",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql02 有 45 个观测，但当前仅加载 1 条 CPU 指标。缺乏 JVM 内存、GC 暂停或 OOM 相关的日志/指标证据。必须检查 JVM 内存和 GC 日志以排除或证实此假设。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql02",
+        "start": "01:00:00",
+        "end": "01:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-Memory-HeapUsed"
+        ],
+        "focus": "确认 Mysql02 堆内存是否持续高位或发生 OOM，以区分是磁盘 I/O 还是内存问题导致 45 个观测。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql02",
+        "start": "01:00:00",
+        "end": "01:30:00",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "检查 Mysql02 日志中是否存在 Full GC 暂停或 OOM 错误，进一步验证内存假设。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql02",
+        "start": "01:00:00",
+        "end": "01:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUReadIOPS"
+        ],
+        "focus": "获取 Mysql02 磁盘读取 IOPS 的具体数值，直接证实是否为高读 I/O 负载导致瓶颈。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17372,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 47,
+        "available_facts": 248
+      }
+    }
+  ],
+  "labels_used": false
+}

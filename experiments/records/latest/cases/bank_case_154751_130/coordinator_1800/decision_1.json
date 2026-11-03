@@ -1,0 +1,112 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "apache01",
+        "reason": "high JVM CPU load",
+        "time": "19:15:04.000",
+        "time_evidence_id": "e305",
+        "support_ids": [
+          "e300",
+          "e301",
+          "e302",
+          "e303",
+          "e304",
+          "e305",
+          "e306",
+          "e307",
+          "e308",
+          "e309",
+          "e321",
+          "e322",
+          "e323",
+          "e324",
+          "e325",
+          "e326",
+          "e327",
+          "e328",
+          "e329",
+          "e330",
+          "e331"
+        ],
+        "counter_ids": [],
+        "explanation": "Apache 节点在 19:15:04 起集中返回大量 502 错误，涉及 ServiceTest 和 person 业务流。该时间点早于 Tomcat02 的 CPU 回落时间，且 Apache 作为反向代理最先暴露下游处理失败。虽 Tomcat02 有早期 CPU 峰值，但 Apache 的持续报错表明其上游服务（如 Tomcat）在 19:15 后持续无法响应，符合高 CPU 导致请求超时的特征。"
+      },
+      {
+        "id": "h2",
+        "assessment": "supported",
+        "component": "Tomcat02",
+        "reason": "high JVM CPU load",
+        "time": "19:04:00.000",
+        "time_evidence_id": "e11",
+        "support_ids": [
+          "e11"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat02 在 19:04:00 观测到 CPU 使用率 94.4% 的极端峰值，随后在 19:17 回落。该时间点早于 Apache 的 502 错误爆发（19:15）。高 CPU 可能导致后续请求处理超时，进而引发 Apache 返回 502。虽然 19:04 时 Apache 未报错，但资源耗尽的影响可能延迟显现或仅影响部分长尾请求。需确认 19:15 后是否持续高压。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat02",
+        "start": "19:15:00.000",
+        "end": "19:20:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认 Tomcat02 在 Apache 报错期间（19:15-19:20）是否仍处于高 CPU 或高内存状态，以验证其是否为导致 502 错误的持续根因。",
+        "basis_ids": [
+          "e11"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "19:15:00.000",
+        "end": "19:20:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "检查 Tomcat01 在 19:15 后的 CPU 和内存情况，判断故障是否仅局限于 Tomcat02 还是已扩散至集群其他节点。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "19:15:00.000",
+        "end": "19:20:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "检查 Tomcat04 在 19:15 后的资源状态，辅助判断故障范围是否涉及多个 Tomcat 实例。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17741,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 36,
+        "available_facts": 353
+      }
+    }
+  ],
+  "labels_used": false
+}

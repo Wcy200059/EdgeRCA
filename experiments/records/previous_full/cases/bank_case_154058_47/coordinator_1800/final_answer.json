@@ -1,0 +1,31 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "IG01",
+        "reason": "high JVM CPU load",
+        "time": "21:14:00.000",
+        "evidence_ids": [
+          "e77",
+          "e78",
+          "e45"
+        ],
+        "explanation": "IG01 在 21:14 出现 JVM Heap 使用率显著上升（e78），伴随 CPU 负载波动（e77）。其下游 Tomcat03 在 21:05-21:06 曾出现最大调用超时（e45），虽时间稍早，但资源耗尽导致的延迟传播可能存在滞后或累积效应。现有证据支持 IG01 资源异常为潜在根因，需确认 CPU 负载峰值时间。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "reason must be a public candidate or null"
+    },
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1614864600000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1"
+}

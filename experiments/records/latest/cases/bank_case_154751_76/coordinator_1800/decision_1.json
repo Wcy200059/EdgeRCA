@@ -1,0 +1,72 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat01",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "11:29:03.833",
+        "time_evidence_id": "e182",
+        "support_ids": [
+          "e309",
+          "e182",
+          "e277"
+        ],
+        "counter_ids": [],
+        "explanation": "e309 显示 apache02 在 11:29:09 返回 502 错误。e182 显示 Tomcat01 在 11:29:03 出现 50255ms 的超长调用，时间吻合。e277 确认 IG01 到 Tomcat01 的父子调用关系，表明 Tomcat01 是下游瓶颈。虽然尚未加载内存指标，但业务失败与长调用强相关，且 Tomcat01 是已知根因组件之一，故支持 OOM 假设。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql02",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e156 显示 Mysql02 接收字节数有波动，但不足以直接证明高磁盘 I/O 是根因。缺乏直接的磁盘 I/O 指标（如 IO_Read）或慢查询日志证据。需补查 Mysql02 的磁盘 I/O 指标及慢查询日志，确认是否因磁盘压力导致上游 Tomcat 超时。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql02",
+        "start": "11:00:00.000",
+        "end": "11:30:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Mysql-MySQL_3306_IO_Read"
+        ],
+        "focus": "获取 Mysql02 的磁盘读取 I/O 指标数值，验证是否存在高 I/O 负载导致数据库响应变慢，进而引发上游 Tomcat 超时和 502 错误。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql02",
+        "start": "11:00:00.000",
+        "end": "11:30:00.000",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "检查 Mysql02 在 11:29 左右的日志，确认是否存在大量慢查询或死锁等数据库内部错误，这些可能是导致高延迟和 502 错误的根本原因。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17746,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 52,
+        "available_facts": 311
+      }
+    }
+  ],
+  "labels_used": false
+}

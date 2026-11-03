@@ -1,0 +1,62 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat01",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "16:21:30.000",
+        "time_evidence_id": "e331",
+        "support_ids": [
+          "e331",
+          "e330",
+          "e333"
+        ],
+        "counter_ids": [],
+        "explanation": "e331 显示 16:21:30 发生 Allocation Failure 导致 GC。e330 确认全时段存在 Allocation Failure。e333 显示内存占用率稳定在 97-98% 高位，结合 Allocation Failure 强支持 OOM 根因。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 存在大量日志但未加载具体指标。需补查磁盘读取时间和字节数指标，确认是否存在高 I/O 导致下游延迟的第二起故障。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "16:00:00.000",
+        "end": "16:30:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_DISK_DISK-sda_DSKReadTime",
+          "OSLinux-OSLinux_DISK_DISK-sda_DSKReadBytes"
+        ],
+        "focus": "验证 Mysql01 是否存在高磁盘读取负载，确认是否为导致业务延迟的第二起故障根因。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17749,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 47,
+        "available_facts": 324
+      }
+    }
+  ],
+  "labels_used": false
+}

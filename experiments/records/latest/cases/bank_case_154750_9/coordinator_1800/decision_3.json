@@ -1,0 +1,146 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Mysql01",
+        "reason": "high memory usage",
+        "time": "00:41:00.000",
+        "time_evidence_id": "e236",
+        "support_ids": [
+          "e236",
+          "e41",
+          "e185",
+          "e184"
+        ],
+        "counter_ids": [],
+        "explanation": "Mysql01 内存占比在 00:41:00 达到 98% 峰值（e236）。该时间点前后出现大量慢调用（e41, e185, e184），且慢调用源指向 Mysql01 下游或相关组件。高内存占用导致分配失败或延迟，符合根因特征。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat04",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat04 有慢调用（e147 max=60001ms），但缺乏 OOM 直接证据（如 GC 日志或 Heap 指标）。需补查 Tomcat04 的 JVM 堆内存和 GC 日志以确认是否发生 OOM。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "00:30:00",
+        "end": "01:00:00",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "检查 Mysql01 日志中是否存在 OutOfMemoryError 或长时间的 GC 暂停记录，以佐证内存压力导致的性能下降。",
+        "basis_ids": [
+          "e236"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "use unique e IDs from current evidence; node overviews are not evidence",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 0,
+          "item": {
+            "id": "h1",
+            "assessment": "supported",
+            "component": "Mysql01",
+            "reason": "high memory usage",
+            "time": "00:41:00.000",
+            "time_evidence_id": "e236",
+            "support_ids": [
+              "e236",
+              "e235",
+              "e41",
+              "e185",
+              "e184"
+            ],
+            "counter_ids": [],
+            "explanation": "Mysql01 内存占比在 00:41:00 达到 98% 峰值（e236），随后维持在高位（e235）。该时间点前后出现大量慢调用（e41, e185, e184），且慢调用源指向 Mysql01 下游或相关组件。高内存占用导致分配失败或延迟，符合根因特征。"
+          },
+          "error": "use unique e IDs from current evidence; node overviews are not evidence"
+        },
+        {
+          "section": "requests",
+          "index": 0,
+          "item": {
+            "node_id": "device:Tomcat04",
+            "start": "00:30:00",
+            "end": "01:00:00",
+            "tools": [
+              "get_metrics"
+            ],
+            "metrics": [
+              "JVM-Memory_7778_JVM_Memory_HeapMemoryUsed"
+            ],
+            "focus": "获取 Tomcat04 的 JVM 堆内存占用，确认是否存在内存泄漏或 OOM 风险，验证其是否为慢调用的直接原因。",
+            "basis_ids": [
+              "e147"
+            ]
+          },
+          "error": "basis_ids must use e IDs from current evidence"
+        },
+        {
+          "section": "requests",
+          "index": 1,
+          "item": {
+            "node_id": "device:Mysql01",
+            "start": "00:30:00",
+            "end": "01:00:00",
+            "tools": [
+              "get_logs"
+            ],
+            "metrics": [],
+            "focus": "检查 Mysql01 日志中是否存在 OutOfMemoryError 或长时间的 GC 暂停记录，以佐证内存压力导致的性能下降。",
+            "basis_ids": [
+              "e235"
+            ]
+          },
+          "error": "basis_ids must use e IDs from current evidence"
+        }
+      ]
+    },
+    {
+      "valid": false,
+      "error": "basis_ids must use e IDs from current evidence",
+      "rejected_sections": [
+        {
+          "section": "requests",
+          "index": 0,
+          "item": {
+            "node_id": "device:Tomcat04",
+            "start": "00:30:00",
+            "end": "01:00:00",
+            "tools": [
+              "get_metrics",
+              "get_logs"
+            ],
+            "metrics": [
+              "OSLinux-CPU_CPU_CPUCpuUtil",
+              "JVM-Memory_7778_JVM_Memory_HeapMemoryUsed"
+            ],
+            "focus": "获取 Tomcat04 的系统 CPU 使用率和 JVM 堆内存占用，确认是否存在高负载或 OOM 风险，排除其自身资源耗尽导致慢调用的可能性。",
+            "basis_ids": [
+              "e147"
+            ]
+          },
+          "error": "basis_ids must use e IDs from current evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

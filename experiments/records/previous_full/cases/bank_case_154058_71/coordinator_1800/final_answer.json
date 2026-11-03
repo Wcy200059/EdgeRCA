@@ -1,0 +1,26 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": "03:40:00.000",
+        "evidence_ids": [
+          "e2",
+          "e42"
+        ],
+        "explanation": "IG01 在 03:40 出现 CPU 峰值 99.78% (e2)，早于下游 Tomcat02 的 P95 延迟触发 (e42, 03:53)。虽然 Tomcat02 有 GC 报警 (e21)，但缺乏 Heap 超限直接证据，且 CPU 飙升是更显著的早期异常，符合根因特征。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1614974400000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1"
+}

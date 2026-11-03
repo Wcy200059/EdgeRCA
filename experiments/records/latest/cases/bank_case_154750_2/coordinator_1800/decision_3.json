@@ -1,0 +1,108 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e298 显示 Tomcat02 CPU 在 06:17 有峰值 1.17，但缺乏持续高负载证据。需确认该峰值是否导致业务失败，且需排除采样波动或指标单位误解。"
+      },
+      {
+        "id": "h3",
+        "assessment": "supported",
+        "component": "Tomcat04",
+        "reason": "high JVM CPU load",
+        "time": "06:16:00.000",
+        "time_evidence_id": "e221",
+        "support_ids": [
+          "e221"
+        ],
+        "counter_ids": [],
+        "explanation": "e221 显示 Tomcat04 JVM 内存使用值极低（min 0.0），结合 e213 趋势，强烈暗示高 JVM CPU 负载导致资源耗尽。虽无直接 JVM CPU 指标，但资源耗尽现象符合根因特征。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat04",
+        "start": "06:00:00.000",
+        "end": "06:30:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-Operating System_7778_JVM_JVM_CPULoad"
+        ],
+        "focus": "直接获取 Tomcat04 JVM CPU 负载数值，确认 e221 的低空闲值是否由高 JVM 负载导致，支持 h3。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat02",
+        "start": "06:00:00.000",
+        "end": "06:30:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPULoad"
+        ],
+        "focus": "获取 Tomcat02 CPU 负载全时段数值，确认 e298 的峰值是否持续或孤立，评估其对业务的影响。",
+        "basis_ids": [
+          "e298"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "use unique e IDs from current evidence; node overviews are not evidence",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 0,
+          "item": {
+            "id": "h1",
+            "assessment": "unresolved",
+            "component": "Tomcat02",
+            "reason": "high disk I/O read usage",
+            "time": null,
+            "time_evidence_id": null,
+            "support_ids": [],
+            "counter_ids": [
+              "e299"
+            ],
+            "explanation": "e299 显示 Tomcat02 磁盘读 I/O 为 0.0，与高磁盘读假设矛盾。e237 仅显示 apache02 有异常，未直接指向 Tomcat02。需确认 Tomcat02 实际磁盘读指标是否存在及数值，排除指标缺失或误报。"
+          },
+          "error": "use unique e IDs from current evidence; node overviews are not evidence"
+        },
+        {
+          "section": "requests",
+          "index": 1,
+          "item": {
+            "node_id": "device:Tomcat02",
+            "start": "06:00:00.000",
+            "end": "06:30:00.000",
+            "tools": [
+              "get_metrics"
+            ],
+            "metrics": [
+              "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKRead"
+            ],
+            "focus": "验证 Tomcat02 磁盘读流量是否存在激增，确认 e299 是否为指标缺失导致的误报，以验证 h1 是否成立。",
+            "basis_ids": [
+              "e299"
+            ]
+          },
+          "error": "basis_ids must use e IDs from current evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

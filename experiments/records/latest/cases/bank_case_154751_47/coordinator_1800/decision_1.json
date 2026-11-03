@@ -1,0 +1,60 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat03",
+        "reason": "high JVM CPU load",
+        "time": "21:27:00.000",
+        "time_evidence_id": "e282",
+        "support_ids": [
+          "e282"
+        ],
+        "counter_ids": [],
+        "explanation": "证据e282显示Tomcat03在21:27:00出现CPU使用率峰值（26.12%），结合e199中该节点最大长调用5020ms（21:20-21:27），表明高CPU负载导致处理延迟。虽数值未达100%，但在业务链中足以引发下游MG01的长调用（e269）。"
+      },
+      {
+        "id": "h2",
+        "assessment": "not_supported",
+        "component": "MG01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [
+          "e208"
+        ],
+        "explanation": "证据e208显示apache01在21:18-21:23期间CPU使用率异常升高（最高31%），随后回落。若MG01是根因，其自身CPU应持续高位或先于上游波动，但当前无MG01自身CPU高负载的直接证据支持其作为根因，且e53的长调用时间（21:04）早于apache01的峰值，时间线不匹配。"
+      },
+      {
+        "id": "h3",
+        "assessment": "not_supported",
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [
+          "e15"
+        ],
+        "explanation": "证据e15显示IG01在21:04:28出现长调用（5028ms），但该时间点早于Tomcat03的CPU峰值（21:27）及apache01的CPU峰值（21:18）。若IG01是根因，其自身资源瓶颈应更早显现或持续存在，但缺乏IG01自身CPU高负载的证据，且下游Tomcat03的异常时间更晚，不符合根因逻辑。"
+      }
+    ],
+    "requests": []
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17589,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 52,
+        "available_facts": 272
+      }
+    }
+  ],
+  "labels_used": false
+}

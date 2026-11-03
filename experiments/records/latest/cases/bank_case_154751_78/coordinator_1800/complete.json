@@ -1,0 +1,143 @@
+{
+  "case_id": "ae3cf5cd2d64d25c",
+  "cutoff_ms": 1615111200000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 295
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 297
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 298
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 299
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:IG01",
+      "start": "17:55:00",
+      "end": "18:00:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_NETWORK_ens160_NETInErr",
+        "OSLinux-OSLinux_NETWORK_ens160_NETOutErr",
+        "OSLinux-OSLinux_NETWORK_ens160_NETKBTotalPerSec"
+      ],
+      "focus": "确认 IG01 是否存在网络丢包或带宽饱和现象，以区分网络故障与下游 Tomcat 高 CPU 导致的延迟。",
+      "basis_ids": [
+        "e308",
+        "e309"
+      ]
+    },
+    {
+      "node_id": "device:Tomcat03",
+      "start": "17:55:00",
+      "end": "18:00:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "获取 Tomcat03 CPU 具体数值，验证是否存在与 Tomcat01/02 同步的高负载现象，排除单点故障。",
+      "basis_ids": [
+        "e204"
+      ]
+    },
+    {
+      "node_id": "device:Tomcat04",
+      "start": "17:55:00",
+      "end": "18:00:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "获取 Tomcat04 CPU 具体数值，验证是否存在与 Tomcat01/02 同步的高负载现象，排除单点故障。",
+      "basis_ids": [
+        "e220"
+      ]
+    },
+    {
+      "node_id": "device:Tomcat02",
+      "start": "17:50:00",
+      "end": "18:00:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "获取 Tomcat02 CPU 使用率的具体数值曲线，验证 17:53 和 17:56 是否确实存在持续的高负载，以支持其作为根因。",
+      "basis_ids": [
+        "e153"
+      ]
+    }
+  ],
+  "peak_gpu_gib": 21.135035514831543,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e275",
+      "e276",
+      "e277",
+      "e278",
+      "e279",
+      "e280",
+      "e281",
+      "e282",
+      "e283",
+      "e284",
+      "e285",
+      "e286",
+      "e287",
+      "e288",
+      "e289",
+      "e290",
+      "e291",
+      "e292",
+      "e293",
+      "e294",
+      "e295",
+      "e296",
+      "e297",
+      "e298",
+      "e299",
+      "e300",
+      "e301",
+      "e302",
+      "e303",
+      "e304",
+      "e305",
+      "e306"
+    ],
+    "notes": "保留所有涉及候选组件（IG, MG, Tomcat, docker）间实际父子调用匹配的观测。这些证据直接反映了服务间的调用关系、延迟（P95/Max）及时间窗口内的调用量，是构建传播链、定位资源瓶颈（如高延迟导致上游 CPU 升高）的关键依据。其他业务统计类观测（e264-e274）与故障传播分析相关性较弱，故拒绝。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 43
+  }
+}

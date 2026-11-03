@@ -1,0 +1,38 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "IG02",
+        "reason": "high CPU usage",
+        "time": "19:04:00",
+        "evidence_ids": [
+          "e11"
+        ],
+        "explanation": "e11 显示 IG02 在 19:04:00 CPU 飙升至 94.4%，随后回落。这是明确的资源耗尽事件，符合故障特征。虽无直接日志证明其导致下游失败，但时间最早且数值极端，是首要嫌疑根因。"
+      },
+      {
+        "component": "apache01",
+        "reason": "network latency",
+        "time": "19:15:04",
+        "evidence_ids": [
+          "e305",
+          "e307",
+          "e308"
+        ],
+        "explanation": "e305/e307/e308 显示 apache01 在 19:15:04 至 19:19 期间出现多起 502 错误。这是明确的业务失败证据，构成第二个故障。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1616671800000,
+  "model_judgment_verified": false,
+  "expected_failures": 2,
+  "answer_schema": "faults_v1",
+  "field_repairs": [],
+  "warnings": []
+}

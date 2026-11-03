@@ -1,0 +1,88 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat04",
+        "reason": "high memory usage",
+        "time": "16:13:42.000",
+        "time_evidence_id": "e208",
+        "support_ids": [
+          "e208"
+        ],
+        "counter_ids": [],
+        "explanation": "e208显示Tomcat04在16:13:42返回500错误，且e27显示IG02到Tomcat04延迟极高。现有证据未区分是内存不足还是网络/其他原因导致。需补查Tomcat04内存指标以确认故障根因。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:apache02",
+        "start": "16:29:00",
+        "end": "16:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "验证apache02在16:29:00-16:30:00期间内存使用率是否飙升或触发OOM，以解释502错误。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "16:13:00",
+        "end": "16:14:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-Memory_7778_JVM_Memory_HeapMemoryUsed"
+        ],
+        "focus": "验证Tomcat04在16:13:00-16:14:00期间JVM堆内存是否耗尽，以解释500错误。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:IG02",
+        "start": "16:13:00",
+        "end": "16:14:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKRTps"
+        ],
+        "focus": "验证IG02在16:13:00-16:14:00期间磁盘I/O是否异常，排除磁盘瓶颈导致的Tomcat04高延迟。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "h1: time 16:29:00.000 requires e228 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 0,
+          "item": {
+            "id": "h1",
+            "assessment": "unresolved",
+            "component": "apache02",
+            "reason": "high memory usage",
+            "time": "16:29:00.000",
+            "time_evidence_id": "e228",
+            "support_ids": [
+              "e228"
+            ],
+            "counter_ids": [],
+            "explanation": "e228显示apache02在16:29:07-16:29:56密集返回502错误，表明服务不可用。但e306仅显示内存占比稳定在59%，缺乏高内存或OOM的直接证据。需补查apache02内存指标以确认是否因资源耗尽导致服务中断。"
+          },
+          "error": "h1: time 16:29:00.000 requires e228 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

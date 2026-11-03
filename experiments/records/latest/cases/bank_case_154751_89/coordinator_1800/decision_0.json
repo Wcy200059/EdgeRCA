@@ -1,0 +1,71 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Mysql02",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql02 有大量未加载的磁盘/IO 相关事实（evidence_directory 显示 77 条事实，仅加载 1 条）。现有证据 e105 仅显示 CPU 使用率波动，未证实磁盘 IO。需补查磁盘 IO 指标以确认是否为根因。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat04",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat04 候选 slate (e196) 显示 CPU 曾触发规则（max 100%），但当前页面未展示完整趋势或与其他组件的因果联系。需确认该高 CPU 是否发生在故障时段并导致下游延迟。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql02",
+        "start": "17:00:00",
+        "end": "17:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Mysql-MySQL_3306_Handler Read First",
+          "OSLinux-OSLinux_DISK_DISKIOReadBytes"
+        ],
+        "focus": "确认 Mysql02 在 17:00-17:30 期间是否存在高磁盘读取量或慢查询，以验证磁盘 IO 故障假设。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "17:00:00",
+        "end": "17:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "获取 Tomcat04 CPU 使用率在故障窗口的详细数值，确认 e196 中观测到的峰值是否持续存在及其对业务的影响。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17724,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 59,
+        "available_facts": 281
+      }
+    }
+  ],
+  "labels_used": false
+}

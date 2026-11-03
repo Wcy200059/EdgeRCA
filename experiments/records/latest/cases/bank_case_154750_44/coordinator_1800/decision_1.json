@@ -1,0 +1,85 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat04",
+        "reason": "high disk I/O read usage",
+        "time": "21:25:00.000",
+        "time_evidence_id": "e237",
+        "support_ids": [
+          "e237",
+          "e238",
+          "e239"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 在 21:25 出现网络带宽突增 (e237) 且入/出包计数触发告警 (e238, e239)，疑似大量读取操作导致。但磁盘 I/O 具体数值缺失，需补查确认是否因磁盘 I/O 过载引发故障。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat04",
+        "reason": "high CPU usage",
+        "time": "21:25:00.000",
+        "time_evidence_id": "e237",
+        "support_ids": [
+          "e237",
+          "e241"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 网络流量在 21:25 激增 (e237)，同时繁忙线程持续触发 (e241)，表明系统负载高。但 CPU 使用率具体数值缺失，无法确认是否因 CPU 耗尽导致故障，需补查。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Tomcat04",
+        "reason": "high JVM CPU load",
+        "time": "21:25:00.000",
+        "time_evidence_id": "e237",
+        "support_ids": [
+          "e237",
+          "e241"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 网络突增 (e237) 伴随线程繁忙 (e241)，可能由应用层 JVM 高负载引起。但 JVM CPU 指标缺失，无法区分是系统级 CPU 高还是 JVM 线程阻塞，需补查 JVM 指标。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat04",
+        "start": "21:25:00",
+        "end": "21:27:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_DISK_DISK-sda_DSKReadBps",
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "JVM-CPU_CPU_CPU_Time"
+        ],
+        "focus": "核实 21:25 网络突增时段，Tomcat04 的磁盘读取带宽、系统 CPU 使用率及 JVM CPU 时间是否达到故障阈值，以确认资源耗尽根因。",
+        "basis_ids": [
+          "e237",
+          "e238",
+          "e239",
+          "e241"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17735,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 47,
+        "available_facts": 273
+      }
+    }
+  ],
+  "labels_used": false
+}

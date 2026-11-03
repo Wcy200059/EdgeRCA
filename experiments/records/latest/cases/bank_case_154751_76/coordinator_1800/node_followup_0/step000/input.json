@@ -1,0 +1,821 @@
+{
+  "case_id": "545a4f60379633d6",
+  "node_id": "device:apache02",
+  "request_id": "q47737cb9378a6720",
+  "window_start_ms": 1615086000000,
+  "cutoff_ms": 1615087800000,
+  "query_end_ms": 1615087755000,
+  "scope": {
+    "start": "11:29:00.000",
+    "end": "11:29:15.000"
+  },
+  "requested_scope": {
+    "reference": {
+      "start_ms": 1615087440000,
+      "end_ms": 1615087740000,
+      "seconds": 300.0,
+      "bounds": "[start,end)"
+    },
+    "current": {
+      "start_ms": 1615087740000,
+      "end_ms": 1615087755000,
+      "seconds": 15.0,
+      "bounds": "[start,end)"
+    },
+    "rows_considered": 5541,
+    "prefix_rows": 32881,
+    "counts_by_modality": {
+      "log": 5297,
+      "metric": 244
+    },
+    "must_report_ids": [],
+    "raw_archive_preserved": true
+  },
+  "request": {
+    "node_id": "device:apache02",
+    "start": "11:29:00.000",
+    "end": "11:29:15.000",
+    "tools": [
+      "get_logs"
+    ],
+    "metrics": [],
+    "focus": "获取 11:29:04 和 11:29:09 发生 502 错误时的访问日志，确认上游请求详情及是否有超时记录，以区分是后端无响应还是网络丢包。",
+    "basis_ids": [
+      "e248",
+      "e249"
+    ]
+  },
+  "tools_executed": [
+    "get_logs"
+  ],
+  "facts": [
+    {
+      "id": "f1",
+      "kind": "log",
+      "status": "available",
+      "category": "http_access",
+      "details": {
+        "method": "POST",
+        "path": "/UOCP/person/ServiceTest1.json",
+        "status": "502",
+        "requester": "IPAddress "
+      },
+      "count": 1,
+      "first": "11:29:09.000",
+      "last": "11:29:09.000",
+      "explicit_error": true,
+      "gc_pause_max_ms": null
+    },
+    {
+      "id": "f2",
+      "kind": "log",
+      "status": "available",
+      "category": "http_access",
+      "details": {
+        "method": "POST",
+        "path": "/UOCP/person/ServiceTest10.json",
+        "status": "502",
+        "requester": "IPAddress "
+      },
+      "count": 1,
+      "first": "11:29:04.000",
+      "last": "11:29:04.000",
+      "explicit_error": true,
+      "gc_pause_max_ms": null
+    },
+    {
+      "id": "f3",
+      "kind": "http_access",
+      "status": "200",
+      "count": 195,
+      "first": "11:29:00.000",
+      "last": "11:29:14.000",
+      "template_count": 11
+    }
+  ],
+  "catalog": {
+    "f1": {
+      "modality": "log",
+      "status": "available",
+      "log_name": "apache_access_log",
+      "category": "http_access",
+      "signature": "ad0913dcb532fd145c35",
+      "details": {
+        "method": "POST",
+        "path": "/UOCP/person/ServiceTest1.json",
+        "status": "502",
+        "requester": "IPAddress "
+      },
+      "count": 1,
+      "first_observed_ms": 1615087749000,
+      "last_observed_ms": 1615087749000,
+      "first_available_ms": 1615087749000,
+      "last_available_ms": 1615087749000,
+      "reference_count": 0,
+      "current_count": 1,
+      "reference_per_second": null,
+      "current_per_second": 0.06666666666666667,
+      "has_explicit_error": true,
+      "gc_pause_ms": {
+        "count": 0,
+        "mean": null,
+        "median": null,
+        "p50": null,
+        "p95": null,
+        "min": null,
+        "max": null
+      },
+      "evidence_ids": [
+        "Bank:2021_03_07/log/log_service.csv:000001467767"
+      ],
+      "note": "普通GC不是OOM；HTTP错误/错误词是观测，不直接确定根因。",
+      "all_source_ids": [
+        "Bank:2021_03_07/log/log_service.csv:000001467767"
+      ]
+    },
+    "f2": {
+      "modality": "log",
+      "status": "available",
+      "log_name": "apache_access_log",
+      "category": "http_access",
+      "signature": "8cc271ee99beb023c065",
+      "details": {
+        "method": "POST",
+        "path": "/UOCP/person/ServiceTest10.json",
+        "status": "502",
+        "requester": "IPAddress "
+      },
+      "count": 1,
+      "first_observed_ms": 1615087744000,
+      "last_observed_ms": 1615087744000,
+      "first_available_ms": 1615087744000,
+      "last_available_ms": 1615087744000,
+      "reference_count": 0,
+      "current_count": 1,
+      "reference_per_second": null,
+      "current_per_second": 0.06666666666666667,
+      "has_explicit_error": true,
+      "gc_pause_ms": {
+        "count": 0,
+        "mean": null,
+        "median": null,
+        "p50": null,
+        "p95": null,
+        "min": null,
+        "max": null
+      },
+      "evidence_ids": [
+        "Bank:2021_03_07/log/log_service.csv:000001467701"
+      ],
+      "note": "普通GC不是OOM；HTTP错误/错误词是观测，不直接确定根因。",
+      "all_source_ids": [
+        "Bank:2021_03_07/log/log_service.csv:000001467701"
+      ]
+    },
+    "f3": [
+      {
+        "modality": "log",
+        "status": "available",
+        "log_name": "apache_access_log",
+        "category": "http_access",
+        "signature": "4213cc24e72f1b4a7c74",
+        "details": {
+          "method": "POST",
+          "path": "/UOCP/base/ServiceTest11.json",
+          "status": "200",
+          "requester": "IPAddress "
+        },
+        "count": 20,
+        "first_observed_ms": 1615087740000,
+        "last_observed_ms": 1615087754000,
+        "first_available_ms": 1615087740000,
+        "last_available_ms": 1615087754000,
+        "reference_count": 0,
+        "current_count": 20,
+        "reference_per_second": null,
+        "current_per_second": 1.3333333333333333,
+        "has_explicit_error": false,
+        "gc_pause_ms": {
+          "count": 0,
+          "mean": null,
+          "median": null,
+          "p50": null,
+          "p95": null,
+          "min": null,
+          "max": null
+        },
+        "evidence_ids": [
+          "Bank:2021_03_07/log/log_service.csv:000001467623",
+          "Bank:2021_03_07/log/log_service.csv:000001467820"
+        ],
+        "note": "普通GC不是OOM；HTTP错误/错误词是观测，不直接确定根因。",
+        "all_source_ids": [
+          "Bank:2021_03_07/log/log_service.csv:000001467623",
+          "Bank:2021_03_07/log/log_service.csv:000001467646",
+          "Bank:2021_03_07/log/log_service.csv:000001467652",
+          "Bank:2021_03_07/log/log_service.csv:000001467661",
+          "Bank:2021_03_07/log/log_service.csv:000001467679",
+          "Bank:2021_03_07/log/log_service.csv:000001467696",
+          "Bank:2021_03_07/log/log_service.csv:000001467699",
+          "Bank:2021_03_07/log/log_service.csv:000001467705",
+          "Bank:2021_03_07/log/log_service.csv:000001467729",
+          "Bank:2021_03_07/log/log_service.csv:000001467730",
+          "Bank:2021_03_07/log/log_service.csv:000001467736",
+          "Bank:2021_03_07/log/log_service.csv:000001467747",
+          "Bank:2021_03_07/log/log_service.csv:000001467759",
+          "Bank:2021_03_07/log/log_service.csv:000001467769",
+          "Bank:2021_03_07/log/log_service.csv:000001467782",
+          "Bank:2021_03_07/log/log_service.csv:000001467784",
+          "Bank:2021_03_07/log/log_service.csv:000001467804",
+          "Bank:2021_03_07/log/log_service.csv:000001467810",
+          "Bank:2021_03_07/log/log_service.csv:000001467813",
+          "Bank:2021_03_07/log/log_service.csv:000001467820"
+        ]
+      },
+      {
+        "modality": "log",
+        "status": "available",
+        "log_name": "apache_access_log",
+        "category": "http_access",
+        "signature": "cfec1c46798807ed8db2",
+        "details": {
+          "method": "POST",
+          "path": "/UOCP/base/ServiceTest2.json",
+          "status": "200",
+          "requester": "IPAddress "
+        },
+        "count": 15,
+        "first_observed_ms": 1615087740000,
+        "last_observed_ms": 1615087752000,
+        "first_available_ms": 1615087740000,
+        "last_available_ms": 1615087752000,
+        "reference_count": 0,
+        "current_count": 15,
+        "reference_per_second": null,
+        "current_per_second": 1.0,
+        "has_explicit_error": false,
+        "gc_pause_ms": {
+          "count": 0,
+          "mean": null,
+          "median": null,
+          "p50": null,
+          "p95": null,
+          "min": null,
+          "max": null
+        },
+        "evidence_ids": [
+          "Bank:2021_03_07/log/log_service.csv:000001467635",
+          "Bank:2021_03_07/log/log_service.csv:000001467802"
+        ],
+        "note": "普通GC不是OOM；HTTP错误/错误词是观测，不直接确定根因。",
+        "all_source_ids": [
+          "Bank:2021_03_07/log/log_service.csv:000001467635",
+          "Bank:2021_03_07/log/log_service.csv:000001467641",
+          "Bank:2021_03_07/log/log_service.csv:000001467649",
+          "Bank:2021_03_07/log/log_service.csv:000001467670",
+          "Bank:2021_03_07/log/log_service.csv:000001467695",
+          "Bank:2021_03_07/log/log_service.csv:000001467704",
+          "Bank:2021_03_07/log/log_service.csv:000001467714",
+          "Bank:2021_03_07/log/log_service.csv:000001467720",
+          "Bank:2021_03_07/log/log_service.csv:000001467723",
+          "Bank:2021_03_07/log/log_service.csv:000001467741",
+          "Bank:2021_03_07/log/log_service.csv:000001467758",
+          "Bank:2021_03_07/log/log_service.csv:000001467774",
+          "Bank:2021_03_07/log/log_service.csv:000001467789",
+          "Bank:2021_03_07/log/log_service.csv:000001467798",
+          "Bank:2021_03_07/log/log_service.csv:000001467802"
+        ]
+      },
+      {
+        "modality": "log",
+        "status": "available",
+        "log_name": "apache_access_log",
+        "category": "http_access",
+        "signature": "f0ab5d655aef3d1ad940",
+        "details": {
+          "method": "POST",
+          "path": "/UOCP/base/ServiceTest4.json",
+          "status": "200",
+          "requester": "IPAddress "
+        },
+        "count": 15,
+        "first_observed_ms": 1615087740000,
+        "last_observed_ms": 1615087753000,
+        "first_available_ms": 1615087740000,
+        "last_available_ms": 1615087753000,
+        "reference_count": 0,
+        "current_count": 15,
+        "reference_per_second": null,
+        "current_per_second": 1.0,
+        "has_explicit_error": false,
+        "gc_pause_ms": {
+          "count": 0,
+          "mean": null,
+          "median": null,
+          "p50": null,
+          "p95": null,
+          "min": null,
+          "max": null
+        },
+        "evidence_ids": [
+          "Bank:2021_03_07/log/log_service.csv:000001467666",
+          "Bank:2021_03_07/log/log_service.csv:000001467809"
+        ],
+        "note": "普通GC不是OOM；HTTP错误/错误词是观测，不直接确定根因。",
+        "all_source_ids": [
+          "Bank:2021_03_07/log/log_service.csv:000001467666",
+          "Bank:2021_03_07/log/log_service.csv:000001467665",
+          "Bank:2021_03_07/log/log_service.csv:000001467669",
+          "Bank:2021_03_07/log/log_service.csv:000001467672",
+          "Bank:2021_03_07/log/log_service.csv:000001467676",
+          "Bank:2021_03_07/log/log_service.csv:000001467677",
+          "Bank:2021_03_07/log/log_service.csv:000001467684",
+          "Bank:2021_03_07/log/log_service.csv:000001467725",
+          "Bank:2021_03_07/log/log_service.csv:000001467731",
+          "Bank:2021_03_07/log/log_service.csv:000001467755",
+          "Bank:2021_03_07/log/log_service.csv:000001467762",
+          "Bank:2021_03_07/log/log_service.csv:000001467776",
+          "Bank:2021_03_07/log/log_service.csv:000001467794",
+          "Bank:2021_03_07/log/log_service.csv:000001467808",
+          "Bank:2021_03_07/log/log_service.csv:000001467809"
+        ]
+      },
+      {
+        "modality": "log",
+        "status": "available",
+        "log_name": "apache_access_log",
+        "category": "http_access",
+        "signature": "6835d2d434e7c95bee4b",
+        "details": {
+          "method": "POST",
+          "path": "/UOCP/base/ServiceTest6.json",
+          "status": "200",
+          "requester": "IPAddress "
+        },
+        "count": 5,
+        "first_observed_ms": 1615087740000,
+        "last_observed_ms": 1615087754000,
+        "first_available_ms": 1615087740000,
+        "last_available_ms": 1615087754000,
+        "reference_count": 0,
+        "current_count": 5,
+        "reference_per_second": null,
+        "current_per_second": 0.3333333333333333,
+        "has_explicit_error": false,
+        "gc_pause_ms": {
+          "count": 0,
+          "mean": null,
+          "median": null,
+          "p50": null,
+          "p95": null,
+          "min": null,
+          "max": null
+        },
+        "evidence_ids": [
+          "Bank:2021_03_07/log/log_service.csv:000001467618",
+          "Bank:2021_03_07/log/log_service.csv:000001467822"
+        ],
+        "note": "普通GC不是OOM；HTTP错误/错误词是观测，不直接确定根因。",
+        "all_source_ids": [
+          "Bank:2021_03_07/log/log_service.csv:000001467618",
+          "Bank:2021_03_07/log/log_service.csv:000001467680",
+          "Bank:2021_03_07/log/log_service.csv:000001467681",
+          "Bank:2021_03_07/log/log_service.csv:000001467812",
+          "Bank:2021_03_07/log/log_service.csv:000001467822"
+        ]
+      },
+      {
+        "modality": "log",
+        "status": "available",
+        "log_name": "apache_access_log",
+        "category": "http_access",
+        "signature": "0dcb83d72518234c1785",
+        "details": {
+          "method": "POST",
+          "path": "/UOCP/base/ServiceTest7.json",
+          "status": "200",
+          "requester": "IPAddress "
+        },
+        "count": 37,
+        "first_observed_ms": 1615087740000,
+        "last_observed_ms": 1615087754000,
+        "first_available_ms": 1615087740000,
+        "last_available_ms": 1615087754000,
+        "reference_count": 0,
+        "current_count": 37,
+        "reference_per_second": null,
+        "current_per_second": 2.466666666666667,
+        "has_explicit_error": false,
+        "gc_pause_ms": {
+          "count": 0,
+          "mean": null,
+          "median": null,
+          "p50": null,
+          "p95": null,
+          "min": null,
+          "max": null
+        },
+        "evidence_ids": [
+          "Bank:2021_03_07/log/log_service.csv:000001467642",
+          "Bank:2021_03_07/log/log_service.csv:000001467821"
+        ],
+        "note": "普通GC不是OOM；HTTP错误/错误词是观测，不直接确定根因。",
+        "all_source_ids": [
+          "Bank:2021_03_07/log/log_service.csv:000001467642",
+          "Bank:2021_03_07/log/log_service.csv:000001467645",
+          "Bank:2021_03_07/log/log_service.csv:000001467650",
+          "Bank:2021_03_07/log/log_service.csv:000001467664",
+          "Bank:2021_03_07/log/log_service.csv:000001467659",
+          "Bank:2021_03_07/log/log_service.csv:000001467682",
+          "Bank:2021_03_07/log/log_service.csv:000001467683",
+          "Bank:2021_03_07/log/log_service.csv:000001467685",
+          "Bank:2021_03_07/log/log_service.csv:000001467686",
+          "Bank:2021_03_07/log/log_service.csv:000001467687",
+          "Bank:2021_03_07/log/log_service.csv:000001467690",
+          "Bank:2021_03_07/log/log_service.csv:000001467691",
+          "Bank:2021_03_07/log/log_service.csv:000001467692",
+          "Bank:2021_03_07/log/log_service.csv:000001467694",
+          "Bank:2021_03_07/log/log_service.csv:000001467710",
+          "Bank:2021_03_07/log/log_service.csv:000001467716",
+          "Bank:2021_03_07/log/log_service.csv:000001467724",
+          "Bank:2021_03_07/log/log_service.csv:000001467735",
+          "Bank:2021_03_07/log/log_service.csv:000001467742",
+          "Bank:2021_03_07/log/log_service.csv:000001467760",
+          "Bank:2021_03_07/log/log_service.csv:000001467761",
+          "Bank:2021_03_07/log/log_service.csv:000001467763",
+          "Bank:2021_03_07/log/log_service.csv:000001467765",
+          "Bank:2021_03_07/log/log_service.csv:000001467766",
+          "Bank:2021_03_07/log/log_service.csv:000001467771",
+          "Bank:2021_03_07/log/log_service.csv:000001467775",
+          "Bank:2021_03_07/log/log_service.csv:000001467777",
+          "Bank:2021_03_07/log/log_service.csv:000001467778",
+          "Bank:2021_03_07/log/log_service.csv:000001467781",
+          "Bank:2021_03_07/log/log_service.csv:000001467783",
+          "Bank:2021_03_07/log/log_service.csv:000001467791",
+          "Bank:2021_03_07/log/log_service.csv:000001467796",
+          "Bank:2021_03_07/log/log_service.csv:000001467803",
+          "Bank:2021_03_07/log/log_service.csv:000001467811",
+          "Bank:2021_03_07/log/log_service.csv:000001467815",
+          "Bank:2021_03_07/log/log_service.csv:000001467816",
+          "Bank:2021_03_07/log/log_service.csv:000001467821"
+        ]
+      },
+      {
+        "modality": "log",
+        "status": "available",
+        "log_name": "apache_access_log",
+        "category": "http_access",
+        "signature": "89c3b527106aa6900528",
+        "details": {
+          "method": "POST",
+          "path": "/UOCP/base/ServiceTest8.json",
+          "status": "200",
+          "requester": "IPAddress "
+        },
+        "count": 8,
+        "first_observed_ms": 1615087740000,
+        "last_observed_ms": 1615087752000,
+        "first_available_ms": 1615087740000,
+        "last_available_ms": 1615087752000,
+        "reference_count": 0,
+        "current_count": 8,
+        "reference_per_second": null,
+        "current_per_second": 0.5333333333333333,
+        "has_explicit_error": false,
+        "gc_pause_ms": {
+          "count": 0,
+          "mean": null,
+          "median": null,
+          "p50": null,
+          "p95": null,
+          "min": null,
+          "max": null
+        },
+        "evidence_ids": [
+          "Bank:2021_03_07/log/log_service.csv:000001467638",
+          "Bank:2021_03_07/log/log_service.csv:000001467805"
+        ],
+        "note": "普通GC不是OOM；HTTP错误/错误词是观测，不直接确定根因。",
+        "all_source_ids": [
+          "Bank:2021_03_07/log/log_service.csv:000001467638",
+          "Bank:2021_03_07/log/log_service.csv:000001467657",
+          "Bank:2021_03_07/log/log_service.csv:000001467728",
+          "Bank:2021_03_07/log/log_service.csv:000001467740",
+          "Bank:2021_03_07/log/log_service.csv:000001467752",
+          "Bank:2021_03_07/log/log_service.csv:000001467787",
+          "Bank:2021_03_07/log/log_service.csv:000001467801",
+          "Bank:2021_03_07/log/log_service.csv:000001467805"
+        ]
+      },
+      {
+        "modality": "log",
+        "status": "available",
+        "log_name": "apache_access_log",
+        "category": "http_access",
+        "signature": "7418d79527c058ce4b27",
+        "details": {
+          "method": "POST",
+          "path": "/UOCP/person/ServiceTest1.json",
+          "status": "200",
+          "requester": "IPAddress "
+        },
+        "count": 13,
+        "first_observed_ms": 1615087740000,
+        "last_observed_ms": 1615087752000,
+        "first_available_ms": 1615087740000,
+        "last_available_ms": 1615087752000,
+        "reference_count": 0,
+        "current_count": 13,
+        "reference_per_second": null,
+        "current_per_second": 0.8666666666666667,
+        "has_explicit_error": false,
+        "gc_pause_ms": {
+          "count": 0,
+          "mean": null,
+          "median": null,
+          "p50": null,
+          "p95": null,
+          "min": null,
+          "max": null
+        },
+        "evidence_ids": [
+          "Bank:2021_03_07/log/log_service.csv:000001467624",
+          "Bank:2021_03_07/log/log_service.csv:000001467807"
+        ],
+        "note": "普通GC不是OOM；HTTP错误/错误词是观测，不直接确定根因。",
+        "all_source_ids": [
+          "Bank:2021_03_07/log/log_service.csv:000001467624",
+          "Bank:2021_03_07/log/log_service.csv:000001467631",
+          "Bank:2021_03_07/log/log_service.csv:000001467658",
+          "Bank:2021_03_07/log/log_service.csv:000001467667",
+          "Bank:2021_03_07/log/log_service.csv:000001467700",
+          "Bank:2021_03_07/log/log_service.csv:000001467717",
+          "Bank:2021_03_07/log/log_service.csv:000001467737",
+          "Bank:2021_03_07/log/log_service.csv:000001467744",
+          "Bank:2021_03_07/log/log_service.csv:000001467745",
+          "Bank:2021_03_07/log/log_service.csv:000001467780",
+          "Bank:2021_03_07/log/log_service.csv:000001467800",
+          "Bank:2021_03_07/log/log_service.csv:000001467806",
+          "Bank:2021_03_07/log/log_service.csv:000001467807"
+        ]
+      },
+      {
+        "modality": "log",
+        "status": "available",
+        "log_name": "apache_access_log",
+        "category": "http_access",
+        "signature": "b02469a45ab8a4c92324",
+        "details": {
+          "method": "POST",
+          "path": "/UOCP/person/ServiceTest10.json",
+          "status": "200",
+          "requester": "IPAddress "
+        },
+        "count": 25,
+        "first_observed_ms": 1615087740000,
+        "last_observed_ms": 1615087754000,
+        "first_available_ms": 1615087740000,
+        "last_available_ms": 1615087754000,
+        "reference_count": 0,
+        "current_count": 25,
+        "reference_per_second": null,
+        "current_per_second": 1.6666666666666667,
+        "has_explicit_error": false,
+        "gc_pause_ms": {
+          "count": 0,
+          "mean": null,
+          "median": null,
+          "p50": null,
+          "p95": null,
+          "min": null,
+          "max": null
+        },
+        "evidence_ids": [
+          "Bank:2021_03_07/log/log_service.csv:000001467653",
+          "Bank:2021_03_07/log/log_service.csv:000001467818"
+        ],
+        "note": "普通GC不是OOM；HTTP错误/错误词是观测，不直接确定根因。",
+        "all_source_ids": [
+          "Bank:2021_03_07/log/log_service.csv:000001467653",
+          "Bank:2021_03_07/log/log_service.csv:000001467634",
+          "Bank:2021_03_07/log/log_service.csv:000001467639",
+          "Bank:2021_03_07/log/log_service.csv:000001467643",
+          "Bank:2021_03_07/log/log_service.csv:000001467647",
+          "Bank:2021_03_07/log/log_service.csv:000001467648",
+          "Bank:2021_03_07/log/log_service.csv:000001467662",
+          "Bank:2021_03_07/log/log_service.csv:000001467663",
+          "Bank:2021_03_07/log/log_service.csv:000001467671",
+          "Bank:2021_03_07/log/log_service.csv:000001467673",
+          "Bank:2021_03_07/log/log_service.csv:000001467675",
+          "Bank:2021_03_07/log/log_service.csv:000001467688",
+          "Bank:2021_03_07/log/log_service.csv:000001467693",
+          "Bank:2021_03_07/log/log_service.csv:000001467697",
+          "Bank:2021_03_07/log/log_service.csv:000001467715",
+          "Bank:2021_03_07/log/log_service.csv:000001467726",
+          "Bank:2021_03_07/log/log_service.csv:000001467727",
+          "Bank:2021_03_07/log/log_service.csv:000001467743",
+          "Bank:2021_03_07/log/log_service.csv:000001467754",
+          "Bank:2021_03_07/log/log_service.csv:000001467756",
+          "Bank:2021_03_07/log/log_service.csv:000001467768",
+          "Bank:2021_03_07/log/log_service.csv:000001467779",
+          "Bank:2021_03_07/log/log_service.csv:000001467793",
+          "Bank:2021_03_07/log/log_service.csv:000001467814",
+          "Bank:2021_03_07/log/log_service.csv:000001467818"
+        ]
+      },
+      {
+        "modality": "log",
+        "status": "available",
+        "log_name": "apache_access_log",
+        "category": "http_access",
+        "signature": "acb46015a16aaf1d5594",
+        "details": {
+          "method": "POST",
+          "path": "/UOCP/person/ServiceTest3.json",
+          "status": "200",
+          "requester": "IPAddress "
+        },
+        "count": 27,
+        "first_observed_ms": 1615087740000,
+        "last_observed_ms": 1615087754000,
+        "first_available_ms": 1615087740000,
+        "last_available_ms": 1615087754000,
+        "reference_count": 0,
+        "current_count": 27,
+        "reference_per_second": null,
+        "current_per_second": 1.8,
+        "has_explicit_error": false,
+        "gc_pause_ms": {
+          "count": 0,
+          "mean": null,
+          "median": null,
+          "p50": null,
+          "p95": null,
+          "min": null,
+          "max": null
+        },
+        "evidence_ids": [
+          "Bank:2021_03_07/log/log_service.csv:000001467619",
+          "Bank:2021_03_07/log/log_service.csv:000001467819"
+        ],
+        "note": "普通GC不是OOM；HTTP错误/错误词是观测，不直接确定根因。",
+        "all_source_ids": [
+          "Bank:2021_03_07/log/log_service.csv:000001467619",
+          "Bank:2021_03_07/log/log_service.csv:000001467621",
+          "Bank:2021_03_07/log/log_service.csv:000001467626",
+          "Bank:2021_03_07/log/log_service.csv:000001467633",
+          "Bank:2021_03_07/log/log_service.csv:000001467656",
+          "Bank:2021_03_07/log/log_service.csv:000001467660",
+          "Bank:2021_03_07/log/log_service.csv:000001467689",
+          "Bank:2021_03_07/log/log_service.csv:000001467702",
+          "Bank:2021_03_07/log/log_service.csv:000001467703",
+          "Bank:2021_03_07/log/log_service.csv:000001467707",
+          "Bank:2021_03_07/log/log_service.csv:000001467708",
+          "Bank:2021_03_07/log/log_service.csv:000001467711",
+          "Bank:2021_03_07/log/log_service.csv:000001467713",
+          "Bank:2021_03_07/log/log_service.csv:000001467718",
+          "Bank:2021_03_07/log/log_service.csv:000001467719",
+          "Bank:2021_03_07/log/log_service.csv:000001467721",
+          "Bank:2021_03_07/log/log_service.csv:000001467722",
+          "Bank:2021_03_07/log/log_service.csv:000001467732",
+          "Bank:2021_03_07/log/log_service.csv:000001467733",
+          "Bank:2021_03_07/log/log_service.csv:000001467739",
+          "Bank:2021_03_07/log/log_service.csv:000001467757",
+          "Bank:2021_03_07/log/log_service.csv:000001467770",
+          "Bank:2021_03_07/log/log_service.csv:000001467785",
+          "Bank:2021_03_07/log/log_service.csv:000001467790",
+          "Bank:2021_03_07/log/log_service.csv:000001467797",
+          "Bank:2021_03_07/log/log_service.csv:000001467817",
+          "Bank:2021_03_07/log/log_service.csv:000001467819"
+        ]
+      },
+      {
+        "modality": "log",
+        "status": "available",
+        "log_name": "apache_access_log",
+        "category": "http_access",
+        "signature": "a8dfccc15af24867bf5d",
+        "details": {
+          "method": "POST",
+          "path": "/UOCP/person/ServiceTest5.json",
+          "status": "200",
+          "requester": "IPAddress "
+        },
+        "count": 16,
+        "first_observed_ms": 1615087740000,
+        "last_observed_ms": 1615087751000,
+        "first_available_ms": 1615087740000,
+        "last_available_ms": 1615087751000,
+        "reference_count": 0,
+        "current_count": 16,
+        "reference_per_second": null,
+        "current_per_second": 1.0666666666666667,
+        "has_explicit_error": false,
+        "gc_pause_ms": {
+          "count": 0,
+          "mean": null,
+          "median": null,
+          "p50": null,
+          "p95": null,
+          "min": null,
+          "max": null
+        },
+        "evidence_ids": [
+          "Bank:2021_03_07/log/log_service.csv:000001467627",
+          "Bank:2021_03_07/log/log_service.csv:000001467792"
+        ],
+        "note": "普通GC不是OOM；HTTP错误/错误词是观测，不直接确定根因。",
+        "all_source_ids": [
+          "Bank:2021_03_07/log/log_service.csv:000001467627",
+          "Bank:2021_03_07/log/log_service.csv:000001467630",
+          "Bank:2021_03_07/log/log_service.csv:000001467640",
+          "Bank:2021_03_07/log/log_service.csv:000001467654",
+          "Bank:2021_03_07/log/log_service.csv:000001467655",
+          "Bank:2021_03_07/log/log_service.csv:000001467674",
+          "Bank:2021_03_07/log/log_service.csv:000001467698",
+          "Bank:2021_03_07/log/log_service.csv:000001467709",
+          "Bank:2021_03_07/log/log_service.csv:000001467734",
+          "Bank:2021_03_07/log/log_service.csv:000001467746",
+          "Bank:2021_03_07/log/log_service.csv:000001467748",
+          "Bank:2021_03_07/log/log_service.csv:000001467749",
+          "Bank:2021_03_07/log/log_service.csv:000001467751",
+          "Bank:2021_03_07/log/log_service.csv:000001467786",
+          "Bank:2021_03_07/log/log_service.csv:000001467788",
+          "Bank:2021_03_07/log/log_service.csv:000001467792"
+        ]
+      },
+      {
+        "modality": "log",
+        "status": "available",
+        "log_name": "apache_access_log",
+        "category": "http_access",
+        "signature": "3d8ba0c6aa9f3998774d",
+        "details": {
+          "method": "POST",
+          "path": "/UOCP/person/ServiceTest9.json",
+          "status": "200",
+          "requester": "IPAddress "
+        },
+        "count": 14,
+        "first_observed_ms": 1615087740000,
+        "last_observed_ms": 1615087752000,
+        "first_available_ms": 1615087740000,
+        "last_available_ms": 1615087752000,
+        "reference_count": 0,
+        "current_count": 14,
+        "reference_per_second": null,
+        "current_per_second": 0.9333333333333333,
+        "has_explicit_error": false,
+        "gc_pause_ms": {
+          "count": 0,
+          "mean": null,
+          "median": null,
+          "p50": null,
+          "p95": null,
+          "min": null,
+          "max": null
+        },
+        "evidence_ids": [
+          "Bank:2021_03_07/log/log_service.csv:000001467622",
+          "Bank:2021_03_07/log/log_service.csv:000001467799"
+        ],
+        "note": "普通GC不是OOM；HTTP错误/错误词是观测，不直接确定根因。",
+        "all_source_ids": [
+          "Bank:2021_03_07/log/log_service.csv:000001467622",
+          "Bank:2021_03_07/log/log_service.csv:000001467644",
+          "Bank:2021_03_07/log/log_service.csv:000001467651",
+          "Bank:2021_03_07/log/log_service.csv:000001467678",
+          "Bank:2021_03_07/log/log_service.csv:000001467706",
+          "Bank:2021_03_07/log/log_service.csv:000001467712",
+          "Bank:2021_03_07/log/log_service.csv:000001467738",
+          "Bank:2021_03_07/log/log_service.csv:000001467750",
+          "Bank:2021_03_07/log/log_service.csv:000001467753",
+          "Bank:2021_03_07/log/log_service.csv:000001467764",
+          "Bank:2021_03_07/log/log_service.csv:000001467772",
+          "Bank:2021_03_07/log/log_service.csv:000001467773",
+          "Bank:2021_03_07/log/log_service.csv:000001467795",
+          "Bank:2021_03_07/log/log_service.csv:000001467799"
+        ]
+      }
+    ]
+  },
+  "available_metric_names": [],
+  "missing_metrics": [],
+  "limitations": [
+    "只检查请求节点、指定范围与最多前5分钟对照；参考段不保证正常。",
+    "请求之外的指标尚未检查；原始记录和工具完整结果保留。",
+    "没有相应字段或记录不能证明设备正常；慢调用不是网络RTT。"
+  ],
+  "labels_used": false,
+  "audit_directory": "/mnt/beegfs/home/wangchunyun25/Documents/EdgeRCA/outputs/bank_case_154751_76/coordinator_1800/queries/q47737cb9378a6720",
+  "already_checked": [
+    {
+      "start": "11:29:00.000",
+      "end": "11:29:15.000",
+      "tools": [
+        "get_logs"
+      ],
+      "metrics": []
+    }
+  ]
+}

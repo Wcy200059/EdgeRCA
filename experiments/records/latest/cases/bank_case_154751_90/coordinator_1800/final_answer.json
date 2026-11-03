@@ -1,0 +1,27 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Redis01",
+        "reason": "high CPU usage",
+        "time": "20:50:00.000",
+        "evidence_ids": [
+          "e280"
+        ],
+        "explanation": "e280 显示 Redis01 在 20:50:00 CPU 使用率飙升至 90.25%，远高于参考段中位数。该峰值早于下游 dockerB1 出现的长调用（e235），且无磁盘/内存指标直接证伪。虽缺日志，但时间先后与数值异常构成最强因果链。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615554000000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1",
+  "field_repairs": [],
+  "warnings": []
+}

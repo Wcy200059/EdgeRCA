@@ -1,0 +1,124 @@
+{
+  "case_id": "7d5ad0981ccc44bb",
+  "cutoff_ms": 1615307400000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 269
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 270
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 271
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 272
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:dockerB2",
+      "start": "00:00:00",
+      "end": "00:30:00",
+      "tools": [
+        "list_metrics"
+      ],
+      "metrics": [
+        "NET"
+      ],
+      "focus": "列出 dockerB2 可用网络指标名称，以便后续查询丢包或延迟相关数据。",
+      "basis_ids": [
+        "e233"
+      ]
+    },
+    {
+      "node_id": "device:dockerB1",
+      "start": "00:00:00",
+      "end": "00:30:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-NET_RX_BYTES",
+        "OSLinux-NET_TX_BYTES"
+      ],
+      "focus": "检查 dockerB1 网络流量是否存在异常突增或抖动，以验证长调用是否由网络拥塞引起。",
+      "basis_ids": [
+        "e226"
+      ]
+    },
+    {
+      "node_id": "device:dockerB1",
+      "start": "00:00:00",
+      "end": "00:30:00",
+      "tools": [
+        "get_logs"
+      ],
+      "metrics": [],
+      "focus": "检索 dockerB1 日志，确认长调用期间是否有超时、重试或错误类型的记录。",
+      "basis_ids": [
+        "e226"
+      ]
+    }
+  ],
+  "peak_gpu_gib": 21.147541046142578,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e249",
+      "e250",
+      "e251",
+      "e252",
+      "e253",
+      "e254",
+      "e255",
+      "e256",
+      "e257",
+      "e258",
+      "e259",
+      "e260",
+      "e261",
+      "e262",
+      "e263",
+      "e264",
+      "e265",
+      "e266",
+      "e267",
+      "e268",
+      "e269",
+      "e270",
+      "e271",
+      "e272",
+      "e273",
+      "e274",
+      "e275",
+      "e276",
+      "e277",
+      "e278",
+      "e279",
+      "e280"
+    ],
+    "notes": "筛选所有涉及候选组件（IG, MG, Tomcat, docker）的实际父子调用匹配观测。这些证据记录了调用次数、P95/最大值延迟及时间区间不匹配数量，直接反映服务间传播链状态及潜在延迟异常，是区分资源故障与传播链的关键依据。业务统计类观测（e238-e248）因未关联具体设备且无异常指标，故拒绝。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 43
+  }
+}

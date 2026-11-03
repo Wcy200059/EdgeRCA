@@ -1,0 +1,87 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "apache01",
+        "reason": "high memory usage",
+        "time": "14:22:00.000",
+        "time_evidence_id": "e442",
+        "support_ids": [
+          "e407",
+          "e408",
+          "e410",
+          "e411",
+          "e412",
+          "e413",
+          "e442"
+        ],
+        "counter_ids": [],
+        "explanation": "Apache01 在 14:22 起爆发大量 502 错误（e407, e408, e410-e413），请求者含 IG01/IG02。e442 显示 Apache01 内存占比在 14:22 达 77% 且稳定高位。高内存导致服务拒绝或 OOM，引发故障。MG02 连接数 e76 在 14:21 骤降佐证时间点。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:apache01",
+        "start": "14:21:00",
+        "end": "14:25:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认 Apache01 在 14:22 错误爆发时内存使用率是否达到阈值，验证高内存导致 OOM 的假设。",
+        "basis_ids": [
+          "e442"
+        ]
+      },
+      {
+        "node_id": "device:apache02",
+        "start": "14:21:00",
+        "end": "14:25:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认 Apache02 在 14:22 错误爆发时内存使用率是否达到阈值，验证高内存导致 OOM 的假设。",
+        "basis_ids": [
+          "e443"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "basis_ids must use e IDs from current evidence",
+      "rejected_sections": [
+        {
+          "section": "requests",
+          "index": 2,
+          "item": {
+            "node_id": "device:Mysql01",
+            "start": "14:21:00",
+            "end": "14:25:00",
+            "tools": [
+              "get_metrics"
+            ],
+            "metrics": [
+              "Mysql-MySQL_3306_Aborted Clients"
+            ],
+            "focus": "检查 Mysql01 在故障时段是否有大量连接中断或超时，验证是否因下游资源耗尽导致上游 Apache 502 错误。",
+            "basis_ids": [
+              "e77"
+            ]
+          },
+          "error": "basis_ids must use e IDs from current evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

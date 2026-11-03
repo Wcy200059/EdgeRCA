@@ -1,0 +1,97 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "apache02",
+        "reason": "high CPU usage",
+        "time": "06:45:00.000",
+        "time_evidence_id": "e278",
+        "support_ids": [
+          "e278",
+          "e254"
+        ],
+        "counter_ids": [],
+        "explanation": "e278 显示 apache02 在 06:45:00 出现 99.98% CPU 峰值，早于业务影响。e254 确认该节点存在高负载告警区间。虽有长调用样本（e280），但尚未证实是长调用导致 CPU 飙升，需排除。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat01 本地保留大量未加载观测，仅加载 1 条且无明确时间标记。无法确认其 CPU 是否升高及具体发生时间，需补查具体指标以验证根因。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat02 本地保留 16 条未加载观测，仅加载 1 条无时间标记。需补查 CPU 指标确认是否发生高负载，并分析其与 apache02 的时序关系。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "06:30:00.000",
+        "end": "07:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "获取 Tomcat01 在 06:30-07:00 的 CPU 使用率具体数值及峰值时间，验证是否发生高负载故障。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat02",
+        "start": "06:30:00.000",
+        "end": "07:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "获取 Tomcat02 在 06:30-07:00 的 CPU 使用率具体数值及峰值时间，验证是否发生高负载故障。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:apache02",
+        "start": "06:40:00.000",
+        "end": "06:50:00.000",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "检查 apache02 在 06:40-06:50 期间是否存在长调用（>P95）或大量慢调用，以确认 06:45 的 CPU 峰值是否由下游请求阻塞引起。",
+        "basis_ids": [
+          "e278"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17682,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 37,
+        "available_facts": 281
+      }
+    }
+  ],
+  "labels_used": false
+}

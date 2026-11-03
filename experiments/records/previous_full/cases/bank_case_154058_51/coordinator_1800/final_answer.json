@@ -1,0 +1,34 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": "22:08:00.000",
+        "evidence_ids": [
+          "e16"
+        ],
+        "explanation": "e16 显示 Mysql01 脏页在 22:08:00 首次触发并持续，表明磁盘 I/O 压力导致缓冲池效率下降。e77 虽未显示高峰，但结合业务上下文，22:08:00 为最可能的根因发生时间。"
+      },
+      {
+        "component": "Redis01",
+        "reason": "network packet loss",
+        "time": null,
+        "evidence_ids": [
+          "e24"
+        ],
+        "explanation": "e24 显示 Redis01 入包计数在 22:18:00 后急剧上升，暗示网络拥塞或丢包。但缺乏直接的丢包率指标或日志证据（e26/e27 无记录），无法确定确切故障时间或完全证实丢包。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1614868200000,
+  "model_judgment_verified": false,
+  "expected_failures": 2,
+  "answer_schema": "faults_v1"
+}

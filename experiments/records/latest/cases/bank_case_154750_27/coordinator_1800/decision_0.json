@@ -1,0 +1,107 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "现有证据仅显示IG到Tomcat的调用延迟（e26, e157），未提供Tomcat内部资源（CPU/Memory）的具体数值或趋势。无法确认高延迟是由Tomcat处理慢引起，还是网络引起。需补查Tomcat01资源指标。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "类似h1，仅见调用连接（e26, e171），缺乏Tomcat02自身CPU或内存使用率数据。无法区分是计算资源耗尽导致下游慢，还是网络问题。需补查Tomcat02资源指标。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "IG01报告了长调用（e13），且作为上游节点，其高CPU可能导致无法及时处理请求从而表现为下游延迟。但目前缺乏IG01 CPU具体数值证据，且需排除下游Tomcat瓶颈。需补查IG01资源指标。"
+      },
+      {
+        "id": "h4",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01有大量未加载事实（e75显示trace缺失），且Tomcat频繁调用MG/Redis，可能存在数据库压力传导。但无磁盘I/O直接证据。需补查Mysql01磁盘指标。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "15:00:00",
+        "end": "15:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "JVM-Memory_7778_JVM_Memory_NoHeapMemoryUsed"
+        ],
+        "focus": "核实Tomcat01的CPU使用率和JVM内存使用情况，以确认是否存在高负载导致其处理下游请求变慢。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat02",
+        "start": "15:00:00",
+        "end": "15:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "JVM-Memory_7778_JVM_Memory_NoHeapMemoryUsed"
+        ],
+        "focus": "核实Tomcat02的CPU使用率和JVM内存使用情况，排查是否因资源耗尽引起服务延迟。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:IG01",
+        "start": "15:00:00",
+        "end": "15:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "核实IG01的CPU使用率，确认其是否因处理请求过载而导致上游调用延迟。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17661,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 61,
+        "available_facts": 288
+      }
+    }
+  ],
+  "labels_used": false
+}

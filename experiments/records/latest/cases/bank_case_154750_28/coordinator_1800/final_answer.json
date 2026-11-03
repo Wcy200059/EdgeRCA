@@ -1,0 +1,40 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": "15:09:00.000",
+        "evidence_ids": [
+          "e300",
+          "e268",
+          "e269"
+        ],
+        "explanation": "e300 显示 IG01 在 15:09 达到 CPU 峰值 29.96%。e268-269 显示 IG01 到 Tomcat 的调用 P95 超 3000ms 且最大超 13000ms，符合高 CPU 导致调度延迟的特征。"
+      },
+      {
+        "component": null,
+        "reason": null,
+        "time": null,
+        "evidence_ids": [],
+        "explanation": "题目要求两个故障，但当前证据仅明确支持 IG01 高 CPU。Mysql01 磁盘指标缺失（e302），dockerB2 长调用（e256）无直接资源根因证据，无法确定第二故障组件。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "component must be a public candidate or null"
+    },
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615361400000,
+  "model_judgment_verified": false,
+  "expected_failures": 2,
+  "answer_schema": "faults_v1",
+  "field_repairs": [],
+  "warnings": []
+}

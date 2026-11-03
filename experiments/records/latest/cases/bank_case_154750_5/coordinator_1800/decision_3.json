@@ -1,0 +1,100 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": "14:41:00.000",
+        "time_evidence_id": "e123",
+        "support_ids": [
+          "e123"
+        ],
+        "counter_ids": [],
+        "explanation": "Mysql01 在 14:41 出现 CPU 异常峰值 (25.56%)，早于下游长调用。作为核心存储，高 CPU 常伴随磁盘 I/O 等待。需确认磁盘读取量激增以锁定根因。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat02 存在长调用，但 e312 确认该节点无磁盘读取指标记录。需补查 Tomcat02 磁盘 I/O 指标，排除其自身磁盘故障导致上游延迟的可能性。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": "14:46:01.921",
+        "time_evidence_id": "e12",
+        "support_ids": [
+          "e12"
+        ],
+        "counter_ids": [],
+        "explanation": "IG01 在 14:46 出现极端长调用 (18265ms)。虽无直接 CPU 证据，但长处理时间通常由 CPU 满载或阻塞引起。需补查 CPU 指标验证是否为根因。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "14:40:00.000",
+        "end": "14:45:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-MEMORY_MEMORY_DISKReadBytes"
+        ],
+        "focus": "确认 Mysql01 在 14:41 CPU 峰值期间是否存在磁盘读取量激增，验证高 CPU 是否由磁盘 I/O 等待引起。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat02",
+        "start": "14:40:00.000",
+        "end": "14:45:00.000",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "DISK"
+        ],
+        "focus": "列出 Tomcat02 可用的磁盘相关指标名称，以便后续获取其磁盘 I/O 数据以排查自身故障。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:IG01",
+        "start": "14:46:00.000",
+        "end": "14:47:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "检查 IG01 在 14:46 长调用发生时的 CPU 使用率，验证高 CPU 是否导致处理延迟。",
+        "basis_ids": [
+          "e12"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17699,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 43,
+        "available_facts": 306
+      }
+    }
+  ],
+  "labels_used": false
+}

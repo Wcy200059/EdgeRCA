@@ -1,0 +1,102 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat01",
+        "reason": "high CPU usage",
+        "time": "16:52:00.000",
+        "time_evidence_id": "e194",
+        "support_ids": [
+          "e194",
+          "e300"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat01 在 16:52:00 出现 CPU 使用率 99.94% 的极端峰值（e194），且后续采样（e300）维持高位（中位数 99.59%）。该现象符合根因定义，且时间明确。需确认是否导致业务失败，但现有资源证据已足够支撑其为根因候选。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "MG01",
+        "reason": "high memory usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "候选 MG01 内存高负载（e11），但当前证据仅显示数值波动，缺乏明确的触发阈值或持续时间证据。需获取具体内存使用率数值及变化趋势，确认是否构成故障。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Tomcat03",
+        "reason": "high JVM CPU load",
+        "time": "16:47:00.000",
+        "time_evidence_id": "e252",
+        "support_ids": [
+          "e252"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat03 线程繁忙线程数在 16:47:00 升至 43（e252），随后回落。这可能是高 CPU 或 GC 压力的表现。需结合该节点的 CPU 指标及调用日志，确认是否为根因。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "16:50:00.000",
+        "end": "16:55:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-Memory_7779_JVM_Memory_HeapMemoryUsage"
+        ],
+        "focus": "检查 16:52:00 峰值期间 Tomcat01 的 JVM 堆内存使用量，确认是否因内存耗尽（OOM）导致 CPU 飙升，区分是计算密集型还是内存溢出。",
+        "basis_ids": [
+          "e304"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "16:50:00.000",
+        "end": "16:55:00.000",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "检查 16:52:00 故障窗口内的日志，寻找应用层错误、连接拒绝或超时记录，以验证高 CPU 是否直接导致业务失败。",
+        "basis_ids": [
+          "e194",
+          "e300"
+        ]
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "16:50:00.000",
+        "end": "16:55:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Mysql-MySQL_3306_Connections"
+        ],
+        "focus": "检查 Tomcat01 高 CPU 期间 Mysql01 连接数是否激增，排除数据库连接池耗尽作为根因的可能性。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17709,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 36,
+        "available_facts": 305
+      }
+    }
+  ],
+  "labels_used": false
+}

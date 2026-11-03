@@ -1,0 +1,26 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": "16:59:00",
+        "evidence_ids": [
+          "e5",
+          "e9"
+        ],
+        "explanation": "Mysql01 的 Binlog Cache Use(e5) 在 16:59 激增至 4700MB，且 Com Select(e9) 同期激增。Binlog Cache 剧增通常依赖磁盘 I/O，其变化与高读操作高度相关。虽无直接 DSKReadBps 证据，但业务流无明确失败报告，且该资源瓶颈符合单故障特征。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1616490000000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1"
+}

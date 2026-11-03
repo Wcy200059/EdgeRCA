@@ -1,0 +1,98 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "apache01",
+        "reason": "high memory usage",
+        "time": "04:30:00.000",
+        "time_evidence_id": "e231",
+        "support_ids": [
+          "e231"
+        ],
+        "counter_ids": [],
+        "explanation": "e231 显示 apache01 内存占用在 04:30:00 触发并持续至 04:32:00，占比高达 96-97%，符合内存故障特征。但缺乏后续恢复证据或明确故障时间结束点，且未观察到明显的上游资源耗尽或下游业务级联失败证据。需确认该内存压力是否导致系统不可用或触发 OOM。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "MG01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "MG01 本地保留大量未加载事实，目录显示其有磁盘 I/O 相关观测。当前证据 e43 仅显示日志未到达，无法确认磁盘 I/O 状态。由于 MG01 是核心组件且未加载数据，不能排除其作为根因的可能性，但缺乏具体数值和时间标记支持。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat01 有调用延迟观测（e11, e186），显示 P95 延迟较高，可能源于 CPU 负载。但当前未加载 CPU 使用率具体指标，无法确认是否达到故障阈值。需补查 CPU 指标以区分是 CPU 瓶颈还是其他原因导致的延迟。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:apache01",
+        "start": "04:30:00.000",
+        "end": "05:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认 apache01 内存占用在 04:30:00 后的具体数值变化趋势，判断是否持续高位或触发 OOM，以验证内存故障假设。",
+        "basis_ids": [
+          "e231"
+        ]
+      },
+      {
+        "node_id": "device:MG01",
+        "start": "04:30:00.000",
+        "end": "05:00:00.000",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "DISK"
+        ],
+        "focus": "获取 MG01 节点可用的磁盘相关指标名称列表，以便后续查询磁盘 I/O 使用情况，排查磁盘故障可能性。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "04:30:00.000",
+        "end": "05:00:00.000",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "CPU"
+        ],
+        "focus": "获取 Tomcat01 节点可用的 CPU 相关指标名称，结合已有的调用延迟观测，判断是否存在高 CPU 负载导致的性能下降。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17704,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 59,
+        "available_facts": 274
+      }
+    }
+  ],
+  "labels_used": false
+}

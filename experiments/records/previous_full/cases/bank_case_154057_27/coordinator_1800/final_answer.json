@@ -1,0 +1,35 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Tomcat04",
+        "reason": "high JVM CPU load",
+        "time": "15:01:00",
+        "evidence_ids": [
+          "e33",
+          "e34"
+        ],
+        "explanation": "Tomcat04 在 15:01 触发 P95 延迟及最大调用时长规则，且持续至 15:15，表明存在严重的处理延迟。虽缺乏直接 JVM 指标数值，但这是唯一显示持续业务异常且时间最早的组件，最可能是根因。"
+      },
+      {
+        "component": "Mysql01",
+        "reason": "high CPU usage",
+        "time": "15:09:00",
+        "evidence_ids": [
+          "e18"
+        ],
+        "explanation": "Mysql01 在 15:09 出现 CPU 使用率规则触发（峰值 8.78%），早段中位数仅 1.89%。该异常时间点明确，符合题目要求的第二个故障，尽管数值看似不高但已触发告警规则。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615361400000,
+  "model_judgment_verified": false,
+  "expected_failures": 2,
+  "answer_schema": "faults_v1"
+}

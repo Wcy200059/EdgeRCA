@@ -1,0 +1,77 @@
+{
+  "case_id": "c253d03f494deb92",
+  "cutoff_ms": 1614868200000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 269
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 270
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 272
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 307
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:IG02",
+      "start": "22:00:00",
+      "end": "22:30:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "JVM-Memory_7778_JVM_Memory_HeapMemoryUsage"
+      ],
+      "focus": "核实IG02 JVM堆内存使用率的具体数值和趋势，确认是否存在内存溢出(OOM)导致业务阻塞。",
+      "basis_ids": []
+    }
+  ],
+  "peak_gpu_gib": 21.001020908355713,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e265",
+      "e266",
+      "e267",
+      "e268",
+      "e269",
+      "e270",
+      "e271",
+      "e272",
+      "e281",
+      "e282",
+      "e283",
+      "e284",
+      "e285",
+      "e286",
+      "e287",
+      "e288"
+    ],
+    "notes": "筛选涉及候选组件 IG、MG、Tomcat 之间父子调用关系的观测。这些证据展示了调用次数、P95 及最大值，其中多条子调用最大值显著偏高（如 e266 最大 4723ms, e283 最大 4591ms），且大量时间区间不满足包含关系，暗示调用链异常或资源瓶颈，是区分正常背景与故障传播的关键线索。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 43
+  }
+}

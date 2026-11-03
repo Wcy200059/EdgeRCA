@@ -1,0 +1,36 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Tomcat04",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "16:13:42.000",
+        "evidence_ids": [
+          "e126"
+        ],
+        "explanation": "e126 显示 Tomcat04 在 16:13:42 返回 500 错误。e43 记录该节点存在最大调用时长触发规则，暗示资源耗尽。虽无直接 OOM 日志，但 500 错误与慢调用规则触发在时间上高度一致，且 CPU 指标正常，故 OOM 为最可能根因。"
+      },
+      {
+        "component": "apache02",
+        "reason": "network packet loss",
+        "time": "16:29:03.000",
+        "evidence_ids": [
+          "e63",
+          "e57",
+          "e58"
+        ],
+        "explanation": "e63 显示 apache02 在 16:29:03 首次出现 502 错误，随后 e57/e58 显示大量 502 爆发。结合 e88-e119 中 IG/MG 到 Tomcat 的调用存在大量时间不匹配，暗示网络丢包或延迟导致上游超时，apache02 为受影响的边缘节点。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615105800000,
+  "model_judgment_verified": false,
+  "expected_failures": 2,
+  "answer_schema": "faults_v1"
+}

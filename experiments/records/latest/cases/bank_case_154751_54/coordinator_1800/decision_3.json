@@ -1,0 +1,35 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": "15:03:04.134",
+        "time_evidence_id": "e248",
+        "support_ids": [
+          "e248",
+          "e331"
+        ],
+        "counter_ids": [],
+        "explanation": "e248 显示 dockerB2 在 15:03:04 出现 10600ms 长调用，该节点连接 Mysql01。e331 确认 Mysql01 缺失磁盘读取指标记录，且该节点有大量未加载日志（241 条），符合高 I/O 导致处理阻塞的特征。结合 e130/e139/e148 缺失 trace 的事实，排除其他节点作为根因。"
+      }
+    ],
+    "requests": []
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17684,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 41,
+        "available_facts": 322
+      }
+    }
+  ],
+  "labels_used": false
+}

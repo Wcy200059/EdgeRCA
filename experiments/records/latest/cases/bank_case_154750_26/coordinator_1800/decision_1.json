@@ -1,0 +1,100 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "apache01",
+        "reason": "high memory usage",
+        "time": "10:43:09.000",
+        "time_evidence_id": "e259",
+        "support_ids": [
+          "e259"
+        ],
+        "counter_ids": [],
+        "explanation": "Apache01 在 10:43:09 开始出现 502 错误，且 Apache02 同期也有大量 502，表明业务层确实不可用。但 Apache01 自身内存指标尚未加载，无法确认是内存耗尽导致还是下游资源问题。需补查 Apache01 内存使用率以验证根因。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 报告了大量日志（105 条）和未加载的磁盘指标（e350 显示缺失），暗示可能存在磁盘 I/O 瓶颈或空间不足。但当前无具体数值证据（如 IOPS 飙升或磁盘使用率过高），且缺乏时间上的峰值标记。需补查磁盘 I/O 指标确认是否因 I/O 阻塞导致上游 Tomcat 延迟。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat01 到下游 MG02 的调用 P95 高达 2098ms，且存在大量时间区间不匹配，暗示处理延迟。但 Tomcat01 的 JVM CPU 负载指标尚未加载（pending_requests 中计划查询但未执行结果）。需确认 JVM CPU 是否过高导致无法及时处理请求，进而引发 502。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:apache01",
+        "start": "10:30:00",
+        "end": "10:50:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认 Apache01 在 502 错误发生时段（10:43-10:47）内存使用率是否飙升，验证内存耗尽假设。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "10:30:00",
+        "end": "10:50:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Mysql-MySQL_3306_Binlog Cache Disk Use",
+          "Mysql-MySQL_3306_Created Tmp Disk Tables"
+        ],
+        "focus": "检查 Mysql01 磁盘使用相关指标，确认是否存在磁盘空间不足或 Binlog 缓存磁盘使用异常，解释日志激增和潜在 I/O 瓶颈。",
+        "basis_ids": [
+          "e350"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "10:30:00",
+        "end": "10:50:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-Operating System_7779_JVM_JVM_CPULoad",
+          "JVM-Memory_7778_JVM_Memory_NoHeapMemoryUsed"
+        ],
+        "focus": "获取 Tomcat01 JVM CPU 负载和内存使用数据，验证其是否因资源耗尽导致下游调用延迟及业务失败。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17684,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 49,
+        "available_facts": 351
+      }
+    }
+  ],
+  "labels_used": false
+}

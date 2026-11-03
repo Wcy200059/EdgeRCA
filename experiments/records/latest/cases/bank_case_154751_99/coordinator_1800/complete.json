@@ -1,0 +1,103 @@
+{
+  "case_id": "43bd3551a9d9482c",
+  "cutoff_ms": 1616571000000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 308
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 310
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 312
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 826
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Mysql01",
+      "start": "15:09:00",
+      "end": "15:12:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadBps",
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadIOPS"
+      ],
+      "focus": "获取 Mysql01 在慢查询发生时段（15:09）的磁盘读取带宽和 IOPS 数值，确认是否出现高负载峰值以支持高 I/O 根因假设。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Mysql01",
+      "start": "15:09:00",
+      "end": "15:10:00",
+      "tools": [
+        "get_logs"
+      ],
+      "metrics": [],
+      "focus": "获取 Mysql01 在 15:09 慢查询发生时的详细日志，检查是否有 I/O 等待、死锁或连接重置等错误信息，验证高 I/O 是否直接导致业务失败。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:apache01",
+      "start": "15:00:00",
+      "end": "15:30:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUWio",
+        "OSLinux-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "获取 apache01 详细的 CPU 使用率和 IO 等待趋势，确认是否存在持续高负载。",
+      "basis_ids": []
+    }
+  ],
+  "peak_gpu_gib": 21.16740608215332,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e298",
+      "e299",
+      "e300",
+      "e301",
+      "e302",
+      "e303",
+      "e304",
+      "e305",
+      "e306",
+      "e307",
+      "e308"
+    ],
+    "notes": "filter invalid; retained all global evidence",
+    "attempts": [
+      {
+        "valid": false,
+        "error": "ids must be unique IDs from global evidence"
+      },
+      {
+        "valid": false,
+        "error": "ids must be unique IDs from global evidence"
+      }
+    ],
+    "fallback": true,
+    "available": 11
+  }
+}

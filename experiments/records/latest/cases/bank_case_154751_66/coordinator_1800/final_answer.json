@@ -1,0 +1,36 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": "22:07:00",
+        "evidence_ids": [
+          "e122"
+        ],
+        "explanation": "e122 显示 Redis01 连接数在 22:07:00 出现峰值 (9.51/s)，随后规则清除。结合 Mysql01 磁盘指标缺失但 Redis 作为缓存层受 I/O 影响重连的特征，推断此为高磁盘 I/O 导致的根因。"
+      },
+      {
+        "component": "Mysql02",
+        "reason": "high disk I/O read usage",
+        "time": "22:29:00",
+        "evidence_ids": [
+          "e122"
+        ],
+        "explanation": "e122 显示 Redis01 连接数在 22:29:00 规则清除 (last_event)，暗示此前存在持续压力。结合任务双故障要求及 Mysql02 磁盘指标缺失，推断此为第二起 I/O 故障结束或伴随现象。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615386600000,
+  "model_judgment_verified": false,
+  "expected_failures": 2,
+  "answer_schema": "faults_v1",
+  "field_repairs": [],
+  "warnings": []
+}

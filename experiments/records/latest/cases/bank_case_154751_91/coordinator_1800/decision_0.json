@@ -1,0 +1,49 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat04",
+        "reason": "high memory usage",
+        "time": "12:30:00",
+        "time_evidence_id": "e177",
+        "support_ids": [
+          "e177"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 内存占用在 12:30 达到 98% 并触发规则，随后下降。这是该时段唯一明确的资源耗尽证据。但缺乏业务失败或下游超时直接归因于此内存峰值的因果链证据，需确认内存高是否导致服务不可用或调用失败。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat04",
+        "start": "12:30:00",
+        "end": "12:45:00",
+        "tools": [
+          "get_calls",
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "确认 12:30 内存高峰期间是否存在大量调用失败、长时间阻塞或日志报错，以验证内存高是否直接导致业务故障。",
+        "basis_ids": [
+          "e177"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17728,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 60,
+        "available_facts": 263
+      }
+    }
+  ],
+  "labels_used": false
+}

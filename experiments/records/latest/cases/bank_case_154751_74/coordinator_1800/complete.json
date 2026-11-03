@@ -1,0 +1,136 @@
+{
+  "case_id": "b3feb8b1d8ac347b",
+  "cutoff_ms": 1615071600000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 240
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 243
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 244
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 246
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Mysql01",
+      "start": "06:30:00.000",
+      "end": "07:00:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_CPU_CPU_CPUCpuUtil",
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKBps"
+      ],
+      "focus": "确认 Mysql01 在长调用发生前是否存在 CPU 飙升或磁盘 I/O 激增，以区分是内存问题还是多资源耗尽导致下游延迟。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:IG02",
+      "start": "06:30:00.000",
+      "end": "07:00:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "获取 IG02 CPU 使用率的具体数值和变化趋势，确认 06:40 附近的峰值是否构成故障，并观察其持续时间及与 Tomcat 长调用的时间关联。",
+      "basis_ids": [
+        "e18"
+      ]
+    },
+    {
+      "node_id": "device:Tomcat01",
+      "start": "06:30:00.000",
+      "end": "07:00:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+      ],
+      "focus": "检查 Tomcat01 自身内存状态，确认长调用是否由本地内存不足引起，还是完全由下游 Mysql01 高内存导致。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Mysql02",
+      "start": "06:30:00",
+      "end": "07:00:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil",
+        "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+      ],
+      "focus": "检查 Mysql02 资源状态，排除双数据库同时故障的可能性，或确认是否存在主从同步延迟等间接影响。",
+      "basis_ids": []
+    }
+  ],
+  "peak_gpu_gib": 21.133024215698242,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e220",
+      "e221",
+      "e222",
+      "e223",
+      "e224",
+      "e225",
+      "e226",
+      "e227",
+      "e228",
+      "e229",
+      "e230",
+      "e231",
+      "e232",
+      "e233",
+      "e234",
+      "e235",
+      "e236",
+      "e237",
+      "e238",
+      "e239",
+      "e240",
+      "e241",
+      "e242",
+      "e243",
+      "e244",
+      "e245",
+      "e246",
+      "e247",
+      "e248",
+      "e249",
+      "e250",
+      "e251"
+    ],
+    "notes": "保留所有涉及候选组件（IG, MG, Tomcat, docker）间实际父子调用匹配的观测。这些边直接反映服务依赖关系及延迟传播（P95/Max值异常），是区分资源故障与调用链问题的关键证据。e209-e219为业务统计，未提供组件级调用细节，故拒绝。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 43
+  }
+}

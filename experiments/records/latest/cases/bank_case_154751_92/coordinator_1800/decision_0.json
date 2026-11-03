@@ -1,0 +1,72 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "apache01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "发现 ServiceTest 业务返回 502 错误，且 apache01 有 502 日志。但 apache01 资源指标未加载，无法确认是否因磁盘 I/O 过高导致。需补查磁盘指标以确认根因。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 是服务依赖，其磁盘 I/O 过高可能导致上游 Tomcat/apache 超时或 502。但 Mysql01 磁盘指标未加载，且 Tomcat 仅有个别长调用，需确认 Mysql 磁盘状态及具体故障时间。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:apache01",
+        "start": "23:30:00.000",
+        "end": "00:00:00.000",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "DISK",
+          "IO"
+        ],
+        "focus": "确认 apache01 是否有磁盘 I/O 相关的指标可用，以排查 502 错误是否由磁盘过载引起。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "23:30:00.000",
+        "end": "00:00:00.000",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "DISK",
+          "IO"
+        ],
+        "focus": "确认 Mysql01 是否有磁盘 I/O 相关的指标可用，以排查数据库是否因磁盘过载导致上游服务失败。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17695,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 70,
+        "available_facts": 371
+      }
+    }
+  ],
+  "labels_used": false
+}

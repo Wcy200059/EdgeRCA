@@ -1,0 +1,84 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat04",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat04 网络包计数有剧烈波动，但未确认 CPU 高负载证据。需补查 CPU 指标及父子调用链，确认是否因计算导致网络风暴或反之。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 磁盘 I/O 有触发记录，但数值含义不明且无持续高负载证据。需补查具体 I/O 数值趋势及数据库连接状态，确认是否引发业务阻塞。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat04",
+        "start": "02:30:00.000",
+        "end": "03:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认 Tomcat04 在 02:30-03:00 期间是否存在 CPU 使用率持续升高或达到阈值，以验证高 CPU 是否为根因。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "02:30:00.000",
+        "end": "03:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdc_DSKTps",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdc_DSKReadBps"
+        ],
+        "focus": "获取 Mysql01 磁盘每秒读写吞吐量具体数值，判断 e116 中的波动是否构成持续的高 I/O 负载。",
+        "basis_ids": [
+          "e116"
+        ]
+      },
+      {
+        "node_id": "device:apache01",
+        "start": "02:30:00.000",
+        "end": "03:00:00.000",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "查看 apache01 的调用链详情，确认是否存在长调用或异常调用模式，以排查是否由上游或下游问题引发。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17604,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 44,
+        "available_facts": 297
+      }
+    }
+  ],
+  "labels_used": false
+}

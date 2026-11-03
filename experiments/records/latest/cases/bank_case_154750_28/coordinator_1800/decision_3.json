@@ -1,0 +1,108 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": "15:09:00.000",
+        "time_evidence_id": "e300",
+        "support_ids": [
+          "e300",
+          "e268",
+          "e269",
+          "e270",
+          "e271",
+          "e272",
+          "e273",
+          "e274",
+          "e275"
+        ],
+        "counter_ids": [],
+        "explanation": "e300 显示 IG01 在 15:09 达到 CPU 峰值 29.96%。e268-275 显示 IG01 到所有 Tomcat 节点的调用 P95 均在 3000ms+，且最大值普遍超过 11000ms。高 CPU 导致调度延迟或线程阻塞，引发下游长调用，符合双故障中第一起（15:09）的特征。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "需确认 Mysql01 磁盘读取指标是否存在高峰。当前仅知 e302 报告了缺失的磁盘指标，且 e256 显示 dockerB2 有长调用（可能受数据库影响），但缺乏直接的 I/O 饱和证据或时间戳，无法确定第二起故障的具体时间和根因。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk space usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "需确认 Mysql01 磁盘空间使用率。当前无相关指标观测，无法判断是否因磁盘满导致服务不可用或 I/O 阻塞，需补查磁盘空间指标。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "15:00:00",
+        "end": "15:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Mysql-MySQL_3306_DiskReads",
+          "Mysql-MySQL_3306_DiskReadsRate"
+        ],
+        "focus": "直接获取 Mysql01 的磁盘读取量和速率指标，验证是否存在 I/O 饱和导致第二起故障。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "15:00:00",
+        "end": "15:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Mysql-MySQL_3306_DiskSpaceUsed"
+        ],
+        "focus": "检查 Mysql01 磁盘空间使用率，排除磁盘空间耗尽导致的故障可能性。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:dockerB2",
+        "start": "15:00:00",
+        "end": "15:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc",
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "结合 e256 的长调用记录，检查 dockerB2 的内存和 CPU 使用情况，确认是否存在资源耗尽导致的调用超时，辅助判断第二起故障根因。",
+        "basis_ids": [
+          "e256"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17759,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 46,
+        "available_facts": 293
+      }
+    }
+  ],
+  "labels_used": false
+}

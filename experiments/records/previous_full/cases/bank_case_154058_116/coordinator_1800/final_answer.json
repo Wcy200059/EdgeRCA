@@ -1,0 +1,26 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Mysql01",
+        "reason": "high disk space usage",
+        "time": "01:32:00.000",
+        "evidence_ids": [
+          "e15",
+          "e16"
+        ],
+        "explanation": "Mysql01在01:32:00出现Binlog Cache Disk Use瞬间飙升至59%（e16），同时Aborted Connects在同一时刻达到峰值37915（e15）。磁盘空间耗尽直接导致连接被拒绝，其他节点波动时间较晚且幅度较小，故Mysql01磁盘故障为根因。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1616436000000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1"
+}

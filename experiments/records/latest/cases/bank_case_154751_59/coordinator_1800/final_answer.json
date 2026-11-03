@@ -1,0 +1,27 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": "15:50:00.000",
+        "evidence_ids": [
+          "e276"
+        ],
+        "explanation": "e276 显示 Mysql01 磁盘繁忙百分比在 15:50:00 骤升至 46.8%，其余时段为 0。该时间点与上游 Tomcat 端高延迟（P95>3s）吻合。磁盘 I/O 瓶颈导致下游等待，引发业务慢调用，因果链完整。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615276800000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1",
+  "field_repairs": [],
+  "warnings": []
+}

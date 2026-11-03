@@ -1,0 +1,36 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "apache02",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "16:29:07.000",
+        "evidence_ids": [
+          "e228"
+        ],
+        "explanation": "e228 证实 apache02 在 16:29:07 密集返回 502 错误，表明服务不可用。虽 e306 内存指标无当前值，但服务失败是故障现象，结合候选假设中该节点被标记为 supported，确认为根因。"
+      },
+      {
+        "component": "Tomcat04",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "16:13:42.000",
+        "evidence_ids": [
+          "e208"
+        ],
+        "explanation": "e208 证实 Tomcat04 在 16:13:42 返回 500 错误。500 错误通常指向应用内部故障（如 OOM）而非单纯网络延迟（e27 仅显示延迟）。虽 e307/e309 缺失直接内存数值，但相比网络假设，内部故障证据更强。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615105800000,
+  "model_judgment_verified": false,
+  "expected_failures": 2,
+  "answer_schema": "faults_v1",
+  "field_repairs": [],
+  "warnings": []
+}

@@ -1,0 +1,113 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "现有证据e300仅显示Tomcat01 OS CPU利用率稳定在27%左右，无高负载迹象。e301缺失JVM内存指标。虽有长调用e26，但无法区分是Tomcat处理慢还是上游IG01或网络问题。需补查Tomcat01 JVM CPU及内存具体数值。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e158显示Tomcat02 OS CPU在15:02曾达100%，但e268-e273仅显示调用连接，未证实Tomcat02自身JVM资源耗尽。需补查Tomcat02 JVM指标以确认是否因高CPU或OOM导致延迟。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e13显示IG01存在长调用（13s），且e268-e271显示IG01到各Tomcat的P95延迟极高（~3s）。但e1未提供IG01 CPU具体数值。需补查IG01 CPU使用率，确认是否因计算过载导致无法及时处理请求。"
+      },
+      {
+        "id": "h4",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e75显示Mysql01 trace缺失，e72显示Bytes Received有波动。Tomcat频繁调用数据库，可能存在I/O瓶颈。但无直接磁盘I/O证据。需补查Mysql01磁盘读取指标。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "15:00:00",
+        "end": "15:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Tomcat-MEMORY_7441-MEMORY_JVMMaxMemory",
+          "Tomcat-MEMORY_7441-MEMORY_JVMMemoryUsedPercent"
+        ],
+        "focus": "获取Tomcat01的JVM最大内存和已用内存百分比，确认是否存在内存耗尽或频繁GC导致的性能下降。",
+        "basis_ids": [
+          "e301"
+        ]
+      },
+      {
+        "node_id": "device:IG01",
+        "start": "15:00:00",
+        "end": "15:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "获取IG01的CPU使用率，确认是否存在高CPU负载导致其无法及时处理上游请求，从而引发下游Tomcat延迟。",
+        "basis_ids": [
+          "e13"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "basis_ids must use e IDs from current evidence",
+      "rejected_sections": [
+        {
+          "section": "requests",
+          "index": 2,
+          "item": {
+            "node_id": "device:Mysql01",
+            "start": "15:00:00",
+            "end": "15:30:00",
+            "tools": [
+              "get_metrics"
+            ],
+            "metrics": [
+              "Mysql-MySQL_3306_IO Read Bytes"
+            ],
+            "focus": "获取Mysql01的磁盘读取字节数，确认是否存在高磁盘I/O导致数据库响应变慢，进而影响Tomcat。",
+            "basis_ids": [
+              "e72"
+            ]
+          },
+          "error": "basis_ids must use e IDs from current evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

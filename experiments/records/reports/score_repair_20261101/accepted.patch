@@ -1,0 +1,524 @@
+--- a/edge_rca/case_runtime.py
++++ b/edge_rca/case_runtime.py
+@@ -19,7 +19,7 @@
+ from .alerts import AlertEngine
+ from .bank_context import public_bank_context
+ from .coordination import ask, make_view, model_input
+-from .coordinator import occurrence_ms
++from .coordinator import matches_time_mark, occurrence_ms
+ from .data import format_time
+ from .followup import NodeRequestBroker, request_data_key, request_key
+ from .investigation import FixedSOP
+@@ -583,10 +583,11 @@
+             if not isinstance(fault["time"], str):
+                 raise ValueError("time must be a cited time_mark or null")
+             occurrence_ms(fault["time"], view["window_start_ms"], view["cutoff_ms"])
+-            if not any(fault["time"] in refs[i]["time_marks"] for i in ids):
++            if not any(matches_time_mark(fault["time"], refs[i]["time_marks"],
++                                        view["window_start_ms"], view["cutoff_ms"]) for i in ids):
+                 raise ValueError("time must match this fault's cited time_mark, otherwise null")
+-        if not isinstance(fault["explanation"], str) or not 1 <= len(fault["explanation"]) <= 220:
+-            raise ValueError("each explanation must contain 1..220 characters")
++        if not isinstance(fault["explanation"], str) or not fault["explanation"].strip():
++            raise ValueError("each explanation must be a nonempty string")
+         identity = tuple(fault[k] for k in ("component", "reason", "time"))
+         if any(v is not None for v in identity):
+             if identity in seen:
+@@ -638,6 +639,69 @@
+             ("component", "reason", "time", "evidence_ids", "explanation")}
+ 
+ 
++def retain_valid_fields_with_unknown_time(value, view, expected_failures):
++    """After retries, remove unsupported times without inventing other fields."""
++    candidate = deepcopy(value)
++    if not isinstance(candidate, dict) or set(candidate) != {"faults"} or not isinstance(candidate["faults"], list):
++        raise ValueError("partial recovery requires a faults object")
++    refs = {fact["id"]: fact for fact in view["evidence"]}
++    repairs = []
++    for index, fault in enumerate(candidate["faults"]):
++        if not isinstance(fault, dict):
++            raise ValueError("partial recovery requires fault objects")
++        when = fault.get("time")
++        if when is None:
++            continue
++        if not isinstance(when, str):
++            raise ValueError("partial recovery requires a string time or null")
++        ids = fault.get("evidence_ids")
++        if (not isinstance(ids, list) or not ids
++                or any(not isinstance(identifier, str) or identifier not in refs for identifier in ids)):
++            raise ValueError("partial recovery cannot invent or replace citations")
++        try:
++            matched = any(matches_time_mark(
++                when, refs[identifier]["time_marks"], view["window_start_ms"], view["cutoff_ms"]) for identifier in ids)
++        except (ValueError, TypeError):
++            matched = False
++        if not matched:
++            repairs.append({"fault_index": index, "field": "time", "original_value": when,
++                            "new_value": None, "reason": "No matching currently displayed timestamp in this fault's cited evidence."})
++            fault["time"] = None
++    if not repairs:
++        raise ValueError("no unsupported time fields to remove")
++    validate_final_answers(candidate, view, expected_failures)
++    return candidate, repairs
++
++
++def register_displayed_briefs(view, candidates, original_refs):
++    """Register only source excerpts and times actually rendered in the system prompt.
++
++    The existing final prompt contains candidate evidence excerpts in addition
++    to the paged user payload. Packing may evict their user-payload copies;
++    that does not erase the literal excerpts still visible to the model.
++    No other field, timestamp or historical citation becomes loaded here.
++    """
++    visible = deepcopy(view)
++    refs = {fact["id"]: fact for fact in visible["evidence"]}
++    registered = []
++    for candidate in candidates:
++        for brief in candidate["evidence_brief"]:
++            identifier = brief["id"]
++            source = original_refs[identifier]
++            if identifier not in refs:
++                fact = {"id": identifier, "node_id": source.get("node_id"),
++                        "tool_fact": brief["fact"], "time_marks": list(brief["times"]),
++                        "display_origin": "final_system_evidence_brief"}
++                visible["evidence"].append(fact)
++                refs[identifier] = fact
++            else:
++                refs[identifier]["time_marks"] = list(dict.fromkeys(
++                    [*refs[identifier]["time_marks"], *brief["times"]]))
++            registered.append({"id": identifier, "fact": brief["fact"], "times": brief["times"]})
++    visible["displayed_system_briefs"] = registered
++    return visible
++
++
+ def final_answer(model, view, instruction, output, *, max_candidates=1):
+     if isinstance(max_candidates, bool) or max_candidates not in (1, 2, 3):
+         raise ValueError("max_candidates must be 1, 2 or 3")
+@@ -648,7 +712,6 @@
+     if max_candidates > 1:
+         from .ranked_answers import INSTRUCTION
+         constraint += INSTRUCTION + f"\n本次含首选最多{max_candidates}组候选，最多{max_candidates - 1}组备选。"
+-    seeds = supported_fault_seeds(view, count or 1)
+     # Do not privilege "supported" slots in the final prompt: the 9B's own
+     # earlier assessment can be wrong (row 1 marked Redis02 unresolved while
+     # choosing Mysql02). Show every evidence-backed hypothesis equally; the
+@@ -671,11 +734,17 @@
+         constraint += ("\n以下是依据当前证据形成的全部候选，不是答案，也不能按assessment或出现顺序选；"
+                        "请逐项比较直接证据、时间、反证和业务/调用影响后再输出："
+                        + json.dumps(candidates, ensure_ascii=False))
++    archive_view = deepcopy(view)
+     base, view = model_input(model, view, FINAL_SYSTEM + constraint, output_tokens, instruction)
++    view = register_displayed_briefs(view, candidates, refs)
++    seeds = supported_fault_seeds(view, count or 1)
++    save(output / "final_input.json", {"view": view, "labels_used": False})
+     prompt, attempts, result, alternatives = deepcopy(base), [], None, []
++    parsed_replies, field_repairs = [], []
+     for attempt in range(2):
+         try:
+             value = decode_object(model.invoke(prompt, None, output_tokens, f"final_commit/{attempt}"))
++            parsed_replies.append(deepcopy(value))
+             if max_candidates > 1:
+                 if not isinstance(value, dict) or set(value) - {"faults", "alternatives"}:
+                     raise ValueError("ranked output permits faults and alternatives only")
+@@ -685,6 +754,30 @@
+                 result = validate_final_answers(value, view, count)
+         except (ValueError, KeyError, TypeError) as error:
+             attempts.append({"valid": False, "error": str(error)})
++            if attempt == 0 and parsed_replies:
++                # A stale citation can name a real fact evicted by packing.
++                # Load at most three existing pages before the already-budgeted
++                # retry. Never fabricate an ID or query a different case/window.
++                loaded = {fact["id"] for fact in view["evidence"]}
++                parsed = parsed_replies[-1]
++                faults = parsed.get("faults", []) if isinstance(parsed, dict) else []
++                missing = []
++                for fault in faults if isinstance(faults, list) else []:
++                    ids = fault.get("evidence_ids", []) if isinstance(fault, dict) else []
++                    for identifier in ids if isinstance(ids, list) else []:
++                        if (isinstance(identifier, str) and identifier in refs
++                                and identifier not in loaded and identifier not in missing):
++                            missing.append(identifier)
++                if missing:
++                    requested = archive_view.get("requested_pages", [])
++                    archive_view["requested_pages"] = list(dict.fromkeys(
++                        [*requested, *(identifier + ":0" for identifier in missing[:3])]))
++                    base, view = model_input(model, archive_view, FINAL_SYSTEM + constraint, output_tokens, instruction)
++                    view = register_displayed_briefs(view, candidates, refs)
++                    seeds = supported_fault_seeds(view, count or 1)
++                    attempts[-1]["requested_existing_evidence"] = missing[:3]
++                    attempts[-1]["note"] = "重新加载本题已有证据页；是否支持原结论仍须核对。"
++                    save(output / "final_input.json", {"view": view, "labels_used": False})
+             prompt = deepcopy(base)
+             prompt[-1]["content"] += "\n请修正：" + str(error)
+             continue
+@@ -712,9 +805,21 @@
+             except (ValueError, KeyError, TypeError) as error:
+                 result = None
+                 attempts.append({"valid": False, "source": "merged_supported_seed", "error": str(error)})
++    if result is None and max_candidates == 1:
++        for parsed in reversed(parsed_replies):
++            try:
++                result, field_repairs = retain_valid_fields_with_unknown_time(parsed, view, count)
++            except (ValueError, KeyError, TypeError):
++                continue
++            attempts.append({"valid": True, "source": "retained_fields_with_unknown_time"})
++            break
+     save(output / "final_answer.json", {"reply": result, "attempts": attempts, "labels_used": False,
+          "cutoff_ms": view["cutoff_ms"], "model_judgment_verified": False,
+-         "expected_failures": count, "answer_schema": "faults_v1"})
++         "expected_failures": count, "answer_schema": "faults_v1", "field_repairs": field_repairs,
++         "warnings": [{"fault_index": index, "kind": "explanation_length",
++                       "characters": len(fault["explanation"]), "requested_maximum": 220}
++                      for index, fault in enumerate(result["faults"] if result else [])
++                      if len(fault["explanation"]) > 220]})
+     predictions = []
+     for fault in (result["faults"] if result else [None] * (count or 1)):
+         prediction = {"root cause occurrence datetime": "", "root cause component": "", "root cause reason": ""}
+--- a/edge_rca/coordination.py
++++ b/edge_rca/coordination.py
+@@ -9,7 +9,7 @@
+ import math
+ 
+ from .compact_tools import _when
+-from .coordinator import make_packet, occurrence_ms
++from .coordinator import make_packet, matches_time_mark, occurrence_ms
+ from .node_probe import decode_object
+ from .note_audit import review_note
+ 
+@@ -471,7 +471,8 @@
+         else:
+             occurrence_ms(h["time"], view["window_start_ms"], view["cutoff_ms"])
+             source = h["time_evidence_id"]
+-            if source not in h["support_ids"] or h["time"] not in refs[source]["time_marks"]:
++            if source not in h["support_ids"] or not matches_time_mark(
++                    h["time"], refs[source]["time_marks"], view["window_start_ms"], view["cutoff_ms"]):
+                 raise ValueError(f"{h['id']}: time {h['time']} requires {source} in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown")
+         text(h["explanation"], 320)
+     if not isinstance(reply["requests"], list) or len(reply["requests"]) > 3:
+--- a/edge_rca/coordinator.py
++++ b/edge_rca/coordinator.py
+@@ -108,6 +108,12 @@
+     raise ValueError("time outside currently visible window")
+ 
+ 
++def matches_time_mark(text: str, marks: list[str], start_ms: int, cutoff_ms: int) -> bool:
++    """Compare observed instants exactly, independent of fractional spelling."""
++    at = occurrence_ms(text, start_ms, cutoff_ms)
++    return at is not None and any(occurrence_ms(mark, start_ms, cutoff_ms) == at for mark in marks)
++
++
+ def validate(reply, packet):
+     if not isinstance(reply, dict) or set(reply) != {"hypotheses", "questions"}:
+         raise ValueError("reply needs hypotheses and questions")
+--- a/edge_rca/evidence_digest.py
++++ b/edge_rca/evidence_digest.py
+@@ -113,8 +113,11 @@
+     if page is None:
+         content = {"subject": subject(fact), "observations": compact(raw), "detail_pages": len(pages)}
+     else:
+-        content = {"subject": subject(fact), "detail_page": page, "detail_pages": len(pages),
+-                   "leaves": pages[page], "note": "path是原字段路径，数组下标从0开始；本页只展示部分详情，其他页未加载。"}
++        selected = list(page) if isinstance(page, (list, tuple)) else [page]
++        content = {"subject": subject(fact), "detail_page": selected[-1], "detail_pages": len(pages),
++                   "loaded_pages": selected,
++                   "leaves": [leaf for number in selected for leaf in pages[number]],
++                   "note": "path是原字段路径，数组下标从0开始；仅所列详情页已加载，其他页未加载。"}
+     value["tool_fact"] = dumps(content)
+     # A timestamp hidden on another page cannot be used as a visible citation.
+     value["time_marks"] = [t for t in fact.get("time_marks", []) if t in value["tool_fact"]]
+--- a/edge_rca/evidence_memory.py
++++ b/edge_rca/evidence_memory.py
+@@ -1,5 +1,6 @@
+ """Fit a revisitable working set, not an ever-growing concatenated transcript."""
+ 
++from collections import Counter
+ from copy import deepcopy
+ import math
+ 
+@@ -13,8 +14,9 @@
+     return {f["id"]: len(detail_pages(source_value(f))) for f in view["evidence"]}
+ 
+ 
+-def validate_page_requests(requests, view):
+-    if not isinstance(requests, list) or len(requests) > 3 or any(not isinstance(r, str) for r in requests):
++def validate_page_requests(requests, view, *, max_requests=3):
++    if (not isinstance(requests, list) or (max_requests is not None and len(requests) > max_requests)
++            or any(not isinstance(r, str) for r in requests)):
+         raise ValueError("read_pages must contain at most 3 page names")
+     if len(requests) != len(set(requests)):
+         raise ValueError("read_pages must not repeat a page")
+@@ -69,9 +71,14 @@
+     visible["evidence_page_index"] = index
+     visible["directory_pages"] = directory_pages
+     requested = list(view.get("requested_pages", []))
+-    validate_page_requests(requested, visible)
++    # Per-round requests remain limited to three; accepted pages accumulate.
++    validate_page_requests(requested, visible, max_requests=None)
+     cursor = next((int(r.split(":")[1]) for r in reversed(requested) if r.startswith("directory:")), 0)
+-    pages = {r.split(":")[0]: int(r.split(":")[1]) for r in requested if not r.startswith("directory:")}
++    pages = {}
++    for request in requested:
++        identifier, number = request.split(":")
++        if identifier != "directory":
++            pages.setdefault(identifier, []).append(int(number))
+     shown = [fact_overview(f, pages.get(f["id"])) for f in view["evidence"]
+              if f.get("initial_display", True) or f["id"] in pages]
+     cited = set()
+@@ -162,9 +169,13 @@
+                                        "loaded_facts": len(shown), "available_facts": len(original)}
+             return prompt, visible
+         if shown:
+-            # Requested pages outrank prior citations, which outrank the normal
+-            # working set. Nothing is pinned forever; every eviction is visible.
+-            victim = min(shown, key=lambda f: (f["id"] in pages, f["id"] in cited,
++            # Preserve cross-node coverage before giving one node many extra
++            # citations. Ties previously erased early nodes wholesale. An
++            # explicit page request still has highest priority; if even one
++            # fact per node cannot fit, ordinary eviction remains possible.
++            per_node = Counter(fact["node_id"] for fact in shown)
++            victim = min(shown, key=lambda f: (f["id"] in pages,
++                per_node[f["node_id"]] == 1, f["id"] in cited,
+                 original[f["id"]].get("origin") == "followup", original[f["id"]].get("protected", False)))
+             shown.remove(victim)
+         elif not short_metadata:
+--- a/tests/test_evidence_memory.py
++++ b/tests/test_evidence_memory.py
+@@ -3,6 +3,7 @@
+ import json
+ import unittest
+ 
++from edge_rca.evidence_digest import detail_pages
+ from edge_rca.evidence_memory import fit, validate_page_requests
+ 
+ 
+@@ -37,6 +38,41 @@
+ 
+ 
+ class EvidenceMemoryTests(unittest.TestCase):
++    def test_accumulated_pages_preserve_earlier_details(self):
++        expanded = fact("e1")
++        expanded["detail_fields"] = {"samples": [{"time": f"18:{i:02d}:00.000", "text": "x" * 250}
++                                                 for i in range(20)]}
++        parts = detail_pages(expanded["detail_fields"])
++        self.assertGreater(len(parts), 1)
++        base = view([expanded, fact("e2", high=99), fact("e3", high=100)],
++                    requested=["e1:0", "e1:1", "e2:0", "e3:0"])
++        model = CountModel()
++        model.max_context = 20000
++        prompt, _ = fit(model, base, "system", 100)
++        payload = json.loads(prompt[1]["content"])
++        shown = json.loads(next(row[2] for row in payload["evidence"] if row[0] == "e1"))
++        self.assertEqual(shown["loaded_pages"], [0, 1])
++        self.assertEqual(shown["leaves"], parts[0] + parts[1])
++        with self.assertRaises(ValueError):
++            validate_page_requests(base["requested_pages"],
++                                   {"evidence_page_index": {"e1": len(parts), "e2": 1, "e3": 1}})
++
++    def test_packing_keeps_a_second_node_before_duplicate_node_coverage(self):
++        class TwoFactModel(CountModel):
++            max_context = 2000
++
++            def count_input_tokens(self, prompt):
++                return 2000 if len(json.loads(prompt[1]["content"])["evidence"]) > 2 else 10
++
++        first = fact("e1", node="device:MG01")
++        second = fact("e2", node="device:Mysql01", high=90)
++        third = fact("e3", node="device:Mysql01", high=91)
++        prompt, visible = fit(TwoFactModel(), view([first, second, third]), "system", 200)
++        self.assertEqual({item["node_id"] for item in visible["evidence"]},
++                         {"device:MG01", "device:Mysql01"})
++        self.assertEqual(len(visible["evidence"]), 2)
++        self.assertEqual(len(json.loads(prompt[1]["content"])["evidence"]), 2)
++
+     def test_v2_loaded_counts_follow_actual_display_not_the_full_archive(self):
+         hidden = fact("e2", high=99)
+         hidden["initial_display"] = False
+--- a/tests/test_final_context.py
++++ b/tests/test_final_context.py
+@@ -0,0 +1,65 @@
++"""The validator must agree with the exact evidence shown in both messages."""
++from copy import deepcopy
++import json
++from pathlib import Path
++import tempfile
++import unittest
++from unittest.mock import patch
++
++from edge_rca.bank_context import public_bank_context
++from edge_rca.case_runtime import final_answer, register_displayed_briefs, validate_final_answers
++
++
++START = 1614852000000
++
++
++class FinalContextTests(unittest.TestCase):
++    def setUp(self):
++        self.view = {"window_start_ms": START, "cutoff_ms": START + 1800000,
++                     "system_context": public_bank_context(), "evidence": []}
++        self.refs = {"e1": {"id": "e1", "node_id": "device:MG01", "tool_fact": "visible prefix; hidden tail",
++                            "time_marks": ["18:05:00", "18:06:00"]},
++                     "e2": {"id": "e2", "node_id": "device:MG01", "tool_fact": "not shown",
++                            "time_marks": ["18:07:00"]}}
++        self.candidates = [{"evidence_brief": [{"id": "e1", "fact": "visible prefix", "times": ["18:05:00"]}]}]
++        self.fault = {"component": "MG01", "reason": "high CPU usage", "time": "18:05:00.000",
++                      "evidence_ids": ["e1"], "explanation": "基于当前可见证据。"}
++
++    def test_only_literal_brief_and_displayed_times_are_registered(self):
++        shown = register_displayed_briefs(self.view, self.candidates, self.refs)
++        self.assertEqual(shown["evidence"][0]["tool_fact"], "visible prefix")
++        self.assertEqual(shown["evidence"][0]["time_marks"], ["18:05:00"])
++        self.assertEqual(len(shown["evidence"]), 1)
++        validate_final_answers({"faults": [self.fault]}, shown, 1)
++        for time, ids in (("18:06:00", ["e1"]), ("18:07:00", ["e2"]), ("18:05:00.001", ["e1"])):
++            with self.subTest(time=time, ids=ids), self.assertRaises(ValueError):
++                validate_final_answers({"faults": [{**self.fault, "time": time, "evidence_ids": ids}]}, shown, 1)
++        self.assertEqual(self.view["evidence"], [])
++        self.assertEqual(self.refs["e1"]["time_marks"], ["18:05:00", "18:06:00"])
++
++    def test_final_validator_accepts_a_brief_still_present_after_user_payload_eviction(self):
++        base = deepcopy(self.view)
++        base["evidence"] = list(self.refs.values())
++        base["previous_hypotheses"] = [{"component": "MG01", "reason": "high CPU usage",
++            "support_ids": ["e1"], "assessment": "unresolved", "time": None, "explanation": "待复核。"}]
++
++        class Model:
++            def invoke(model, messages, *args):
++                self.assertIn('"id": "e1"', messages[0]["content"])
++                self.assertNotIn("e2", messages[0]["content"])
++                return json.dumps({"faults": [self.fault]})
++
++        def pack(model, full, system, budget, question):
++            return [{"role": "system", "content": system}, {"role": "user", "content": "empty working set"}], deepcopy(self.view)
++
++        with tempfile.TemporaryDirectory() as directory, patch("edge_rca.case_runtime.model_input", pack):
++            result = final_answer(Model(), base, "A single failure occurred.", Path(directory))
++            self.assertIsNotNone(result)
++            visible = json.loads((Path(directory) / "final_input.json").read_text())["view"]
++            self.assertEqual([e["id"] for e in visible["evidence"]], ["e1"])
++
++    def test_long_explanation_does_not_discard_otherwise_valid_fields(self):
++        shown = register_displayed_briefs(self.view, self.candidates, self.refs)
++        validate_final_answers({"faults": [{**self.fault, "explanation": "完整说明。" * 60}]}, shown, 1)
++        with self.assertRaises(ValueError):
++            validate_final_answers({"faults": [{**self.fault, "explanation": "  "}]}, shown, 1)
+--- a/tests/test_final_reload.py
++++ b/tests/test_final_reload.py
+@@ -0,0 +1,55 @@
++"""A repair may reload a known archived fact, never invent missing evidence."""
++from copy import deepcopy
++import json
++from pathlib import Path
++import tempfile
++import unittest
++from unittest.mock import patch
++
++from edge_rca.bank_context import public_bank_context
++from edge_rca.case_runtime import final_answer
++
++
++class FinalReloadTests(unittest.TestCase):
++    def check_reload(self, identifier):
++        archive = {"window_start_ms": 1614852000000, "cutoff_ms": 1614853800000,
++                   "system_context": public_bank_context(), "previous_hypotheses": [],
++                   "evidence": [{"id": "e1", "node_id": "device:MG01", "tool_fact": "本题已保存的观测",
++                                 "time_marks": ["18:05:00"]}]}
++        packing = []
++
++        def pack(model, full, system, budget, question):
++            packing.append(deepcopy(full.get("requested_pages", [])))
++            visible = deepcopy(full)
++            visible["evidence"] = full["evidence"] if "e1:0" in full.get("requested_pages", []) else []
++            return [{"role": "system", "content": system}, {"role": "user", "content": json.dumps(visible)}], visible
++
++        class Model:
++            calls = 0
++
++            def invoke(model, messages, *args):
++                model.calls += 1
++                if model.calls == 2 and identifier == "e1":
++                    self.assertIn("本题已保存的观测", json.loads(messages[1]["content"].split("\n请修正：")[0])["evidence"][0]["tool_fact"])
++                return json.dumps({"faults": [{"component": "MG01", "reason": "high CPU usage",
++                    "time": "18:05:00", "evidence_ids": [identifier], "explanation": "依据所引用的观测。"}]})
++
++        model = Model()
++        with tempfile.TemporaryDirectory() as directory, patch("edge_rca.case_runtime.model_input", pack):
++            result = final_answer(model, archive, "A single failure occurred.", Path(directory))
++            audit = json.loads((Path(directory) / "final_answer.json").read_text())
++        self.assertEqual(model.calls, 2)
++        self.assertNotIn("requested_pages", archive)
++        return result, audit, packing
++
++    def test_known_evicted_evidence_is_loaded_for_the_existing_retry(self):
++        result, audit, packing = self.check_reload("e1")
++        self.assertIsNotNone(result)
++        self.assertEqual(packing, [[], ["e1:0"]])
++        self.assertEqual(audit["attempts"][0]["requested_existing_evidence"], ["e1"])
++
++    def test_unknown_id_is_never_fabricated_or_requested(self):
++        result, audit, packing = self.check_reload("e999")
++        self.assertIsNone(result)
++        self.assertEqual(packing, [[]])
++        self.assertNotIn("requested_existing_evidence", audit["attempts"][0])
+--- a/tests/test_partial_final.py
++++ b/tests/test_partial_final.py
+@@ -0,0 +1,60 @@
++"""Unsupported time must remain unknown while independent valid fields survive."""
++from copy import deepcopy
++import json
++from pathlib import Path
++import tempfile
++import unittest
++
++from edge_rca.bank_context import public_bank_context
++from edge_rca.case_runtime import final_answer, retain_valid_fields_with_unknown_time
++
++
++class PartialFinalTests(unittest.TestCase):
++    def setUp(self):
++        self.view = {"window_start_ms": 1614852000000, "cutoff_ms": 1614853800000,
++                     "system_context": public_bank_context(),
++                     "evidence": [{"id": "e1", "time_marks": ["18:05:00"]}]}
++        self.fault = {"component": "MG01", "reason": "high CPU usage", "time": "18:06:00",
++                      "evidence_ids": ["e1"], "explanation": "模型原始解释。"}
++
++    def test_only_unsupported_time_changes_to_null(self):
++        raw = {"faults": [deepcopy(self.fault)]}
++        result, changes = retain_valid_fields_with_unknown_time(raw, self.view, 1)
++        self.assertEqual(result["faults"][0], {**self.fault, "time": None})
++        self.assertEqual(changes[0]["original_value"], "18:06:00")
++        self.assertEqual(raw["faults"][0]["time"], "18:06:00")
++
++    def test_foreign_evidence_invalid_component_and_wrong_fault_count_still_fail(self):
++        for changes in ({"evidence_ids": ["e999"]}, {"evidence_ids": []},
++                        {"component": "invented"}, {"reason": "invented"}, {"explanation": ""},
++                        {"time": 180500}, {"time": float("nan")}):
++            with self.subTest(changes=changes), self.assertRaises(ValueError):
++                retain_valid_fields_with_unknown_time({"faults": [{**self.fault, **changes}]}, self.view, 1)
++        with self.assertRaises(ValueError):
++            retain_valid_fields_with_unknown_time({"faults": [self.fault]}, self.view, 2)
++
++    def test_valid_time_on_other_fault_is_preserved(self):
++        second = {**self.fault, "component": "MG02", "time": "18:05:00.000"}
++        result, changes = retain_valid_fields_with_unknown_time({"faults": [self.fault, second]}, self.view, 2)
++        self.assertEqual(result["faults"][1], second)
++        self.assertEqual([change["fault_index"] for change in changes], [0])
++
++    def test_retries_happen_before_partial_recovery_and_audit_is_saved(self):
++        fault = self.fault
++
++        class Model:
++            calls = 0
++
++            def invoke(model, *args):
++                model.calls += 1
++                return json.dumps({"faults": [fault]})
++
++        model = Model()
++        with tempfile.TemporaryDirectory() as directory:
++            output = Path(directory)
++            result = final_answer(model, self.view, "A single failure occurred.", output)
++            saved = json.loads((output / "final_answer.json").read_text())
++            self.assertIsNone(result["faults"][0]["time"])
++            self.assertEqual(model.calls, 2)
++            self.assertEqual(saved["attempts"][-1]["source"], "retained_fields_with_unknown_time")
++            self.assertEqual(saved["field_repairs"][0]["field"], "time")

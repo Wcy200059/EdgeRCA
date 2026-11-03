@@ -1,0 +1,169 @@
+{
+  "case_id": "6c578584687eb930",
+  "cutoff_ms": 1614859200000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 254
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 257
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 260
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 263
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Tomcat02",
+      "start": "19:40:00.000",
+      "end": "19:50:00.000",
+      "tools": [
+        "get_metrics",
+        "get_logs"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc",
+        "JVM-Memory_7778_JVM_Memory_HeapMemoryUsed"
+      ],
+      "focus": "核实 Tomcat02 在 19:42-19:50 期间内存使用率是否爆满及是否存在 GC 暂停，确认是否为 OOM 根因。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Tomcat02",
+      "start": "19:30:00.000",
+      "end": "20:00:00.000",
+      "tools": [
+        "get_metrics",
+        "get_logs"
+      ],
+      "metrics": [
+        "JVM-GC_7778_GC_PauseTime"
+      ],
+      "focus": "补查 Tomcat02 全时段 GC 暂停情况，确认是否存在频繁 Full GC 或 OOM Killer 行为。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Tomcat01",
+      "start": "19:30:00.000",
+      "end": "20:00:00.000",
+      "tools": [
+        "get_metrics",
+        "get_logs"
+      ],
+      "metrics": [
+        "JVM-Memory_7778_JVM_Memory_HeapMemoryUsed"
+      ],
+      "focus": "补查 Tomcat01 全时段 Heap 使用情况，确认 19:31 长调用时是否伴随内存爆满。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Tomcat01",
+      "start": "19:30:00.000",
+      "end": "20:00:00.000",
+      "tools": [
+        "get_metrics",
+        "get_logs"
+      ],
+      "metrics": [
+        "JVM-Memory_7778_JVM_Memory_HeapMemoryUsed",
+        "JVM-GC_7778_GC_PauseTime"
+      ],
+      "focus": "核实 Tomcat01 在 19:31 长调用期间是否存在 JVM Heap 内存爆满及伴随的 GC 暂停，确认 OOM 是否为根因。",
+      "basis_ids": [
+        "e269"
+      ]
+    },
+    {
+      "node_id": "device:Tomcat02",
+      "start": "19:40:00",
+      "end": "19:50:00",
+      "tools": [
+        "get_metrics",
+        "get_logs"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKBps"
+      ],
+      "focus": "核实 Tomcat02 所在节点在 19:42-19:48 期间磁盘 I/O 是否确实处于高位，确认是否因磁盘瓶颈导致业务失败。",
+      "basis_ids": [
+        "e126"
+      ]
+    },
+    {
+      "node_id": "device:IG02",
+      "start": "19:30:00",
+      "end": "20:00:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "补查 IG02 的 CPU 使用率趋势，确认其作为上游调用方是否存在资源瓶颈导致下游 Tomcat 压力增大，辅助判断故障根因位置。",
+      "basis_ids": []
+    }
+  ],
+  "peak_gpu_gib": 20.9877028465271,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e234",
+      "e235",
+      "e236",
+      "e237",
+      "e238",
+      "e239",
+      "e240",
+      "e241",
+      "e242",
+      "e243",
+      "e244",
+      "e245",
+      "e246",
+      "e247",
+      "e248",
+      "e249",
+      "e250",
+      "e251",
+      "e252",
+      "e253",
+      "e254",
+      "e255",
+      "e256",
+      "e257",
+      "e258",
+      "e259",
+      "e260",
+      "e261",
+      "e262",
+      "e263",
+      "e264",
+      "e265"
+    ],
+    "notes": "保留所有涉及候选组件（IG, MG, Tomcat, docker）间父子调用的观测。这些边能揭示调用链结构、P95/最大值延迟及时间区间匹配情况，是区分资源故障与传播链的关键。其他业务统计观测（e223-e233）未提供组件关联或异常指标，故拒绝。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 43
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat04",
+        "reason": "high memory usage",
+        "time": "18:00:00",
+        "time_evidence_id": "e250",
+        "support_ids": [
+          "e250"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 内存使用率自窗口开始（18:00:00）即触发规则（e250），且状态为 triggered 直至结束，无解除迹象。该现象与公开候选中的 high memory usage 直接对应。其他节点如 Tomcat01/02/03 虽 CPU 高但未见明确内存持续满负荷证据。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat04",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat04 存在 CPU WIO 波动（e254）及线程忙状态（e253），但未直接观测到 CPU 利用率持续满负荷的指标（如 CPUUtil）。需补查 CPU 使用率确认是否构成根因，或仅为内存压力的伴随现象。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat04",
+        "start": "18:00:00",
+        "end": "18:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPULoad",
+          "OSLinux-CPU_CPU_CPUUtil"
+        ],
+        "focus": "确认 Tomcat04 在窗口期内是否存在持续的 CPU 高负载，以验证或排除高 CPU 作为根因的可能性。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17440,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 38,
+        "available_facts": 275
+      }
+    }
+  ],
+  "labels_used": false
+}

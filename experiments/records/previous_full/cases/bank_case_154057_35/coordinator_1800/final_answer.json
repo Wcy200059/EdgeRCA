@@ -1,0 +1,37 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Tomcat03",
+        "reason": "high JVM CPU load",
+        "time": "16:02:00",
+        "evidence_ids": [
+          "e40",
+          "e41",
+          "e98"
+        ],
+        "explanation": "e40 显示 Tomcat03 从 16:02:00 开始持续触发最大调用时长超限 (max 5234ms > 5000ms)。e41 记录到 36438ms 的极端长调用。e98 虽未直接显示高 CPU 数值，但结合业务现象及候选假设中对该节点的明确指控，且无其他组件有更直接证据，故推断为高 CPU 导致处理延迟。"
+      },
+      {
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": "16:16:00",
+        "evidence_ids": [
+          "e17",
+          "e19"
+        ],
+        "explanation": "e17 显示 Mysql01 CPU 从 16:16:00 开始显著升高 (delta 3.7, ratio 2.58)，并在 16:27:00 达到峰值。e19 显示 Mysql02 也在 16:25:00 触发 CPU 高。虽然无直接磁盘 I/O 指标，但 CPU 升高是磁盘 I/O 瓶颈的典型伴随现象，且早于 Tomcat 的极端延迟爆发，符合根因特征。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615537800000,
+  "model_judgment_verified": false,
+  "expected_failures": 2,
+  "answer_schema": "faults_v1"
+}

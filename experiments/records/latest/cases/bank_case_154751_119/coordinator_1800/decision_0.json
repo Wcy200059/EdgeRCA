@@ -1,0 +1,98 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "apache01",
+        "reason": "high memory usage",
+        "time": "14:22:00.000",
+        "time_evidence_id": "e407",
+        "support_ids": [
+          "e407",
+          "e408",
+          "e422",
+          "e426",
+          "e427"
+        ],
+        "counter_ids": [],
+        "explanation": "Apache 节点在 14:22 起出现大量 502 错误，且错误请求者包含 IG01/IG02，表明上游流量受阻。结合 MG02 连接数在 14:21 骤降后于 14:27 恢复（e76），推测 Apache 因内存不足（OOM）导致拒绝服务，进而引发业务失败。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:apache01",
+        "start": "14:20:00",
+        "end": "14:25:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认 Apache01 在 14:22 错误爆发时的内存使用率是否达到阈值，以验证高内存使用导致 OOM 的假设。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:apache02",
+        "start": "14:20:00",
+        "end": "14:25:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认 Apache02 在 14:22 错误爆发时的内存使用率是否达到阈值，以验证高内存使用导致 OOM 的假设。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:MG02",
+        "start": "14:20:00",
+        "end": "14:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_NETWORK_NETWORK_TotalTcpConnNum"
+        ],
+        "focus": "详细查看 MG02 连接数在 14:21 触发下降及 14:28 恢复的具体数值变化，确认其与 Apache 故障的时间关联。",
+        "basis_ids": [
+          "e76"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "h2: time 14:22:00.000 requires e422 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "supported",
+            "component": "apache02",
+            "reason": "high memory usage",
+            "time": "14:22:00.000",
+            "time_evidence_id": "e422",
+            "support_ids": [
+              "e422",
+              "e423",
+              "e424",
+              "e426",
+              "e427"
+            ],
+            "counter_ids": [],
+            "explanation": "Apache02 同样在 14:22 起报告 502 错误，且错误请求者包含 IG01/IG02。这与 Apache01 现象一致，共同指向 Web 层因资源耗尽（如内存）导致服务不可用，是业务失败的直接原因。"
+          },
+          "error": "h2: time 14:22:00.000 requires e422 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

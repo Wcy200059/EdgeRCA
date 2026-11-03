@@ -1,0 +1,36 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Tomcat03",
+        "reason": "high CPU usage",
+        "time": "19:57:00.000",
+        "evidence_ids": [
+          "e33",
+          "e34",
+          "e35"
+        ],
+        "explanation": "Tomcat03 在 19:57:00 单核 CPU(e34) 飙升至 100%，整体 CPU(e35) 升至 50%。日志未到达(e90)，暂无反证。此为第一起故障。"
+      },
+      {
+        "component": "IG01",
+        "reason": "high memory usage",
+        "time": "19:51:00.000",
+        "evidence_ids": [
+          "e94"
+        ],
+        "explanation": "IG01 内存占比在 19:51:00 达到 89%(e94) 并维持高位。作为上游网关，内存高压可能引发下游 Tomcat03 的 CPU 飙升。此为第二起故障。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1614859200000,
+  "model_judgment_verified": false,
+  "expected_failures": 2,
+  "answer_schema": "faults_v1"
+}

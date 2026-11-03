@@ -1,0 +1,63 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e71 确认 Mysql01 无 trace 记录，无法直接判断状态。虽然磁盘 IO 是常见瓶颈，但当前缺乏具体的 IO 指标数值或慢查询日志支持，需补查确认是否存在 IO 饱和。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "02:30:00",
+        "end": "03:00:00",
+        "tools": [
+          "get_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "OSLinux-OSLOCALDISK_LOCALDISK-sda_DSKRead",
+          "OSLinux-OSLOCALDISK_LOCALDISK-sda_DSKWTps"
+        ],
+        "focus": "查询 Mysql01 在 02:30-03:00 期间的磁盘读取/写入吞吐量是否异常升高，并检查是否有慢 SQL 日志，以验证磁盘 IO 瓶颈假设。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "h1: time 02:59:00.000 requires e8 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 0,
+          "item": {
+            "id": "h1",
+            "assessment": "supported",
+            "component": "Tomcat04",
+            "reason": "high CPU usage",
+            "time": "02:59:00.000",
+            "time_evidence_id": "e8",
+            "support_ids": [
+              "e8",
+              "e233"
+            ],
+            "counter_ids": [],
+            "explanation": "e8 显示 IG01 到 Tomcat04 在 02:59 有 4009ms 长调用。e233 证实 Tomcat04 在 02:49-02:59 期间 CPU 使用率从 90% 升至 100%，且 SysTime 在 02:49 达峰值。资源耗尽导致下游调用阻塞，符合根因特征。"
+          },
+          "error": "h1: time 02:59:00.000 requires e8 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

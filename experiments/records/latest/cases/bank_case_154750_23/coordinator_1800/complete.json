@@ -1,0 +1,140 @@
+{
+  "case_id": "35aad94158b3f0ae",
+  "cutoff_ms": 1615293000000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 297
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 301
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 303
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 304
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Tomcat01",
+      "start": "20:11:00.000",
+      "end": "20:13:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil",
+        "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+      ],
+      "focus": "确认 Tomcat01 在 20:11-20:13 期间 OS CPU 和内存占比是否持续高位，以验证 e312 中的 JVM 内存增长是否导致系统级资源耗尽。",
+      "basis_ids": [
+        "e312"
+      ]
+    },
+    {
+      "node_id": "device:Tomcat02",
+      "start": "20:07:41.040",
+      "end": "20:08:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "验证 Tomcat02 在 20:07:41 长调用发生时 CPU 使用率是否异常高，以确认高 CPU 作为长调用根因的可能性。",
+      "basis_ids": [
+        "e181"
+      ]
+    },
+    {
+      "node_id": "device:IG01",
+      "start": "20:11:00.000",
+      "end": "20:13:00.000",
+      "tools": [
+        "get_calls"
+      ],
+      "metrics": [],
+      "focus": "检查 IG01 在 20:11-20:13 期间发往 Tomcat01 的调用延迟分布，确认 Tomcat01 的内存问题是否已导致上游网关出现大规模延迟或超时。",
+      "basis_ids": [
+        "e312",
+        "e21"
+      ]
+    },
+    {
+      "node_id": "device:Tomcat01",
+      "start": "20:11:00.000",
+      "end": "20:13:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+      ],
+      "focus": "确认 Tomcat01 在 20:11 内存飙升期间 OS 内存占比是否接近 100%，以验证是否因内存耗尽导致服务延迟或崩溃。",
+      "basis_ids": [
+        "e312"
+      ]
+    }
+  ],
+  "peak_gpu_gib": 21.16567039489746,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e277",
+      "e278",
+      "e279",
+      "e280",
+      "e281",
+      "e282",
+      "e283",
+      "e284",
+      "e285",
+      "e286",
+      "e287",
+      "e288",
+      "e289",
+      "e290",
+      "e291",
+      "e292",
+      "e293",
+      "e294",
+      "e295",
+      "e296",
+      "e297",
+      "e298",
+      "e299",
+      "e300",
+      "e301",
+      "e302",
+      "e303",
+      "e304",
+      "e305",
+      "e306",
+      "e307",
+      "e308"
+    ],
+    "notes": "保留所有涉及候选组件（IG, MG, Tomcat, docker）的实际父子调用匹配证据。这些边包含调用次数、P95/最大延迟及时间区间不匹配数量，是构建传播链、定位高延迟源头及区分资源故障的关键依据。e266-e276 为业务统计，无组件关联，拒绝。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 43
+  }
+}

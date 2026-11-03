@@ -1,0 +1,127 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h2",
+        "assessment": "supported",
+        "component": "MG01",
+        "reason": "high disk I/O read usage",
+        "time": "22:18:00.000",
+        "time_evidence_id": "e238",
+        "support_ids": [
+          "e238"
+        ],
+        "counter_ids": [],
+        "explanation": "MG01磁盘IO在22:18:00触发规则，22:20:00解除，期间存在波动。结合e54 CPU稳定，推测IO瓶颈可能是根因之一。需确认具体IO指标数值。"
+      },
+      {
+        "id": "h3",
+        "assessment": "supported",
+        "component": "IG02",
+        "reason": "high memory usage",
+        "time": "22:10:44.161",
+        "time_evidence_id": "e247",
+        "support_ids": [
+          "e247"
+        ],
+        "counter_ids": [],
+        "explanation": "IG02下游dockerB1在22:10:44出现1447ms长调用，且IG02自身JVM内存波动(e17)。长调用可能由内存压力或下游处理慢引起，需确认IG02内存是否超限导致业务阻塞。"
+      },
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "候选IG01高CPU，但现有证据e297仅显示CPU利用率稳定在25%左右，无高位证据。需补查CPU具体数值及趋势，确认是否因处理下游请求过载。"
+      },
+      {
+        "id": "h4",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "候选Mysql01高磁盘IO，但e112显示trace模态无记录。需补查磁盘IO指标，确认数据库是否存在IO瓶颈导致下游延迟。"
+      },
+      {
+        "id": "h5",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "network latency",
+        "time": "22:10:44.161",
+        "time_evidence_id": "e247",
+        "support_ids": [
+          "e247"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat02下游dockerB1在22:10:44出现2426ms极长调用(e249)。虽Tomcat02自身CPU正常(e203)，但高延迟可能源于网络丢包或下游处理，需确认Tomcat02到dockerB1的连接状态。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:MG01",
+        "start": "22:00:00",
+        "end": "22:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadBps"
+        ],
+        "focus": "确认MG01磁盘读取速率(Bps)在22:18-22:20期间是否出现异常高峰，以验证高磁盘IO假设。",
+        "basis_ids": [
+          "e238"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat02",
+        "start": "22:00:00",
+        "end": "22:30:00",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "查看Tomcat02的调用链，特别是到dockerB1的调用，确认是否存在大量慢调用或超时，定位延迟源头。",
+        "basis_ids": [
+          "e249"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "basis_ids must use e IDs from current evidence",
+      "rejected_sections": [
+        {
+          "section": "requests",
+          "index": 1,
+          "item": {
+            "node_id": "device:IG02",
+            "start": "22:00:00",
+            "end": "22:30:00",
+            "tools": [
+              "get_metrics"
+            ],
+            "metrics": [
+              "JVM-Memory_7778_JVM_Memory_HeapMemoryUsage"
+            ],
+            "focus": "确认IG02 JVM堆内存使用率是否持续高位或出现OOM，解释下游长调用及自身内存波动。",
+            "basis_ids": [
+              "e17"
+            ]
+          },
+          "error": "basis_ids must use e IDs from current evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

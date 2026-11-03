@@ -1,0 +1,108 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "缺乏 Tomcat01 的 CPU 使用率具体数值证据。虽有慢调用（e176/e178/e179 显示下游延迟），但无法确认是否由 Tomcat01 高 CPU 引起。需补查 Tomcat01 CPU 指标。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat01 内存使用量（e149）虽有波动但未见明确 OOM 特征（如持续飙升或规则触发）。缺乏 GC 日志或 OOM 错误记录支持。需补查 GC 日志及内存详细趋势。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 无已到达的磁盘 I/O 观测（e86）。虽有连接数波动（e122），但无法直接关联到磁盘 I/O 瓶颈导致的业务失败。需补查磁盘 I/O 指标。"
+      },
+      {
+        "id": "h4",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk space usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "无磁盘空间使用率证据。Mysql01 状态不明，无法确认空间是否耗尽。需补查磁盘空间指标。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "22:00:00",
+        "end": "22:30:00",
+        "tools": [
+          "list_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUUtil",
+          "Tomcat-MEMORY_7441-MEMORY_JVMUsedMemory",
+          "Tomcat-MEMORY_7441-MEMORY_JVMHeapMemoryUsage"
+        ],
+        "focus": "确认 Tomcat01 时段内 CPU 使用率是否飙升，以及 JVM 内存是否持续增长或触发 OOM/GC 停顿，以验证高 CPU 或 OOM 是否为根因。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "22:00:00",
+        "end": "22:30:00",
+        "tools": [
+          "list_metrics",
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSDisk_IOPS_Read_IOPS",
+          "OSLinux-OSDisk_Space_Free_Perc"
+        ],
+        "focus": "获取 Mysql01 磁盘读取 IOPS 和剩余空间百分比，确认是否存在高 I/O 或空间不足导致的存储瓶颈。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "22:00:00",
+        "end": "22:30:00",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "分析 Tomcat01 的调用链，识别是否存在大量长调用或特定下游超时，以辅助判断故障传播路径。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17601,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 55,
+        "available_facts": 215
+      }
+    }
+  ],
+  "labels_used": false
+}

@@ -1,0 +1,93 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e13 显示 IG01 存在长调用（13s），但未提供 CPU 使用率或负载的具体数值证据。e228 显示 apache02 CPU 波动，但无法直接关联到 IG01 故障。需补查 IG01 的 CPU 指标以确认是否因高负载导致下游延迟。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e75 显示 Mysql01 在窗口期内无 trace 记录，无法直接证明高 I/O。e245/246 显示 dockerB1 有长调用，可能受数据库影响。需补查 Mysql01 的磁盘 I/O 指标或日志，确认是否存在 I/O 瓶颈。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:IG01",
+        "start": "15:00:00",
+        "end": "15:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-CPU_CPU_CPUUserTime"
+        ],
+        "focus": "核实 IG01 节点在 15:00-15:30 期间的 CPU 使用率是否有显著升高，以验证高 CPU 导致长调用（e13）的假设。",
+        "basis_ids": [
+          "e13"
+        ]
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "15:00:00",
+        "end": "15:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Mysql-MySQL_3306_DiskReads",
+          "Mysql-MySQL_3306_DiskReadsRate"
+        ],
+        "focus": "核实 Mysql01 节点在 15:00-15:30 期间的磁盘读取量是否有异常高峰，以验证高磁盘 I/O 导致业务延迟的假设。",
+        "basis_ids": [
+          "e75"
+        ]
+      },
+      {
+        "node_id": "device:dockerB1",
+        "start": "15:00:00",
+        "end": "15:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "结合 e245/246 的长调用记录，检查 dockerB1 的 CPU 和内存使用情况，确认是否存在资源耗尽导致的调用超时。",
+        "basis_ids": [
+          "e245",
+          "e246"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17676,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 61,
+        "available_facts": 288
+      }
+    }
+  ],
+  "labels_used": false
+}

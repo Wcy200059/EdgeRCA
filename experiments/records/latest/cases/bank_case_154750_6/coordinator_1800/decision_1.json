@@ -1,0 +1,105 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat02 存在大量 500 错误（e364-e368）及长调用，日志显示 GC 暂停（e371）。但现有证据未包含明确的 Heap 使用率指标或 OOM 错误日志的确切时间戳。需补查内存指标以确认是否为 OOM 根因。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat02 接收端出现极长调用（最大 193774ms），可能由 CPU 满载导致。现有指标 e198 显示 CPU 中位数仅 27%，虽有波动但未达典型高负载特征，且缺乏瞬时尖峰证据。需进一步确认 CPU 瞬时负载。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat02",
+        "start": "18:30:00",
+        "end": "19:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "Tomcat-MEMORY_7441-MEMORY_JVMUsedMemoryPercent"
+        ],
+        "focus": "确认 Tomcat02 在故障时段是否存在 CPU 瞬时高负载或 JVM 堆内存使用率飙升，以验证 OOM 或高 CPU 假设。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "h1: time 18:35:23.000 requires e371 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 0,
+          "item": {
+            "id": "h1",
+            "assessment": "supported",
+            "component": "Tomcat02",
+            "reason": "JVM Out of Memory (OOM) Heap",
+            "time": "18:35:23.000",
+            "time_evidence_id": "e371",
+            "support_ids": [
+              "e364",
+              "e365",
+              "e366",
+              "e367",
+              "e368",
+              "e371"
+            ],
+            "counter_ids": [],
+            "explanation": "Tomcat02 在 18:35:23 出现 Allocation Failure 导致的 GC 暂停 (e371)，且该时段前后有大量 500 错误 (e364-e368)。GC 暂停与业务报错时间高度重合，符合 OOM 导致服务崩溃的机制。"
+          },
+          "error": "h1: time 18:35:23.000 requires e371 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        },
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "not_supported",
+            "component": "Tomcat02",
+            "reason": "high CPU usage",
+            "time": "18:31:00.000",
+            "time_evidence_id": "e198",
+            "support_ids": [],
+            "counter_ids": [
+              "e198"
+            ],
+            "explanation": "e198 显示 Tomcat02 CPU 中位数仅 27%，虽早段有波动但未达高负载特征。现有 500 错误和 GC 暂停更指向内存问题而非 CPU 不足，故不支持 CPU 为根因。"
+          },
+          "error": "use unique e IDs from current evidence; node overviews are not evidence"
+        }
+      ]
+    },
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17677,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 26,
+        "available_facts": 361
+      }
+    }
+  ],
+  "labels_used": false
+}

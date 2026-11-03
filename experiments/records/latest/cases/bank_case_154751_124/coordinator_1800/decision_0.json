@@ -1,0 +1,64 @@
+{
+  "reply": {
+    "hypotheses": [],
+    "requests": [
+      {
+        "node_id": "device:Tomcat04",
+        "start": "18:30:00.000",
+        "end": "18:45:00.000",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "验证 18:30 开始的长调用链，确认是否存在导致 OOM 的大对象分配或无限循环调用，以及是否有上游调用失败。",
+        "basis_ids": [
+          "e203",
+          "e200"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "18:30:00.000",
+        "end": "19:00:00.000",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "获取 Tomcat04 全时段日志，重点查找 OOM Killer 记录、Full GC 详情及具体的 OutOfMemoryError 堆栈，以证实内存耗尽。",
+        "basis_ids": [
+          "e203"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "h1: time 18:30:00.000 requires e203 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 0,
+          "item": {
+            "id": "h1",
+            "assessment": "supported",
+            "component": "Tomcat04",
+            "reason": "JVM Out of Memory (OOM) Heap",
+            "time": "18:30:00.000",
+            "time_evidence_id": "e203",
+            "support_ids": [
+              "e203",
+              "e197",
+              "e200"
+            ],
+            "counter_ids": [],
+            "explanation": "Tomcat04 在 18:30:00 触发 GC 暂停（Allocation Failure），随后磁盘写入（e195）和网络（e198）出现异常峰值，且线程忙碌（e200）在故障初期上升。磁盘繁忙（e197）在 18:55 触发，可能是 OOM 后的清理或日志写入。其他组件如 IG01 虽有内存高但无后续业务影响证据。"
+          },
+          "error": "h1: time 18:30:00.000 requires e203 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

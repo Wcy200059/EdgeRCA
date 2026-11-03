@@ -1,0 +1,107 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "16:21:30.000",
+        "time_evidence_id": "e331",
+        "support_ids": [
+          "e331",
+          "e330"
+        ],
+        "counter_ids": [],
+        "explanation": "e331 显示 16:21:30 发生 Allocation Failure 导致的 GC，e330 显示全时段存在 Allocation Failure。但缺乏内存使用率（MEMUsedMemPerc）直接证据确认 OOM 阈值，且需确认该时间点是否对应业务失败。需补查内存指标。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 有 272 条日志但未加载，且 trace 模式缺失（e86）。虽然磁盘 I/O 是常见瓶颈，但当前无具体指标数值或日志错误信息支持。需补查磁盘 I/O 指标以验证是否存在高读负载导致下游延迟。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "16:00:00.000",
+        "end": "16:30:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "获取 Tomcat01 内存使用率指标，确认 16:21:30 附近是否存在内存飙升或达到阈值，以验证 OOM 假设。",
+        "basis_ids": [
+          "e330",
+          "e331"
+        ]
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "16:00:00.000",
+        "end": "16:30:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_DISK_DISK-sda_DSKReadTime",
+          "OSLinux-OSLinux_DISK_DISK-sda_DSKReadBytes"
+        ],
+        "focus": "查询 Mysql01 磁盘读取时间和字节数，确认是否存在高 I/O 负载，解释可能的下游延迟或超时。",
+        "basis_ids": [
+          "e86"
+        ]
+      },
+      {
+        "node_id": "device:dockerB1",
+        "start": "16:25:00.000",
+        "end": "16:26:40.000",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "检查 dockerB1 在 16:25-16:26 长调用期间的日志，确认是否有连接超时、网络错误或应用处理阻塞的具体错误类型。",
+        "basis_ids": [
+          "e275"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "component must use a public candidate or null",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 2,
+          "item": {
+            "id": "h3",
+            "assessment": "unresolved",
+            "component": "dockerB1",
+            "reason": "network latency",
+            "time": "16:25:30.723",
+            "time_evidence_id": "e275",
+            "support_ids": [
+              "e275",
+              "e281"
+            ],
+            "counter_ids": [],
+            "explanation": "dockerB1 在 16:25-16:26 出现 64s 超长调用（e275），且与 MG01/MG02 连接 P95 较高（e307, e311）。但这可能是应用处理慢而非纯网络问题。需区分是网络丢包/延迟还是应用层阻塞。"
+          },
+          "error": "component must use a public candidate or null"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

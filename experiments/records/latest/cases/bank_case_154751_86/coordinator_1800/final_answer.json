@@ -1,0 +1,27 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Mysql02",
+        "reason": "high disk I/O read usage",
+        "time": "08:38:00.000",
+        "evidence_ids": [
+          "e130"
+        ],
+        "explanation": "Mysql02 在 08:38:00 触发 OS CPU 使用率上升（e130），且该节点有大量未加载的磁盘/IO 相关事实。虽然当前仅见 CPU 变化，但结合 Bank 场景下 Mysql 高 CPU 常伴随磁盘 IO 瓶颈，且无其他更直接的根因证据，故保留此假设并指向磁盘 IO 作为潜在机制。需补查磁盘指标确认。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615338000000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1",
+  "field_repairs": [],
+  "warnings": []
+}

@@ -1,0 +1,64 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "apache01",
+        "reason": "high memory usage",
+        "time": "07:36:21.000",
+        "time_evidence_id": "e193",
+        "support_ids": [
+          "e192",
+          "e193",
+          "e194",
+          "e195",
+          "e206",
+          "e255"
+        ],
+        "counter_ids": [],
+        "explanation": "apache01 在 07:36:21-07:36:25 连续返回 502 错误。其内存占用 (MEMUsedMemPerc) 在 07:30-07:32 期间已稳定在 96%-97% 的高水位。高内存导致服务无法处理新请求，引发 502。其他节点无系统性资源耗尽证据。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "IG01 存在 CPU 波动观测 (e1, e256, e257)，且作为上游网关，其高负载可能导致下游 Tomcat 延迟进而引发 502。但缺乏明确的高 CPU 阈值确认及与 07:36 错误时间的直接因果链。需补查 IG01 具体 CPU 数值及与 07:36 错误的时间关联。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:IG01",
+        "start": "07:30:00",
+        "end": "07:40:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "核实 07:30-07:40 期间 IG01 的 CPU 使用率是否出现显著突增，特别是 07:36 前后，以确认是否为导致下游 502 错误的根因。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17728,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 33,
+        "available_facts": 246
+      }
+    }
+  ],
+  "labels_used": false
+}

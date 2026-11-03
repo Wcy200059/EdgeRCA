@@ -1,0 +1,98 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "IG02",
+        "reason": "network latency",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [
+          "e20"
+        ],
+        "counter_ids": [],
+        "explanation": "e20显示一次60秒慢调用，但缺乏持续高延迟证据。Tomcat02内存高企更能解释下游处理缓慢。需补查IG02网络丢包及带宽指标，排除网络作为根因的可能性。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat02",
+        "start": "05:00:00",
+        "end": "05:30:00",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "搜索Tomcat02日志中是否存在OOM、Full GC或Heap Dump记录，以验证内存溢出是否为500错误的直接原因。",
+        "basis_ids": [
+          "e254",
+          "e257"
+        ]
+      },
+      {
+        "node_id": "device:IG02",
+        "start": "05:00:00",
+        "end": "05:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_NETWORK_ens160_NETPacketsLost",
+          "OSLinux-OSLinux_NETWORK_ens160_NETBandwidthUtil"
+        ],
+        "focus": "检查IG02是否存在网络丢包或带宽饱和，以排除网络延迟作为根因的可能性。",
+        "basis_ids": [
+          "e20"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "use unique e IDs from current evidence; node overviews are not evidence",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 0,
+          "item": {
+            "id": "h1",
+            "assessment": "supported",
+            "component": "Tomcat02",
+            "reason": "JVM Out of Memory (OOM) Heap",
+            "time": "05:00:00.000",
+            "time_evidence_id": "e254",
+            "support_ids": [
+              "e143",
+              "e144",
+              "e145",
+              "e146",
+              "e147",
+              "e148",
+              "e149",
+              "e150",
+              "e151",
+              "e152",
+              "e153",
+              "e154",
+              "e155",
+              "e156",
+              "e157",
+              "e158",
+              "e159",
+              "e160",
+              "e254",
+              "e257"
+            ],
+            "counter_ids": [],
+            "explanation": "Tomcat02自05:00起持续返回500错误（e143-e160），且系统内存MEMUsedMemPerc长期维持在93%高位（e254）。JVM堆指标显示稳定但未达阈值（e257），需结合日志确认是否发生OOM或Full GC导致服务不可用。"
+          },
+          "error": "use unique e IDs from current evidence; node overviews are not evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

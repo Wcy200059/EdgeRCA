@@ -1,0 +1,87 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat04",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "23:03:41",
+        "time_evidence_id": "e260",
+        "support_ids": [
+          "e260",
+          "e233"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 在 23:03:41 首次触发 GC (e260)，原因为 Allocation Failure，随后在 23:26:54 再次发生 (e233)。Allocation Failure 是 Heap 耗尽的直接前兆，符合 OOM 故障特征。时间最早且机制明确。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Redis02",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [
+          "e170"
+        ],
+        "counter_ids": [],
+        "explanation": "Redis02 CPU 使用率在 23:12 后持续触发 (e170)，极值达 99.9%。但缺乏具体的业务影响证据（如连接超时）或下游依赖（如 Tomcat）的异常关联，无法确认是否为根因。需补查业务流或下游调用。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat04",
+        "start": "23:00:00",
+        "end": "23:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-Memory_7778_JVM_Memory_HeapMemoryUsed"
+        ],
+        "focus": "获取 Tomcat04 JVM Heap 内存使用量的详细数值，确认是否存在内存泄漏或持续飙升导致 OOM 的情况，验证 23:03 后是否持续增长。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "23:00:00",
+        "end": "23:30:00",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "检查 Tomcat04 日志中是否存在明确的 OOM 错误信息（如 OutOfMemoryError）或 Allocation Failure 的详细报错，以证实 h1 为根因。",
+        "basis_ids": [
+          "e260",
+          "e233"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "23:00:00",
+        "end": "23:30:00",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "查看 Tomcat04 的调用关系，确认是否存在长调用或下游服务超时，判断 Redis02 的高 CPU (h2) 是否导致了 Tomcat04 的 OOM，或反之。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17672,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 40,
+        "available_facts": 261
+      }
+    }
+  ],
+  "labels_used": false
+}

@@ -1,0 +1,93 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat03",
+        "reason": "high CPU usage",
+        "time": "19:47:00.000",
+        "time_evidence_id": "e247",
+        "support_ids": [
+          "e247",
+          "e249"
+        ],
+        "counter_ids": [],
+        "explanation": "e247 显示 Tomcat03 在 19:47:00 CPU 飙升至 99.8%。e249 显示该时段存在因内存分配失败的 GC 暂停，佐证资源耗尽。e251 显示 HTTP 访问正常，说明故障未直接阻断业务，但高 CPU 符合单故障特征。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "node_summary 提示 Tomcat02 有未处理观测。e254 仅显示 CPU 稳定在 26%-27%，无飙升证据。需确认是否有其他 CPU 指标（如单核）或内存指标未加载，以排除高 CPU 假设。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat02",
+        "start": "19:30:00.000",
+        "end": "20:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "JVM-Memory_7779_JVM_Memory_HeapMemoryUsed"
+        ],
+        "focus": "核实 Tomcat02 是否存在 CPU 飙升或内存耗尽。若 CPU 正常且无内存 OOM，则排除高 CPU 假设。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "use unique e IDs from current evidence; node overviews are not evidence",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 2,
+          "item": {
+            "id": "h3",
+            "assessment": "not_supported",
+            "component": "MG01",
+            "reason": "high memory usage",
+            "time": null,
+            "time_evidence_id": null,
+            "support_ids": [],
+            "counter_ids": [
+              "e29"
+            ],
+            "explanation": "e29 显示 MG01 堆内存最大值 1059MB，但未提供 OOM 阈值或错误日志。e249 在 Tomcat03 明确记录了 Allocation Failure 导致的 GC，而 MG01 无此类日志。缺乏直接证据支持 MG01 内存故障导致系统级失败。"
+          },
+          "error": "use unique e IDs from current evidence; node overviews are not evidence"
+        },
+        {
+          "section": "requests",
+          "index": 1,
+          "item": {
+            "node_id": "device:MG01",
+            "start": "19:30:00.000",
+            "end": "20:00:00.000",
+            "tools": [
+              "get_logs"
+            ],
+            "metrics": [],
+            "focus": "检查 MG01 是否有 OOM 或 Full GC 日志，以验证高内存假设是否成立。",
+            "basis_ids": [
+              "e29"
+            ]
+          },
+          "error": "basis_ids must use e IDs from current evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

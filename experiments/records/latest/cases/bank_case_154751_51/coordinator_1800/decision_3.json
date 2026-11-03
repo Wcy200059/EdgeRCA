@@ -1,0 +1,107 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "IG02",
+        "reason": "high memory usage",
+        "time": "22:10:44.161",
+        "time_evidence_id": "e247",
+        "support_ids": [
+          "e247"
+        ],
+        "counter_ids": [],
+        "explanation": "IG02下游dockerA2在22:10:44出现1447ms长调用(e247)，且IG02自身JVM内存波动(e17)。长调用可能由内存压力导致业务阻塞。需确认内存是否超限。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "MG01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "MG01磁盘IO在22:18:00触发规则(e238)，但当前仅知规则触发，未知具体IO数值及趋势。需补查磁盘读取速率，确认是否存在IO瓶颈导致下游延迟。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "network latency",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat02下游dockerB1在22:10:44出现2426ms极长调用(e247/e249)。虽Tomcat02自身CPU正常，但高延迟可能源于网络丢包或下游处理。需确认Tomcat02到dockerB1的连接状态及调用详情。"
+      },
+      {
+        "id": "h4",
+        "assessment": "not_supported",
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [
+          "e297"
+        ],
+        "explanation": "候选IG01高CPU，但证据e297显示CPU利用率稳定在25%左右，无高位证据。现有数据不支持该假设，可排除。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:MG01",
+        "start": "22:00:00",
+        "end": "22:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadBps"
+        ],
+        "focus": "核实MG01磁盘读取速率(Bps)在窗口内的具体数值和趋势，确认是否存在IO瓶颈导致下游延迟。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat02",
+        "start": "22:00:00",
+        "end": "22:30:00",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "查看Tomcat02到dockerB1的调用链，确认是否存在大量慢调用或超时，定位延迟源头。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:IG02",
+        "start": "22:00:00",
+        "end": "22:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-Memory_7778_JVM_Memory_HeapMemoryUsage"
+        ],
+        "focus": "核实IG02 JVM堆内存使用率的具体数值和趋势，确认是否存在内存溢出(OOM)导致业务阻塞。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17762,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 42,
+        "available_facts": 307
+      }
+    }
+  ],
+  "labels_used": false
+}

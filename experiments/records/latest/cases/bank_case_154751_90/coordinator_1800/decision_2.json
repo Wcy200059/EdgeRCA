@@ -1,0 +1,91 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Redis01",
+        "reason": "high CPU usage",
+        "time": "20:50:00.000",
+        "time_evidence_id": "e280",
+        "support_ids": [
+          "e280"
+        ],
+        "counter_ids": [],
+        "explanation": "e280 显示 Redis01 在 20:50:00 CPU 使用率飙升至 90.25% (e280 佐证)，且早于下游长调用。虽缺直接日志证明 CPU 高导致阻塞，但时间先后与数值异常强烈支持该假设。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "MG02",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e54 显示 MG02 有 11.6s 长调用，e262 显示其对 dockerB1 延迟极高。虽磁盘 I/O 是候选原因，但尚未获取磁盘指标数值或日志确认 I/O 阻塞，需补查。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Redis01",
+        "start": "20:50:00.000",
+        "end": "21:00:00.000",
+        "tools": [
+          "get_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_DISK_DISKReadBytesPerSec"
+        ],
+        "focus": "确认 20:50 峰值期间是否有磁盘读取飙升或 GC 暂停，验证高 CPU 是否由 I/O 等待引起。",
+        "basis_ids": [
+          "e280",
+          "e281"
+        ]
+      },
+      {
+        "node_id": "device:MG02",
+        "start": "20:50:00.000",
+        "end": "21:00:00.000",
+        "tools": [
+          "get_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_DISK_DISKReadBytesPerSec"
+        ],
+        "focus": "确认长调用期间是否有磁盘读取阻塞或内存不足，排除网络因素。",
+        "basis_ids": [
+          "e284",
+          "e285"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "20:50:00.000",
+        "end": "21:00:00.000",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "查找 Tomcat01 是否有发往 Redis01 或 MG02 的长调用样本，建立资源瓶颈向业务延迟传播的因果链。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17693,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 52,
+        "available_facts": 276
+      }
+    }
+  ],
+  "labels_used": false
+}

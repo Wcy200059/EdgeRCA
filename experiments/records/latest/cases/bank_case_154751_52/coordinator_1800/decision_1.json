@@ -1,0 +1,84 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat01",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "19:31:13.030",
+        "time_evidence_id": "e131",
+        "support_ids": [
+          "e131",
+          "e238"
+        ],
+        "counter_ids": [],
+        "explanation": "e131 显示 Tomcat01 在 19:31:13 出现 5465ms 长调用。e238 证实 IG02 到 Tomcat01 有连接，且 IG02(e28) 同期有 6618ms 慢调用。资源高导致下游延迟进而业务失败，时间链吻合。"
+      },
+      {
+        "id": "h2",
+        "assessment": "supported",
+        "component": "Tomcat02",
+        "reason": "high disk I/O read usage",
+        "time": "19:42:00.000",
+        "time_evidence_id": "e126",
+        "support_ids": [
+          "e126",
+          "e239",
+          "e243"
+        ],
+        "counter_ids": [],
+        "explanation": "e126 显示 Redis02 磁盘 I/O 在 19:42 触发规则，19:48 解除。e239/e243 证实 Tomcat02 和 dockerA1 均连接 MG01，而 MG01 连接 dockerA1。磁盘高 I/O 阻塞 IO 密集型任务，导致业务失败。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "19:30:00",
+        "end": "19:35:00",
+        "tools": [
+          "get_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "JVM-Memory_7778_JVM_Memory_HeapMemoryUsed",
+          "JVM-GC_7778_GC_PauseTime"
+        ],
+        "focus": "核实 Tomcat01 在 19:31 长调用期间是否存在 JVM Heap 内存爆满及伴随的 GC 暂停，确认 OOM 是否为根因。",
+        "basis_ids": [
+          "e131"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat02",
+        "start": "19:40:00",
+        "end": "19:50:00",
+        "tools": [
+          "get_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKBps"
+        ],
+        "focus": "核实 Tomcat02 所在节点在 19:42-19:48 期间磁盘 I/O 是否确实处于高位，确认是否因磁盘瓶颈导致业务失败。",
+        "basis_ids": [
+          "e126"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17754,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 47,
+        "available_facts": 257
+      }
+    }
+  ],
+  "labels_used": false
+}

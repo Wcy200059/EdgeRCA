@@ -1,0 +1,122 @@
+{
+  "case_id": "f26d80715c03364a",
+  "cutoff_ms": 1616439600000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 306
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 310
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 312
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 313
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Tomcat04",
+      "start": "02:46:00",
+      "end": "02:47:00",
+      "tools": [
+        "get_logs"
+      ],
+      "metrics": [],
+      "focus": "检索 Tomcat04 在 02:46:29 GC 发生前后的日志，确认是否存在明确的 OOM 错误（如 OutOfMemoryError）或堆内存耗尽的堆栈信息，以确证 h1 假设。",
+      "basis_ids": [
+        "e308"
+      ]
+    },
+    {
+      "node_id": "device:Mysql01",
+      "start": "02:30:00",
+      "end": "03:00:00",
+      "tools": [
+        "list_metrics",
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKWTps",
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKBps"
+      ],
+      "focus": "获取 Mysql01 磁盘 I/O 指标名称并查询其读写吞吐量，验证是否存在高磁盘 I/O 故障。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:apache01",
+      "start": "02:30:00",
+      "end": "03:00:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKWTps",
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKBps"
+      ],
+      "focus": "量化 apache01 磁盘 I/O 的具体数值和趋势，判断 e285/e286 中的 triggered 状态是否代表故障级高负载。",
+      "basis_ids": [
+        "e285",
+        "e286"
+      ]
+    },
+    {
+      "node_id": "device:Tomcat04",
+      "start": "02:30:00",
+      "end": "03:00:00",
+      "tools": [
+        "get_logs"
+      ],
+      "metrics": [],
+      "focus": "检索 Tomcat04 在 02:46:29 GC 发生前后的日志，确认是否存在明确的 OOM 错误（如 OutOfMemoryError）或堆内存耗尽的堆栈信息，以确证 h1 假设。",
+      "basis_ids": [
+        "e308"
+      ]
+    }
+  ],
+  "peak_gpu_gib": 21.13365936279297,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e296",
+      "e297",
+      "e298",
+      "e299",
+      "e300",
+      "e301",
+      "e302",
+      "e303",
+      "e304",
+      "e305",
+      "e306"
+    ],
+    "notes": "filter invalid; retained all global evidence",
+    "attempts": [
+      {
+        "valid": false,
+        "error": "ids must be unique IDs from global evidence"
+      },
+      {
+        "valid": false,
+        "error": "ids must be unique IDs from global evidence"
+      }
+    ],
+    "fallback": true,
+    "available": 11
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "IG01",
+        "reason": "high JVM CPU load",
+        "time": "21:39:31.581",
+        "evidence_ids": [
+          "e309",
+          "e317",
+          "e318",
+          "e234",
+          "e254"
+        ],
+        "explanation": "IG01 在 21:36-21:40 出现 P95 延迟飙升至 6-8 万 ms 及 89 秒长调用 (e309, e317, e318)，时间上早于 Apache 502 错误 (e234, e254)。虽缺直接 CPU 指标，但严重延迟模式符合高 CPU 负载导致下游 Tomcat 无法响应，进而引发 502 的因果链。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615125600000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1",
+  "field_repairs": [],
+  "warnings": []
+}

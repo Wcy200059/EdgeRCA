@@ -1,0 +1,83 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "04:40:00.000",
+        "time_evidence_id": "e140",
+        "support_ids": [
+          "e140"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat01 在 04:40:00 观测到 CPU 使用率瞬间飙升至 99.7%，随后在 04:39:00 触发规则，04:51:00 规则清除。这种极端的 CPU 尖峰（远超 25% 的基准中位数）强烈暗示 JVM 发生 OOM 导致 GC 频繁或线程阻塞。但当前证据仅显示 CPU 高，未直接观测到 Heap 内存耗尽或 OOM 错误日志。需补查 Tomcat01 的内存指标及日志以确认 OOM 发生。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": "04:38:00.000",
+        "time_evidence_id": "e71",
+        "support_ids": [
+          "e71"
+        ],
+        "counter_ids": [],
+        "explanation": "Mysql01 在 04:38:00 观测到 OS CPU SysTime 达到 0.4402（约 44%），随后下降。虽然 SysTime 高可能源于磁盘 I/O 等待，但当前证据 e71 仅显示 SysTime 数值，未明确标记为 Disk I/O 高或提供磁盘指标。且 Mysql02 同期 SysTime 未显示类似极端峰值。需补查 Mysql01 的磁盘 I/O 指标以确认是否为根因。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "04:35:00.000",
+        "end": "04:45:00.000",
+        "tools": [
+          "get_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc",
+          "JVM-Memory_7779_JVM_Memory_HeapMemoryUsed",
+          "JVM-GC_PauseTime"
+        ],
+        "focus": "确认 04:40:00 附近 CPU 飙升是否由 JVM Heap 内存耗尽或频繁 Full GC 引起，寻找 OOM 或 GC 暂停日志。",
+        "basis_ids": [
+          "e140"
+        ]
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "04:35:00.000",
+        "end": "04:45:00.000",
+        "tools": [
+          "get_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadTime",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKRead"
+        ],
+        "focus": "确认 04:38:00 附近 CPU SysTime 升高是否由磁盘读取 I/O 阻塞导致，排除 CPU 计算密集型负载。",
+        "basis_ids": [
+          "e71"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17593,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 52,
+        "available_facts": 234
+      }
+    }
+  ],
+  "labels_used": false
+}

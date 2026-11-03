@@ -1,0 +1,29 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Tomcat02",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "08:00:26.000",
+        "evidence_ids": [
+          "e125",
+          "e126",
+          "e130",
+          "e131",
+          "e132"
+        ],
+        "explanation": "Tomcat02 在 08:00:26 起出现大量 500 错误 (e130-e151)，且伴随高频 Full GC(e125, e126)，最大暂停超 2 秒。虽无直接 OOM 日志，但频繁 Last ditch/Metadata GC 导致业务超时是典型内存耗尽特征。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615249800000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1"
+}

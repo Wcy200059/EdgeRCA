@@ -1,0 +1,66 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 有长调用但磁盘 I/O 指标缺失 (e75)。Mysql02 有磁盘波动但无法直接归因于 Mysql01。需补查 Mysql01 磁盘 I/O 确认是否因磁盘满或高读取导致阻塞。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "07:00:00",
+        "end": "07:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUWio",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKRead"
+        ],
+        "focus": "获取 Mysql01 磁盘读取 I/O 及 CPU 等待指标，验证是否存在高磁盘 I/O 导致的延迟，排除 Mysql02 波动影响。",
+        "basis_ids": [
+          "e75"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "use unique e IDs from current evidence; node overviews are not evidence",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 0,
+          "item": {
+            "id": "h1",
+            "assessment": "supported",
+            "component": "Tomcat01",
+            "reason": "high CPU usage",
+            "time": "07:21:31.559",
+            "time_evidence_id": "e53",
+            "support_ids": [
+              "e53",
+              "e204",
+              "e222",
+              "e255"
+            ],
+            "counter_ids": [],
+            "explanation": "IG01/IG02 长调用汇聚至 Tomcat01 (e53, e204)。Tomcat01 内存持续 90% (e255)，CPU 指标 e256 缺失。长调用与资源瓶颈时间吻合，且 Tomcat01 是上游调用方，符合资源耗尽导致下游延迟的因果链。"
+          },
+          "error": "use unique e IDs from current evidence; node overviews are not evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

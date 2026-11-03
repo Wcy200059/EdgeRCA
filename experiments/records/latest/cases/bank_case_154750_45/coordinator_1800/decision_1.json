@@ -1,0 +1,101 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": "01:10:00.000",
+        "time_evidence_id": "e223",
+        "support_ids": [
+          "e223",
+          "e224"
+        ],
+        "counter_ids": [],
+        "explanation": "e223 显示 Mysql01 磁盘 I/O 在 01:10:00 出现峰值 (1.0)，早于后续观测。e224 确认磁盘忙碌率为 0，但 e223 的 Bps 峰值直接对应高 I/O 特征。该时间早于其他组件的 CPU 波动，且无证据显示其他组件先异常，符合根因时间优先原则。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "候选 Tomcat01 高 CPU 缺乏直接数值证据。现有连接观测 (e130) 仅显示延迟，未确认 CPU 状态。需补查 Tomcat01 CPU 指标以确认是否因高负载导致下游延迟或自身故障。"
+      },
+      {
+        "id": "h3",
+        "assessment": "not_supported",
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [
+          "e13"
+        ],
+        "explanation": "e13 仅显示 IG01 到 Tomcat01 的调用连接和延迟，未提供 IG01 自身的 CPU 使用率数据。延迟可能由下游 (Tomcat/Mysql) 引起，而非 IG01 自身高 CPU。缺乏 IG01 CPU 高负载的直接证据，暂不支持。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "01:00:00",
+        "end": "01:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认 Tomcat01 在故障窗口内是否存在 CPU 使用率过高，以验证是否因高负载导致处理延迟或故障。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:IG01",
+        "start": "01:00:00",
+        "end": "01:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认 IG01 在故障窗口内是否存在 CPU 使用率过高，以排除上游高负载导致调用延迟的可能性。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "01:00:00",
+        "end": "01:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKPercentBusy"
+        ],
+        "focus": "确认 Mysql01 磁盘忙碌率是否在 01:10:00 峰值后持续高位，以验证高 I/O 是否导致服务不可用。",
+        "basis_ids": [
+          "e223"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17604,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 39,
+        "available_facts": 197
+      }
+    }
+  ],
+  "labels_used": false
+}

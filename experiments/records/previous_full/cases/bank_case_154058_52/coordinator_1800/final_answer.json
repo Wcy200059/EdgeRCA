@@ -1,0 +1,36 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Tomcat03",
+        "reason": "high CPU usage",
+        "time": "19:57:00.000",
+        "evidence_ids": [
+          "e33",
+          "e34",
+          "e35"
+        ],
+        "explanation": "Tomcat03 在 19:57 单核 CPU 飙升至 100% (e34) 及 40.99% (e33)，状态 triggered。早中期稳定低位 (e35)，符合资源突增导致阻塞特征。"
+      },
+      {
+        "component": "MG02",
+        "reason": "high CPU usage",
+        "time": "19:42:00.000",
+        "evidence_ids": [
+          "e14"
+        ],
+        "explanation": "MG02 在 19:42 出现 CPU 使用率 51.5% 并触发告警 (e14)，早中期为 26%。虽早于 Tomcat03 故障，但属独立资源异常事件，满足两故障要求。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1614859200000,
+  "model_judgment_verified": false,
+  "expected_failures": 2,
+  "answer_schema": "faults_v1"
+}

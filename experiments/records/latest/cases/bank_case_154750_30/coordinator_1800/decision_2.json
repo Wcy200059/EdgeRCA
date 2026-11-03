@@ -1,0 +1,97 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat02",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "18:57:49.237",
+        "time_evidence_id": "e27",
+        "support_ids": [
+          "e27",
+          "e191",
+          "e178"
+        ],
+        "counter_ids": [],
+        "explanation": "e27 显示 IG02 到 Tomcat02 在 18:57:49 出现 76s 超长调用。e191 和 e178 分别在 18:58:58 和 18:59:46 记录到 apache 网关返回 502 错误，时间紧随长调用之后。推测 Tomcat02 因 JVM Heap 内存耗尽导致请求阻塞或超时，引发下游 502。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "high JVM CPU load",
+        "time": "18:57:49.237",
+        "time_evidence_id": "e27",
+        "support_ids": [
+          "e27"
+        ],
+        "counter_ids": [],
+        "explanation": "e27 确认 18:57:49 存在 76s 长调用，e191/e178 显示随后发生 502 故障。虽然高 CPU 可导致延迟，但 Tomcat02 当前仅观测到 OS CPU 波动，缺乏 JVM CPU 直接证据。需补查 JVM CPU 指标以区分是计算过载还是内存溢出。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat02",
+        "start": "18:57:49",
+        "end": "18:59:05",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Tomcat-MEMORY_7441-MEMORY_JVMMemoryUsedPercent",
+          "Tomcat-MEMORY_7441-MEMORY_JVMMaxMemory"
+        ],
+        "focus": "验证 e27 长调用期间 Tomcat02 的 JVM 堆内存使用率是否达到上限，确认 OOM 假设。",
+        "basis_ids": [
+          "e27"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat02",
+        "start": "18:57:49",
+        "end": "18:59:05",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU-0_SingleCpuUtil"
+        ],
+        "focus": "核实 e27 长调用期间 Tomcat02 的 OS 级 CPU 使用率，排除 CPU 耗尽导致系统级延迟的可能性。",
+        "basis_ids": [
+          "e27"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "18:57:49",
+        "end": "18:59:05",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Tomcat-MEMORY_7441-MEMORY_JVMMemoryUsedPercent"
+        ],
+        "focus": "检查 Tomcat01 在同一时段的 JVM 内存状态，确认故障是否仅由 Tomcat02 引起，排除多节点并发过载。",
+        "basis_ids": [
+          "e178",
+          "e27"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17749,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 38,
+        "available_facts": 258
+      }
+    }
+  ],
+  "labels_used": false
+}

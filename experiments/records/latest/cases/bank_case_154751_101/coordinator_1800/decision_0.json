@@ -1,0 +1,81 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat04",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [
+          "e246"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 线程繁忙计数在 19:37 至 19:59 间持续触发（e246），且 CPU 系统时间（e247）和 GC 暂停（e249）显示资源压力。但缺乏明确的 JVM CPU 指标数值或父子调用链证明是线程阻塞导致业务失败，需补查具体 JVM CPU 负载及调用详情。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "apache01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [
+          "e251"
+        ],
+        "counter_ids": [],
+        "explanation": "apache01 在 19:48 出现 CPU 单核利用率 100%（e251），且磁盘 I/O 在 19:50 触发（e252）。但无法确认该高 CPU 是否由上游请求风暴引起，也未见下游服务（如 Tomcat）因此失败的直接证据，需补查调用链以确认因果。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat04",
+        "start": "19:30:00.000",
+        "end": "20:00:00.000",
+        "tools": [
+          "get_metrics",
+          "get_calls"
+        ],
+        "metrics": [
+          "JVM-CPU_CPU_CPUCpuUtil",
+          "Tomcat-Threads_7441-\"http-nio-8003\"_CurrentThreadCountThreadInfo"
+        ],
+        "focus": "核实 Tomcat04 的 JVM CPU 使用率是否因高负载飙升，并检查是否存在长调用阻塞导致线程池耗尽。",
+        "basis_ids": [
+          "e246",
+          "e247",
+          "e249"
+        ]
+      },
+      {
+        "node_id": "device:apache01",
+        "start": "19:40:00.000",
+        "end": "20:00:00.000",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "检查 apache01 在 19:48 高 CPU 时段是否有大量来自上游的慢调用或失败请求，以确认是否为根因。",
+        "basis_ids": [
+          "e251",
+          "e252"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17390,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 43,
+        "available_facts": 275
+      }
+    }
+  ],
+  "labels_used": false
+}

@@ -1,0 +1,105 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat03",
+        "reason": "high CPU usage",
+        "time": "21:18:00.000",
+        "time_evidence_id": "e208",
+        "support_ids": [
+          "e208",
+          "e269"
+        ],
+        "counter_ids": [],
+        "explanation": "e208显示Tomcat03在21:18:00出现CPU峰值31.12%，随后规则清除。e269显示该节点调用MG01时出现5020ms长调用（最大），且e269的时间区间包含21:18-21:27。高CPU导致处理能力下降，引发下游长延迟，符合单故障特征。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e286显示IG01在21:15:00有75.6%的CPU峰值，早于Tomcat03的21:18:00。但e265-e268显示IG01到Tomcat的调用P95均在600ms左右，未出现类似e269的极端长调用。需确认IG01峰值是否导致Tomcat03异常，或仅为局部波动。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "MG01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e269显示Tomcat03调用MG01时延迟最高。但e285显示MG01整体CPU在26%左右波动，未见明显峰值。需确认MG01是否存在瞬时高负载（如GC或突发IO）导致处理Tomcat03请求变慢，而非自身资源耗尽。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat03",
+        "start": "21:18:00",
+        "end": "21:27:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认Tomcat03在21:18:00峰值后CPU使用率是否持续高位，以验证是否为长调用(e269)的直接原因。",
+        "basis_ids": [
+          "e208",
+          "e269"
+        ]
+      },
+      {
+        "node_id": "device:IG01",
+        "start": "21:15:00",
+        "end": "21:20:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认IG01在21:15:00峰值期间CPU使用率的具体数值和持续时间，判断是否足以导致下游Tomcat03出现异常。",
+        "basis_ids": [
+          "e286"
+        ]
+      },
+      {
+        "node_id": "device:MG01",
+        "start": "21:20:00",
+        "end": "21:27:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认MG01在接收Tomcat03长调用(e269)时段内的CPU使用率，排除其自身资源瓶颈导致延迟的可能性。",
+        "basis_ids": [
+          "e269",
+          "e285"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17738,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 42,
+        "available_facts": 275
+      }
+    }
+  ],
+  "labels_used": false
+}

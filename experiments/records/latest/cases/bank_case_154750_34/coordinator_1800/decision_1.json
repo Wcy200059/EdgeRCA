@@ -1,0 +1,103 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat01 存在下游延迟（e11, e148），但缺乏 JVM 内存指标证据。e269 显示 JVM 内存指标未加载。需补查 Tomcat01 的 JVM Heap 使用率以确认是否 OOM。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat01 有延迟，但 CPU 指标未加载（e269）。需补查 JVM CPU 负载以区分是计算密集型问题还是内存问题。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "15:30:00.000",
+        "end": "16:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Tomcat-MEMORY_7441-MEMORY_JVMMemoryUsedPercent"
+        ],
+        "focus": "确认 Tomcat01 在故障窗口期内 JVM 堆内存使用率是否达到阈值，以验证 OOM 假设。",
+        "basis_ids": [
+          "e269"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "15:30:00.000",
+        "end": "16:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Tomcat-CPU_7441-CPU_CPULoad"
+        ],
+        "focus": "确认 Tomcat01 在故障窗口期内 JVM 或 OS 层面的 CPU 负载是否异常升高，以验证高 CPU 假设。",
+        "basis_ids": [
+          "e269"
+        ]
+      },
+      {
+        "node_id": "device:dockerB2",
+        "start": "15:30:00.000",
+        "end": "16:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-DISK_READ_AvgSec"
+        ],
+        "focus": "确认 dockerB2 在 15:30:27 长调用发生时的磁盘读取 I/O 是否飙升，验证是否为 I/O 阻塞导致。",
+        "basis_ids": [
+          "e221"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "component must use a public candidate or null",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 2,
+          "item": {
+            "id": "h3",
+            "assessment": "unresolved",
+            "component": "dockerB2",
+            "reason": "high disk I/O read usage",
+            "time": "15:30:27.682",
+            "time_evidence_id": "e221",
+            "support_ids": [
+              "e221"
+            ],
+            "counter_ids": [],
+            "explanation": "dockerB2 在 15:30:27 出现 23s 长调用（e221），且磁盘读取指标 e78 显示波动。需确认该长调用是否由磁盘 I/O 阻塞引起，以及是否影响上游。"
+          },
+          "error": "component must use a public candidate or null"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

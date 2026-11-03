@@ -1,0 +1,106 @@
+{
+  "reply": {
+    "hypotheses": [],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "22:00:00",
+        "end": "22:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_DISK_DISKReadIOPS",
+          "OSLinux-OSLinux_DISK_DISKReadBytes"
+        ],
+        "focus": "获取Mysql01在22:00-22:30期间的磁盘读取IOPS和字节数具体数值，确认是否存在激增以验证高I/O故障假设。",
+        "basis_ids": [
+          "e227"
+        ]
+      },
+      {
+        "node_id": "device:Mysql02",
+        "start": "22:00:00",
+        "end": "22:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_DISK_DISKReadIOPS",
+          "OSLinux-OSLinux_DISK_DISKReadBytes"
+        ],
+        "focus": "获取Mysql02在22:00-22:30期间的磁盘读取IOPS和字节数具体数值，确认是否存在激增以验证第二起高I/O故障假设。",
+        "basis_ids": [
+          "e229"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "h1: time 22:19:00.000 requires e227 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 0,
+          "item": {
+            "id": "h1",
+            "assessment": "supported",
+            "component": "Mysql01",
+            "reason": "high disk I/O read usage",
+            "time": "22:19:00.000",
+            "time_evidence_id": "e227",
+            "support_ids": [
+              "e227"
+            ],
+            "counter_ids": [],
+            "explanation": "证据e227显示Mysql01缺失磁盘读取指标（DiskReadBytes/IOPS），这是高I/O故障的典型特征。考虑到任务要求双故障，且Mysql01有未加载指标，该节点极可能是第一起故障点。需结合时间戳确认具体发生时刻。"
+          },
+          "error": "h1: time 22:19:00.000 requires e227 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        },
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "supported",
+            "component": "Mysql02",
+            "reason": "high disk I/O read usage",
+            "time": "22:19:00.000",
+            "time_evidence_id": "e229",
+            "support_ids": [
+              "e229"
+            ],
+            "counter_ids": [],
+            "explanation": "证据e229显示Mysql02同样缺失磁盘读取指标，且pending_requests已针对该节点发起补查。双故障场景下，Mysql02作为第二台数据库，其缺失磁盘指标符合高I/O故障模式。需等待补查结果确认具体数值变化。"
+          },
+          "error": "h2: time 22:19:00.000 requires e229 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        },
+        {
+          "section": "requests",
+          "index": 2,
+          "item": {
+            "node_id": "device:Tomcat01",
+            "start": "22:00:00",
+            "end": "22:30:00",
+            "tools": [
+              "get_metrics"
+            ],
+            "metrics": [
+              "Tomcat-Tomcat_CPU_CPUUserTime",
+              "Tomcat-Tomcat_CPU_CPULoad"
+            ],
+            "focus": "获取Tomcat01在22:00-22:30期间的CPU使用率和负载数值，排除应用层高CPU导致业务延迟的可能性，辅助判断根因是否在数据库层。",
+            "basis_ids": [
+              "e124"
+            ]
+          },
+          "error": "basis_ids must use e IDs from current evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

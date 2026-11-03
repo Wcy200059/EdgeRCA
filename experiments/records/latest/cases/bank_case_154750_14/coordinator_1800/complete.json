@@ -1,0 +1,156 @@
+{
+  "case_id": "da7e718284a821f1",
+  "cutoff_ms": 1615125600000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 308
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 328
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 331
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 333
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:IG01",
+      "start": "21:36:00.000",
+      "end": "21:40:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "JVM-CPU_CPU_CPUCpuUtil",
+        "JVM-Memory_7779_JVM_Memory_HeapMemoryUsage"
+      ],
+      "focus": "确认 IG01 在 21:36-21:40 期间是否存在 JVM CPU 飙升或内存 OOM，以验证其是否为导致下游延迟和 502 错误的根因。",
+      "basis_ids": [
+        "e316",
+        "e332"
+      ]
+    },
+    {
+      "node_id": "device:IG02",
+      "start": "21:30:00",
+      "end": "21:45:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil",
+        "JVM-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "检查 IG02 在 21:36 之前是否有 CPU 或内存异常，排除其作为早期故障源的可能性，并确认 e30 中长调用的具体上下文。",
+      "basis_ids": [
+        "e30"
+      ]
+    },
+    {
+      "node_id": "device:Tomcat01",
+      "start": "21:30:00",
+      "end": "21:45:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "JVM-CPU_CPU_CPUCpuUtil",
+        "JVM-Memory_7779_JVM_Memory_HeapMemoryUsage"
+      ],
+      "focus": "确认 Tomcat01 在 21:36-21:38 期间是否因上游 IG01 压力导致高负载，或自身存在资源瓶颈，以完善从 IG 到 Apache 的故障传播路径。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:IG02",
+      "start": "21:30:00.000",
+      "end": "21:45:00.000",
+      "tools": [
+        "get_calls"
+      ],
+      "metrics": [],
+      "focus": "确认21:36-21:40期间是否有大量超时或失败的调用，以及这些调用是否指向Apache或Tomcat，以验证长调用是否导致502错误。",
+      "basis_ids": [
+        "e30"
+      ]
+    }
+  ],
+  "peak_gpu_gib": 21.164577960968018,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e266",
+      "e267",
+      "e268",
+      "e269",
+      "e270",
+      "e271",
+      "e272",
+      "e273",
+      "e274",
+      "e275",
+      "e276",
+      "e277",
+      "e278",
+      "e279",
+      "e280",
+      "e281",
+      "e282",
+      "e283",
+      "e284",
+      "e285",
+      "e286",
+      "e287",
+      "e288",
+      "e289",
+      "e290",
+      "e291",
+      "e292",
+      "e293",
+      "e294",
+      "e295",
+      "e296",
+      "e297",
+      "e298",
+      "e299",
+      "e300",
+      "e301",
+      "e302",
+      "e303",
+      "e304",
+      "e305",
+      "e306",
+      "e307",
+      "e308"
+    ],
+    "notes": "filter invalid; retained all global evidence",
+    "attempts": [
+      {
+        "valid": false,
+        "error": "ids must be unique IDs from global evidence"
+      },
+      {
+        "valid": false,
+        "error": "ids must be unique IDs from global evidence"
+      }
+    ],
+    "fallback": true,
+    "available": 43
+  }
+}

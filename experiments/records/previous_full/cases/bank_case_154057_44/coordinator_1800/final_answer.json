@@ -1,0 +1,31 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Mysql01",
+        "reason": "high disk space usage",
+        "time": "21:05:00",
+        "evidence_ids": [
+          "e8",
+          "e9",
+          "e10",
+          "e11",
+          "e12",
+          "e15",
+          "e17"
+        ],
+        "explanation": "Mysql01 在 21:05 触发 Aborted Clients/Connects 及 Binlog Cache 飙升，持续至 21:29。Mysql02 同指标同步异常。OS CPU 随之升高。Apache 节点 CPU 在 21:14 后单核飙升，表明上游流量受阻。时间链吻合：磁盘/缓存压力 (21:05) -> 连接中断 (21:05) -> CPU 升高 (21:08) -> 业务受阻 (21:14)。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1616506200000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1"
+}

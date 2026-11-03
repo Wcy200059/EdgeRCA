@@ -1,0 +1,104 @@
+{
+  "case_id": "83e0751aae4bbe8a",
+  "cutoff_ms": 1614792600000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 195
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 197
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 198
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 199
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Mysql02",
+      "start": "01:00:00",
+      "end": "01:30:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKPercentBusy"
+      ],
+      "focus": "确认 Mysql02 磁盘忙碌率是否有类似 Mysql01 的异常峰值，以排除单点故障或集群级磁盘问题。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Tomcat01",
+      "start": "01:00:00",
+      "end": "01:30:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil",
+        "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+      ],
+      "focus": "确认 Tomcat01 在故障窗口内是否存在 CPU 使用率过高或内存占用异常，以验证高 CPU 是否导致服务处理延迟。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:IG01",
+      "start": "01:00:00",
+      "end": "01:30:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "确认 IG01 在故障窗口内是否存在 CPU 使用率过高，以排除上游高负载导致调用延迟的可能性。",
+      "basis_ids": []
+    }
+  ],
+  "peak_gpu_gib": 21.057241439819336,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e191",
+      "e192",
+      "e193",
+      "e194",
+      "e195",
+      "e196",
+      "e197",
+      "e198",
+      "e207",
+      "e208",
+      "e209",
+      "e210",
+      "e211",
+      "e212",
+      "e213",
+      "e214"
+    ],
+    "notes": "保留所有涉及候选组件（IG, MG, Tomcat, docker）之间父子调用的观测。这些证据展示了服务间的调用关系、P95/最大值延迟及时间区间匹配情况，有助于分析故障传播链、定位高延迟环节及区分资源瓶颈。拒绝e180-e190因仅含业务文本统计，无组件交互或异常指标信息。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 43
+  }
+}

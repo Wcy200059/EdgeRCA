@@ -1,0 +1,89 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Mysql01",
+        "reason": "high memory usage",
+        "time": "06:30:00.000",
+        "time_evidence_id": "e254",
+        "support_ids": [
+          "e254"
+        ],
+        "counter_ids": [],
+        "explanation": "Mysql01 内存使用率全程锁定在 96%（e254），处于极高水位，无法释放资源。结合 Tomcat 端出现的长调用（e141），符合高内存导致处理延迟或 OOM 风险的因果链。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "IG02",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "IG02 CPU 存在波动（e18），但峰值时间（06:40）晚于 Tomcat 长调用（06:49），且缺乏明确故障阈值触发证据。需补查具体数值及趋势以确认是否为根因或无关波动。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "06:30:00",
+        "end": "07:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认 Mysql01 内存占用是否全程维持在 96% 的高水位，排除瞬时波动，验证高内存作为长调用根因的可能性。",
+        "basis_ids": [
+          "e254"
+        ]
+      },
+      {
+        "node_id": "device:IG02",
+        "start": "06:30:00",
+        "end": "07:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "获取 IG02 CPU 使用率的具体数值和变化趋势，确认 06:40 附近的峰值是否构成故障，并观察其持续时间及与 Tomcat 长调用的时间关联。",
+        "basis_ids": [
+          "e18"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "06:30:00",
+        "end": "07:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "检查 Tomcat01 自身内存状态，确认长调用是否由本地内存不足引起，还是完全由下游 Mysql01 高内存导致。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17626,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 54,
+        "available_facts": 243
+      }
+    }
+  ],
+  "labels_used": false
+}

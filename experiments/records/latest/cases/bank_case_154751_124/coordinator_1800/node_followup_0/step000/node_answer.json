@@ -1,0 +1,175 @@
+{
+  "answer": {
+    "case_id": "a58b81a5db3096e9",
+    "node_id": "device:Tomcat04",
+    "request_id": "q34466645e4c68624",
+    "cutoff_ms": 1616497200000,
+    "requested_scope": {
+      "reference": {
+        "start_ms": 1616495400000,
+        "end_ms": 1616495400000,
+        "seconds": 0.0,
+        "bounds": "[start,end)"
+      },
+      "current": {
+        "start_ms": 1616495400000,
+        "end_ms": 1616496300000,
+        "seconds": 900.0,
+        "bounds": "[start,end)"
+      },
+      "rows_considered": 4562,
+      "prefix_rows": 4562,
+      "counts_by_modality": {
+        "log": 3606,
+        "metric": 956
+      },
+      "must_report_ids": [],
+      "raw_archive_preserved": true
+    },
+    "tools_executed": [
+      "get_calls"
+    ],
+    "missing_metrics": [],
+    "available_metric_names": [],
+    "metric_catalog_in_facts": false,
+    "facts": [
+      {
+        "id": "f1",
+        "tool_fact": "本范围没有已到达的已完成调用记录；不代表其他模态缺失，也不表示设备正常。",
+        "time_marks": [],
+        "template_payload": {
+          "subject": "missing",
+          "pattern": "insufficient_data",
+          "fields": {
+            "modality": "trace"
+          },
+          "protected": false
+        },
+        "detail_fields": {
+          "modality": "trace"
+        }
+      }
+    ],
+    "groups": [],
+    "pending_fact_ids": [
+      "f1"
+    ],
+    "questions": [],
+    "self_requests": [],
+    "request_errors": [],
+    "template_rows": [
+      {
+        "id": "f1",
+        "subject": "missing",
+        "fields": {
+          "modality": "trace"
+        },
+        "pattern": "insufficient_data",
+        "pattern_description": "数据或样本不足",
+        "protected": false,
+        "node_id": "device:Tomcat04",
+        "template": "unavailable",
+        "question": "当前缺少【数据】；暂待补充，不填成正常。",
+        "reading_options": {
+          "uncertain": "现有材料不足，暂不作该项解释"
+        },
+        "catalogue_action": "defer",
+        "model_selection": null,
+        "model_valid": false,
+        "handling": "catalogue_defer"
+      }
+    ],
+    "node_model_status": "incomplete",
+    "labels_used": false,
+    "report_mode": "template",
+    "note": "程序固定数值与来源；仅变化/错误/告警候选自动调用模型，其余本地保留，不等于正常。",
+    "screening": {
+      "total": 1,
+      "model_candidates": 0,
+      "screen_limit": null,
+      "unchanged_reused": 0,
+      "retained_by_rule": 1,
+      "labels_used": false
+    },
+    "selection_mode": "catalogue",
+    "catalogue_audit": {
+      "total_observations": 1,
+      "unique_entries": 1,
+      "aliases": {},
+      "pages": [
+        {
+          "page": 0,
+          "pages": 1,
+          "ids": [
+            "f1"
+          ],
+          "attempts": [
+            {
+              "valid": true
+            }
+          ],
+          "reply": {
+            "report": [],
+            "defer": [
+              "f1"
+            ]
+          },
+          "omitted_ids": []
+        }
+      ],
+      "decisions": {
+        "f1": "defer"
+      },
+      "omitted_count": 0,
+      "coverage": {
+        "available": 1,
+        "shown": 1,
+        "pages": 1
+      },
+      "note": "全部观测已分批展示并逐项决定；未展示项只可能来自无效页，标记为 unprocessed。"
+    },
+    "question_response": {
+      "question": "验证 18:30 开始的长调用链，确认是否存在导致 OOM 的大对象分配或无限循环调用，以及是否有上游调用失败。",
+      "checked_scope": {
+        "reference": {
+          "start_ms": 1616495400000,
+          "end_ms": 1616495400000,
+          "seconds": 0.0,
+          "bounds": "[start,end)"
+        },
+        "current": {
+          "start_ms": 1616495400000,
+          "end_ms": 1616496300000,
+          "seconds": 900.0,
+          "bounds": "[start,end)"
+        },
+        "rows_considered": 4562,
+        "prefix_rows": 4562,
+        "counts_by_modality": {
+          "log": 3606,
+          "metric": 956
+        },
+        "must_report_ids": [],
+        "raw_archive_preserved": true
+      },
+      "tools": [
+        "get_calls"
+      ],
+      "observation_ids": [
+        "f1"
+      ],
+      "reported_ids": [],
+      "interpretations_unverified": [],
+      "unresolved_ids": [
+        "f1"
+      ],
+      "limitations": [
+        "只检查请求节点、指定范围与最多前5分钟对照；参考段不保证正常。",
+        "请求之外的指标尚未检查；原始记录和工具完整结果保留。",
+        "没有相应字段或记录不能证明设备正常；慢调用不是网络RTT。",
+        "模型解释是待核实意见；工具不支持的问题不能强行回答，缺少记录不等于正常。"
+      ]
+    }
+  },
+  "pages": []
+}

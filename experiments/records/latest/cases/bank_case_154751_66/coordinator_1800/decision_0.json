@@ -1,0 +1,97 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "目录显示Mysql01有大量未加载指标（78条），但当前仅加载了1条且为trace缺失。现有证据e122显示Redis01连接数有波动，但不足以证明Mysql故障。需补查Mysql01的具体磁盘I/O指标及时间戳以确认是否发生高I/O故障。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql02",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql02同样有64条未加载指标，当前仅加载1条trace缺失。e122显示Redis01连接数波动，可能掩盖了数据库层问题。需定向补查Mysql02的磁盘I/O使用情况，区分是单点故障还是连带影响。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat01有30条未加载指标，当前仅加载1条CPU波动。e149显示JVM内存有波动但未超限。需补查Tomcat01的JVM CPU具体数值及时间，确认是否存在高负载导致的业务延迟，并排除网络因素。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "22:00:00",
+        "end": "22:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_DISK_DISKReadIOPS",
+          "OSLinux-OSLinux_DISK_DISKReadBytes"
+        ],
+        "focus": "核实Mysql01在22:00-22:30期间是否存在磁盘读取IOPS或字节数激增，以确认是否为高磁盘I/O故障。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql02",
+        "start": "22:00:00",
+        "end": "22:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_DISK_DISKReadIOPS",
+          "OSLinux-OSLinux_DISK_DISKReadBytes"
+        ],
+        "focus": "核实Mysql02在22:00-22:30期间是否存在磁盘读取IOPS或字节数激增，以确认是否为高磁盘I/O故障。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "22:00:00",
+        "end": "22:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Tomcat-Tomcat_CPU_CPUUserTime",
+          "Tomcat-Tomcat_CPU_CPULoad"
+        ],
+        "focus": "核实Tomcat01在22:00-22:30期间JVM或OS层面的CPU使用率是否出现显著升高，以确认高CPU负载故障。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17583,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 55,
+        "available_facts": 215
+      }
+    }
+  ],
+  "labels_used": false
+}

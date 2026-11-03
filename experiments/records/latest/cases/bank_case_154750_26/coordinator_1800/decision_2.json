@@ -1,0 +1,75 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "apache01",
+        "reason": "high memory usage",
+        "time": "10:43:09.000",
+        "time_evidence_id": "e259",
+        "support_ids": [
+          "e259",
+          "e352"
+        ],
+        "counter_ids": [],
+        "explanation": "Apache01 在 10:43:09 开始出现 502 错误，且同期 Apache02 也有大量 502。补查确认 Apache01 内存使用率在故障时段稳定在 57%，未出现飙升或耗尽。结合业务错误与资源指标，根因可能不在 Apache01 自身内存，需进一步排查下游资源瓶颈。"
+      },
+      {
+        "id": "h2",
+        "assessment": "supported",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": "10:41:09.653",
+        "time_evidence_id": "e227",
+        "support_ids": [
+          "e350",
+          "e227"
+        ],
+        "counter_ids": [],
+        "explanation": "Mysql01 报告大量日志且磁盘 I/O 指标缺失（e350），暗示潜在瓶颈。Tomcat03（依赖 Mysql01）在 10:41 出现长达 10 秒的慢调用（e227），时间上早于 Apache 报错。资源瓶颈导致下游延迟，进而引发业务失败。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat01 到下游 MG02 的调用 P95 高达 2098ms，且存在大量时间区间不匹配，暗示处理延迟。但 Tomcat01 的 JVM CPU 负载指标尚未加载。需补查 JVM CPU 以确认是否因高负载导致无法及时处理请求。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "10:30:00",
+        "end": "10:50:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-Operating System_7779_JVM_JVM_CPULoad",
+          "JVM-Memory_7778_JVM_Memory_NoHeapMemoryUsed"
+        ],
+        "focus": "获取 Tomcat01 JVM CPU 负载和内存使用数据，验证其是否因资源耗尽导致下游调用延迟及业务失败。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17693,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 47,
+        "available_facts": 352
+      }
+    }
+  ],
+  "labels_used": false
+}

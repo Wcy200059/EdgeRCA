@@ -1,0 +1,74 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Mysql02",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql02 在 11:24-11:27 期间 CPU 使用率显著上升（20%→29%），且该节点有 1 条保护性指标记录。但缺乏 CPU 飙升导致业务延迟或下游失败的直接因果证据（如慢调用、下游超时），也未见磁盘 I/O 或内存 OOM 佐证。需确认 CPU 高是否引发业务中断。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "MG01",
+        "reason": "network latency",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "MG01 观测到长调用（11:06 出现 9.5s 慢调用），但缺乏明确的网络指标（如丢包、RTT 突增）支持。慢调用可能是应用层处理慢或下游（如 Tomcat/Mysql）响应慢所致，无法直接归因为网络故障。需补查网络指标或更详细的调用链。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql02",
+        "start": "11:24:00.000",
+        "end": "11:27:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadOps"
+        ],
+        "focus": "验证 Mysql02 在 CPU 升高期间是否伴随内存压力或磁盘读 I/O 激增，以确认是否为资源耗尽导致的业务故障。",
+        "basis_ids": [
+          "e132"
+        ]
+      },
+      {
+        "node_id": "device:MG01",
+        "start": "11:00:00.000",
+        "end": "11:30:00.000",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "NETWORK"
+        ],
+        "focus": "列出 MG01 节点可用的网络相关指标名称，以便后续查询网络延迟或丢包情况，排除网络故障作为长调用的根因。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17571,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 60,
+        "available_facts": 303
+      }
+    }
+  ],
+  "labels_used": false
+}

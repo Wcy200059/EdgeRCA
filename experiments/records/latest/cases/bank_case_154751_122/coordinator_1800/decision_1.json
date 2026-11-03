@@ -1,0 +1,74 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": "09:05:00.000",
+        "time_evidence_id": "e274",
+        "support_ids": [
+          "e274"
+        ],
+        "counter_ids": [],
+        "explanation": "e274 显示 Mysql01 磁盘读指标在 09:05:00 达到峰值 2.8，且早于晚段中位数，符合故障特征。其他节点无明确反证。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 有 CPU 高耗候选，但当前 e273 仅显示低值波动，未确认趋势。需补查 CPU 指标以区分是磁盘瓶颈还是计算瓶颈。"
+      },
+      {
+        "id": "h3",
+        "assessment": "not_supported",
+        "component": "Tomcat03",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [
+          "e234"
+        ],
+        "explanation": "e234 显示 Tomcat03 线程繁忙有波动，但早晚中位数持平，无显著上升趋势。缺乏因果链证据，暂不支持为根因。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "09:00:00",
+        "end": "09:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认 Mysql01 在 09:05 峰值前后是否存在 CPU 使用率同步飙升，以区分磁盘 I/O 与 CPU 负载是否为根因。",
+        "basis_ids": [
+          "e274"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17732,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 37,
+        "available_facts": 274
+      }
+    }
+  ],
+  "labels_used": false
+}

@@ -1,0 +1,88 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e155/e168 显示 Tomcat01/02 存在长调用，但未证实是 JVM 内部原因。Mysql01 CPU 低 (e90)，排除 Mysql 负载。需补查 Tomcat01/02 的 JVM 具体指标及日志，确认是否存在高 CPU 或 OOM 导致线程阻塞，并排查上游 IG 节点是否有网络延迟传导。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e168 显示 Tomcat02 在 16:56 有 10019ms 长调用。e243 显示 IG02->Tomcat02 连接正常。需补查 Tomcat02 的 JVM 内存/CPU 指标及日志，区分是应用逻辑耗时还是资源耗尽。同时需确认 IG 节点是否存在未观测到的网络抖动。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "16:56:00",
+        "end": "16:57:00",
+        "tools": [
+          "get_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "JVM-Memory_7779_JVM_Memory_HeapMemoryUsage",
+          "JVM-CPU_7779_JVM_CPU_LoadAverage"
+        ],
+        "focus": "核实 Tomcat01 在 16:56 长调用期间的 JVM 堆内存使用率及 CPU 负载，确认是否因资源耗尽导致响应延迟。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat02",
+        "start": "16:56:00",
+        "end": "16:57:00",
+        "tools": [
+          "get_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "JVM-Memory_7779_JVM_Memory_HeapMemoryUsage",
+          "JVM-CPU_7779_JVM_CPU_LoadAverage"
+        ],
+        "focus": "核实 Tomcat02 在 16:56 长调用期间的 JVM 堆内存使用率及 CPU 负载，确认是否因资源耗尽导致响应延迟。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:IG01",
+        "start": "16:56:00",
+        "end": "16:57:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_NETWORK_NETWORK-eth0_NetDevRxErrors",
+          "OSLinux-OSLinux_NETWORK_NETWORK-eth0_NetDevTxErrors"
+        ],
+        "focus": "检查 IG01 在 Tomcat01/02 出现长调用时段是否有网络丢包或错误，排除网络层故障导致的服务端超时。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17734,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 59,
+        "available_facts": 258
+      }
+    }
+  ],
+  "labels_used": false
+}

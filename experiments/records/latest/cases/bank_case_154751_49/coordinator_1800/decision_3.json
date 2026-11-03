@@ -1,0 +1,88 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "IG01",
+        "reason": "high JVM CPU load",
+        "time": "19:34:00.000",
+        "time_evidence_id": "e271",
+        "support_ids": [
+          "e271",
+          "e268"
+        ],
+        "counter_ids": [],
+        "explanation": "e271显示IG01在19:34:00 JVM Heap内存飙升至1GB峰值，且e268显示该节点日志未到达，符合资源耗尽导致服务不可用的特征。e266/e269显示下游延迟，但IG01自身资源异常更可能是根因。"
+      },
+      {
+        "id": "h2",
+        "assessment": "supported",
+        "component": "Tomcat01",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "19:31:13.030",
+        "time_evidence_id": "e131",
+        "support_ids": [
+          "e131",
+          "e144"
+        ],
+        "counter_ids": [],
+        "explanation": "e131记录Tomcat01在19:31:13出现5465ms超长调用，e144显示线程繁忙。虽无直接OOM日志，但极端延迟与线程积压是OOM前的典型表现，且需与IG01故障区分。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "IG02",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "现有证据仅显示连接延迟（e189），无IG02自身CPU或JVM指标确认根因。需补查IG02资源指标以区分主动过载与被动阻塞。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:IG02",
+        "start": "19:30:00.000",
+        "end": "20:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "JVM-Memory_7778_JVM_Memory_HeapMemoryUsage"
+        ],
+        "focus": "验证IG02在19:30-20:00期间的CPU及JVM内存状态，确认是否存在高负载导致下游延迟。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "19:30:00.000",
+        "end": "20:00:00.000",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "检查Tomcat01在19:31:13长调用发生时的日志，确认是否存在OOM错误或GC停顿。",
+        "basis_ids": [
+          "e131"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17686,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 19,
+        "available_facts": 261
+      }
+    }
+  ],
+  "labels_used": false
+}

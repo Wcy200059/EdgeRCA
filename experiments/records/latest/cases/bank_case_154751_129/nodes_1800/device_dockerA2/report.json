@@ -1,0 +1,99 @@
+{
+  "case_id": "141cc502b225b69f",
+  "node_id": "device:dockerA2",
+  "window_start_ms": 1616657400000,
+  "cutoff_ms": 1616659200000,
+  "groups": [],
+  "tool_card_catalog": {
+    "s0_f1": {
+      "id": "s0_f1",
+      "tool_fact": "本范围未收到日志；不是没有错误，也不是没有其他模态数据。"
+    },
+    "s0_f2": {
+      "id": "s0_f2",
+      "tool_fact": "本范围没有已到达的已完成调用记录；不代表其他模态缺失，也不表示设备正常。"
+    }
+  },
+  "retain_local": [
+    "s0_f1",
+    "s0_f2"
+  ],
+  "defer": [],
+  "cpu_only_metric_ids": [
+    "c69f38fbca7ea2412eac",
+    "54e481698282578c8013",
+    "ceb8416e6216064d3750",
+    "a3a3c78c8f89d81b390f",
+    "13e3ab65300245d6c8bd",
+    "47c07babf97e136101d9"
+  ],
+  "questions": [],
+  "overview_text": "本地保留2条观测；0条变化或明确错误优先展示。稳定采样0条，数据不足2条。稳定不等于正常；节点没有判定全局根因。",
+  "scope": {
+    "start": "15:30:00.000",
+    "end": "16:00:00.000",
+    "raw_rows": {
+      "metric": 31
+    },
+    "alarm_groups": 0,
+    "cpu_only_metric_count": 6
+  },
+  "question_overview": null,
+  "prose_semantics_verified": false,
+  "pending_self_queries": [],
+  "node_mode": "catalogue",
+  "template_rows": [
+    {
+      "id": "s0_f1",
+      "subject": "log",
+      "fields": {
+        "status": "no_arrived_records_in_scope"
+      },
+      "pattern": "insufficient_data",
+      "pattern_description": "数据或样本不足",
+      "protected": false,
+      "node_id": "device:dockerA2",
+      "template": "log_event",
+      "question": "【组件】在【起止】出现【日志类型】，共【次数】条。这说明【reading】，应【use】。",
+      "reading_options": {
+        "uncertain": "现有材料不足，暂不作该项解释"
+      },
+      "catalogue_action": "background",
+      "model_selection": null,
+      "model_valid": false,
+      "handling": "catalogue_background",
+      "raw_fact": {
+        "id": "s0_f1",
+        "kind": "log",
+        "status": "no_arrived_records_in_scope"
+      }
+    },
+    {
+      "id": "s0_f2",
+      "subject": "missing",
+      "fields": {
+        "note": "本查询范围无已到达记录，不能判正常。",
+        "modality": "trace"
+      },
+      "pattern": "insufficient_data",
+      "pattern_description": "数据或样本不足",
+      "protected": false,
+      "node_id": "device:dockerA2",
+      "template": "unavailable",
+      "question": "当前缺少【数据】；暂待补充，不填成正常。",
+      "reading_options": {
+        "uncertain": "现有材料不足，暂不作该项解释"
+      },
+      "catalogue_action": "background",
+      "model_selection": null,
+      "model_valid": false,
+      "handling": "catalogue_background",
+      "raw_fact": {
+        "id": "s0_f2",
+        "kind": "missing",
+        "note": "本查询范围无已到达记录，不能判正常。",
+        "modality": "trace"
+      }
+    }
+  ]
+}

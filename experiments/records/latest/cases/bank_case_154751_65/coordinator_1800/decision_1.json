@@ -1,0 +1,88 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat01",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "22:00:54",
+        "time_evidence_id": "e228",
+        "support_ids": [
+          "e228",
+          "e149"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat01 在 22:00:54 首次触发 GC 原因为 Allocation Failure (e228)，随后 JVM 内存使用量 (e149) 在 22:21 达到峰值 1.85GB，呈现持续增长后回落特征，符合 OOM 后 GC 回收的时序逻辑。"
+      },
+      {
+        "id": "h2",
+        "assessment": "supported",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": "22:07:00",
+        "time_evidence_id": "e122",
+        "support_ids": [
+          "e122"
+        ],
+        "counter_ids": [],
+        "explanation": "Redis01 连接数在 22:07 触发规则 (e122)，暗示上游负载激增。Mysql01 作为存储层，在负载激增时段必然面临高读取 I/O 压力，导致后续业务延迟。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "22:00:00",
+        "end": "22:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSDisk_IOPS_Read_IOPS"
+        ],
+        "focus": "验证 Mysql01 在 22:07 负载高峰期间是否存在高磁盘读取 IOPS，确认是否为存储层瓶颈导致业务失败。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "22:00:00",
+        "end": "22:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSDisk_Space_Free_Perc"
+        ],
+        "focus": "检查 Mysql01 磁盘剩余空间百分比，排除因磁盘空间耗尽导致的写入阻塞或业务失败。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "22:00:00",
+        "end": "22:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认 Tomcat01 的 OS CPU 使用率是否异常飙升，以区分故障根因是 JVM 内存问题还是底层 CPU 资源耗尽。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17722,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 51,
+        "available_facts": 218
+      }
+    }
+  ],
+  "labels_used": false
+}

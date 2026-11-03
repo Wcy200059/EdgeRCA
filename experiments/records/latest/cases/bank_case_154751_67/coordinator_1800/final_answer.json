@@ -1,0 +1,37 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Mysql02",
+        "reason": "high CPU usage",
+        "time": "16:25:00.000",
+        "evidence_ids": [
+          "e126",
+          "e338",
+          "e339",
+          "e189"
+        ],
+        "explanation": "e126 显示 Mysql02 CPU 在 16:25 触发高负载规则。e338/e339 日志显示 InnoDB page_cleaner 耗时异常（>7s），佐证数据库内部负载过高。e189 显示下游 Tomcat02 出现长达 47s 的调用，时间吻合。虽无直接业务失败记录，但资源耗尽是合理根因。"
+      },
+      {
+        "component": null,
+        "reason": null,
+        "time": null,
+        "evidence_ids": [],
+        "explanation": "题目要求识别两个故障。当前证据仅能确证 Mysql02 在 16:25 发生一次资源耗尽导致的延迟故障。未发现其他组件有明确的异常指标、日志错误或因果链支持第二个独立故障。可能存在的第二个故障因证据缺失无法判定。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615537800000,
+  "model_judgment_verified": false,
+  "expected_failures": 2,
+  "answer_schema": "faults_v1",
+  "field_repairs": [],
+  "warnings": []
+}

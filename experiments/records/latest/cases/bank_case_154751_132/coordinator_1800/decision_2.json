@@ -1,0 +1,74 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat04",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "23:03:41",
+        "time_evidence_id": "e260",
+        "support_ids": [
+          "e260",
+          "e233"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 在 23:03:41 首次触发 GC (e260)，原因为 Allocation Failure，随后在 23:26:54 再次发生 (e233)。Allocation Failure 是 Heap 耗尽的直接前兆，符合 OOM 故障特征。时间最早且机制明确。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Tomcat04",
+        "reason": "high memory usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "已知 Tomcat04 发生 Allocation Failure，但缺乏具体内存使用量指标 (HeapMemoryUsed) 来量化内存泄漏或持续增长的过程。需补查 Tomcat04 的 JVM 内存指标以确认内存耗尽的具体趋势。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat04",
+        "start": "23:00:00",
+        "end": "23:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Tomcat-MEMORY_7441-MEMORY_JVMMemoryUsedPercent"
+        ],
+        "focus": "获取 Tomcat04 JVM 堆内存使用百分比，确认 23:03 后是否存在持续上升趋势，验证内存耗尽过程。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "h2: time 23:12:00 requires e170 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "not_supported",
+            "component": "Redis02",
+            "reason": "high CPU usage",
+            "time": "23:12:00",
+            "time_evidence_id": "e170",
+            "support_ids": [],
+            "counter_ids": [
+              "e260"
+            ],
+            "explanation": "Redis02 高 CPU (e170) 发生在 23:12，晚于 Tomcat04 的 OOM 根因 (23:03)。且 Tomcat04 的 GC 原因为 Allocation Failure (内存不足)，而非下游网络延迟导致的等待。CPU 高不是 OOM 的直接原因，时间先后不支持其为根因。"
+          },
+          "error": "h2: time 23:12:00 requires e170 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

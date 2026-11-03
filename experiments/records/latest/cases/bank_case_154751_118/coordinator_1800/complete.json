@@ -1,0 +1,80 @@
+{
+  "case_id": "aeb15e4fc89c966d",
+  "cutoff_ms": 1616562000000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 218
+    },
+    {
+      "round": 1,
+      "reply_valid": false,
+      "evidence": 219
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 1,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:apache01",
+      "start": "12:30:00.000",
+      "end": "12:35:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+      ],
+      "focus": "检查apache01的内存使用情况，确认其是否在Tomcat04发生OOM之前出现异常，以排除上游流量激增导致下游Tomcat内存耗尽的可能性。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Mysql01",
+      "start": "12:30:00.000",
+      "end": "12:35:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "Mysql-MySQL_3306_Innodb buffer pool pages dirty"
+      ],
+      "focus": "检查Mysql01的脏页数量，确认数据库层是否存在写入压力或内存压力，排除数据库层问题向上游传播导致Tomcat内存耗尽的可能性。",
+      "basis_ids": []
+    }
+  ],
+  "peak_gpu_gib": 21.087552547454834,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e208",
+      "e209",
+      "e210",
+      "e211",
+      "e212",
+      "e213",
+      "e214",
+      "e215",
+      "e216",
+      "e217",
+      "e218"
+    ],
+    "notes": "filter invalid; retained all global evidence",
+    "attempts": [
+      {
+        "valid": false,
+        "error": "ids must be unique IDs from global evidence"
+      },
+      {
+        "valid": false,
+        "error": "ids must be unique IDs from global evidence"
+      }
+    ],
+    "fallback": true,
+    "available": 11
+  }
+}

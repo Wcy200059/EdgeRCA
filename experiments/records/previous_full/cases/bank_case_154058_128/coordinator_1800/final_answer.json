@@ -1,0 +1,27 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Mysql02",
+        "reason": "high disk I/O read usage",
+        "time": "11:50:00",
+        "evidence_ids": [
+          "e13",
+          "e16",
+          "e17"
+        ],
+        "explanation": "Mysql02 在 11:50 触发 CPU 高负载 (e17, 99.98%)，同时 Binlog Cache Use 在 11:49-11:58 急剧上升 (e16)，Aborted Clients 持续高位 (e13)。CPU 升高与 IO 缓存压力同步，表明磁盘 IO 瓶颈引发资源争抢。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1616644800000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1"
+}

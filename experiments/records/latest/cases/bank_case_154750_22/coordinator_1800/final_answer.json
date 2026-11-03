@@ -1,0 +1,33 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Tomcat01",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "19:18:24.000",
+        "evidence_ids": [
+          "e219",
+          "e220",
+          "e221",
+          "e227",
+          "e228",
+          "e229",
+          "e304"
+        ],
+        "explanation": "Apache 层在 19:18:24-28 连续出现 502 错误，指向 Tomcat01。Tomcat01 在 19:19:34 发生 Allocation Failure GC，提示内存压力。虽无直接 OOM 日志，但 GC 异常与上游报错时间吻合，且 CPU 证据缺失，故 OOM 为最可能根因。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615289400000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1",
+  "field_repairs": [],
+  "warnings": []
+}

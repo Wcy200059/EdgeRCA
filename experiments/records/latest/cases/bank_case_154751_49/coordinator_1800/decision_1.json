@@ -1,0 +1,120 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "证据e131显示Tomcat01有5465ms慢调用，e144显示线程繁忙数波动。但缺乏明确的CPU使用率或JVM负载指标直接证明是根因（可能是下游IG01延迟导致的被动积压）。需补查Tomcat01 CPU及JVM指标以区分主动过载与被动阻塞。"
+      },
+      {
+        "id": "h4",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "证据e239（来自previous_hypotheses逻辑，当前evidence未直接展示Tomcat02自身异常指标，仅见连接e168/e189等）暗示IG02→Tomcat02延迟高。Tomcat02自身CPU指标e132显示空闲值高（可能意味着负载低或指标解读需结合上下文），目前证据不足以认定Tomcat02为根因，更可能是受IG02影响。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:IG02",
+        "start": "19:30:00",
+        "end": "20:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-CPU_CPU_CPUUserTime"
+        ],
+        "focus": "验证IG02在19:32:23长调用发生时的CPU使用率及用户态时间，确认是否为计算过载导致下游延迟。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "19:30:00",
+        "end": "20:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-CPU_CPU_CPUUserTime"
+        ],
+        "focus": "验证Tomcat01在19:31:13慢调用发生时的CPU负载，区分是主动过载还是被动接收上游延迟。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat02",
+        "start": "19:30:00",
+        "end": "20:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-CPU_CPU_CPUUserTime"
+        ],
+        "focus": "验证Tomcat02 CPU负载，确认其是否因IG02延迟而被动积压，或自身存在独立的高负载故障。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "h1: time 19:45:00 requires e266 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 0,
+          "item": {
+            "id": "h1",
+            "assessment": "supported",
+            "component": "IG01",
+            "reason": "high CPU usage",
+            "time": "19:45:00",
+            "time_evidence_id": "e266",
+            "support_ids": [
+              "e266",
+              "e267"
+            ],
+            "counter_ids": [],
+            "explanation": "证据e266显示IG01在19:45:00触发CPU使用率异常（4.7%->5.3%波动，虽数值低但结合e267用户态时间激增及下游延迟e15，符合计算过载特征）。e267显示用户态时间有显著变化。此高负载导致下游Tomcat延迟，符合故障链。"
+          },
+          "error": "h1: time 19:45:00 requires e266 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        },
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "supported",
+            "component": "IG02",
+            "reason": "high CPU usage",
+            "time": "19:32:00",
+            "time_evidence_id": "e28",
+            "support_ids": [
+              "e28",
+              "e44"
+            ],
+            "counter_ids": [],
+            "explanation": "证据e28记录IG02在19:32:23出现6618ms极长调用。证据e44显示MG01网络流量在19:48-19:52有波动，但IG02自身CPU指标缺失。结合e28的长调用作为根因起点，推断为IG02处理过载引发。需确认CPU具体数值，但长调用本身已是故障证据。"
+          },
+          "error": "h2: time 19:32:00 requires e28 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

@@ -1,0 +1,101 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": "09:05:00.000",
+        "time_evidence_id": "e274",
+        "support_ids": [
+          "e274"
+        ],
+        "counter_ids": [],
+        "explanation": "e274 显示 Mysql01 磁盘读指标在 09:05:00 达到峰值 2.8，早于晚段中位数，符合故障特征。Mysql02 无对应峰值证据。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e275 显示 Mysql01 CPU 在 09:07 有波动，但缺乏与 09:05 磁盘峰值的同步性及持续上升趋势证据。需补查 CPU 具体数值以区分瓶颈类型。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Tomcat03",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e276 显示 Tomcat03 CPU 在 09:00-09:29 间波动，中位数稳定，缺乏明确故障峰值。需确认是否有瞬时飙升或日志报错支持高负载导致业务失败。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "09:00:00",
+        "end": "09:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认 Mysql01 在 09:05 磁盘读峰值前后是否存在 CPU 使用率同步飙升，以区分根因是磁盘 I/O 还是 CPU 负载。",
+        "basis_ids": [
+          "e274",
+          "e275"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat03",
+        "start": "09:00:00",
+        "end": "09:30:00",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "检查 Tomcat03 在 09:00-09:30 期间是否有报错日志或线程阻塞记录，验证高 CPU 是否导致业务失败。",
+        "basis_ids": [
+          "e276"
+        ]
+      },
+      {
+        "node_id": "device:Mysql02",
+        "start": "09:00:00",
+        "end": "09:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKRead"
+        ],
+        "focus": "确认 Mysql02 磁盘读指标是否正常，排除集群级磁盘故障，验证故障是否为 Mysql01 单点问题。",
+        "basis_ids": [
+          "e274"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17530,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 35,
+        "available_facts": 276
+      }
+    }
+  ],
+  "labels_used": false
+}

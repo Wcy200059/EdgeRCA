@@ -1,0 +1,61 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat04",
+        "reason": "high memory usage",
+        "time": "20:14:00.000",
+        "time_evidence_id": "e308",
+        "support_ids": [
+          "e308",
+          "e192"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 在 20:14:00 内存占用高达 88% (e308)，且该时段存在长调用 (e192)。其他 Tomcat 节点无如此极端内存指标。内存耗尽导致服务延迟，符合单故障特征。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql02",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql02 保留大量未加载观测，可能包含磁盘 I/O 异常。需补查确认其磁盘指标是否在 20:13-20:14 期间飙升，以排除其作为根因。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql02",
+        "start": "20:13:00",
+        "end": "20:14:30",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKPercentBusy",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadOps"
+        ],
+        "focus": "确认 Mysql02 在 20:13:40 长调用期间是否存在磁盘读写负载飙升，以验证其是否为导致 Tomcat 延迟的根因。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17674,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 57,
+        "available_facts": 298
+      }
+    }
+  ],
+  "labels_used": false
+}

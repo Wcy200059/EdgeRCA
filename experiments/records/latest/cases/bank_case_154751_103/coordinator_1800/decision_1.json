@@ -1,0 +1,100 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "apache01",
+        "reason": "high disk I/O read usage",
+        "time": "00:21:00",
+        "time_evidence_id": "e254",
+        "support_ids": [
+          "e254",
+          "e255",
+          "e256"
+        ],
+        "counter_ids": [],
+        "explanation": "apache01 在 00:21:00 出现磁盘读写（e254, e255）和读写总量（e256）激增，且状态为 triggered，符合高磁盘 I/O 特征。e256 显示规则在 00:29:00 仍为 triggered，表明问题持续。需确认是否导致下游 Mysql 连接超时或业务失败，并排查是否由上游流量突增引起。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 本地磁盘指标缺失（e276 明确缺失 DiskRead/DiskWrite），无法直接确认其磁盘状态。已知 apache01 在 00:21:00 磁盘满载，极可能将负载传导至 Mysql01。需补查 Mysql01 磁盘指标及与 apache01 的调用关系，验证根因是否确为数据库层。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "apache01",
+        "reason": "high disk space usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "apache01 磁盘使用率（PercentBusy）在 00:22:00 触发（e253），但 e253 仅显示瞬时峰值，未确认持续高水位。磁盘空间耗尽通常导致进程无法写入，进而引发 I/O 阻塞。需区分是空间不足导致的 I/O 停顿，还是 I/O 繁忙导致的空间累积。需补查磁盘空间指标。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "00:20:00",
+        "end": "00:25:00",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "DiskRead",
+          "DiskWrite",
+          "SpaceUsed"
+        ],
+        "focus": "确认 Mysql01 在 00:20:00-00:25:00 期间是否存在磁盘 I/O 激增或磁盘空间耗尽现象，以验证 apache01 的高 I/O 是否传导至此。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:apache01",
+        "start": "00:20:00",
+        "end": "00:25:00",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "检查 apache01 在此时段的调用目标，确认高磁盘 I/O 是否由本地业务处理或转发至 Mysql01 引起，寻找长调用证据。",
+        "basis_ids": [
+          "e256"
+        ]
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "00:20:00",
+        "end": "00:25:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Mysql-MySQL_3306_SpaceUsedPercent"
+        ],
+        "focus": "直接获取 Mysql01 磁盘使用率数值，验证 h3 中关于磁盘空间耗尽的假设。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17592,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 37,
+        "available_facts": 278
+      }
+    }
+  ],
+  "labels_used": false
+}

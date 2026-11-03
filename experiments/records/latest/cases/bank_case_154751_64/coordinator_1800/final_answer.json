@@ -1,0 +1,28 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Tomcat01",
+        "reason": "high JVM CPU load",
+        "time": "15:31:00.000",
+        "evidence_ids": [
+          "e289",
+          "e256"
+        ],
+        "explanation": "Tomcat01 在 15:31:00 首次出现 Allocation Failure 触发 GC(e289)，且上游 IG01 调用其 P95 高达 10014ms(e256)。虽缺 CPU 数值，但 GC 频繁是 CPU/内存过载的直接表现，且无其他组件有更强直接证据。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615363200000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1",
+  "field_repairs": [],
+  "warnings": []
+}

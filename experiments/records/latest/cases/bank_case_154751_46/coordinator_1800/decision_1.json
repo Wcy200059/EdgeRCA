@@ -1,0 +1,75 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "MG02",
+        "reason": "high CPU usage",
+        "time": "13:53:00.000",
+        "time_evidence_id": "e57",
+        "support_ids": [
+          "e57",
+          "e328"
+        ],
+        "counter_ids": [],
+        "explanation": "e57显示MG02 CPU在13:53:00从27%骤升至51%，并在13:54-13:56维持在76%高位，符合故障特征。e328确认了该时段CPU持续高企。虽无直接OOM日志，但CPU满载常导致业务延迟。需确认是否导致下游超时。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Tomcat03",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "公开候选包含Tomcat03。虽其上游IG01存在高延迟（e223），且Tomcat03有未加载的JVM指标，但当前证据中无明确JVM CPU高负载数值或OOM日志。需定向补查Tomcat03的JVM指标以验证或排除。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:MG02",
+        "start": "13:53:00",
+        "end": "13:57:00",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "检查MG02在CPU高负载期间是否有JVM GC频繁、线程阻塞或应用报错日志，确认高CPU是否由JVM压力引起。",
+        "basis_ids": [
+          "e57"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat03",
+        "start": "13:53:00",
+        "end": "13:57:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-Operating System_7779_JVM_JVM_CPULoad"
+        ],
+        "focus": "获取Tomcat03的JVM CPU负载具体数值，确认是否存在高负载导致处理延迟。",
+        "basis_ids": [
+          "e223"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17780,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 50,
+        "available_facts": 320
+      }
+    }
+  ],
+  "labels_used": false
+}

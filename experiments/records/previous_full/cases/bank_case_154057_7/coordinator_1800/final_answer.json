@@ -1,0 +1,30 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Tomcat03",
+        "reason": "high JVM CPU load",
+        "time": "23:16:00",
+        "evidence_ids": [
+          "e36",
+          "e33",
+          "e37",
+          "e38",
+          "e78",
+          "e79"
+        ],
+        "explanation": "Tomcat03 在 23:16 触发 BusyThread 规则 (e36)，随后 CPU 等待 IO 上升 (e33)，且存在长调用 (e38)。其下游 MG01/02 的 P95 延迟显著高于其他实例 (e78/e79)，表明该节点是延迟瓶颈。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615044600000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1"
+}

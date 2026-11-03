@@ -1,0 +1,93 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Mysql02",
+        "reason": "high CPU usage",
+        "time": "16:25:00",
+        "time_evidence_id": "e126",
+        "support_ids": [
+          "e126"
+        ],
+        "counter_ids": [],
+        "explanation": "e126 显示 Mysql02 CPU 在 16:25 触发高使用率规则，早于 dockerB2 的长调用。但缺乏下游业务失败证据，且无磁盘 I/O 或内存指标佐证，需补查 Mysql02 负载详情及下游影响。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql02",
+        "start": "16:24:00",
+        "end": "16:26:00",
+        "tools": [
+          "get_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKPercentBusy"
+        ],
+        "focus": "核实 Mysql02 在 16:25 CPU 升高时的内存与磁盘 I/O 状态，确认是否为资源耗尽导致的业务延迟。",
+        "basis_ids": [
+          "e126"
+        ]
+      },
+      {
+        "node_id": "device:dockerB2",
+        "start": "16:25:00",
+        "end": "16:27:00",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "获取 dockerB2 在 16:25:32 长调用期间的实际父子调用链，确认延迟来源是自身处理慢还是下游响应慢。",
+        "basis_ids": [
+          "e287"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat02",
+        "start": "16:24:00",
+        "end": "16:26:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "检查 Tomcat02 在 dockerB2 长调用发生时的 CPU 负载，判断是否存在上游服务压力传导。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "component must use a public candidate or null",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "unresolved",
+            "component": "dockerB2",
+            "reason": "network latency",
+            "time": "16:25:32",
+            "time_evidence_id": "e287",
+            "support_ids": [
+              "e287"
+            ],
+            "counter_ids": [],
+            "explanation": "e287 显示 dockerB2 出现单次 66s 长调用，但 e284/e285 显示规则已清除，且无明确父子链路指向根因。需确认该长调用是否由上游资源耗尽引起，或仅为偶发网络抖动。"
+          },
+          "error": "component must use a public candidate or null"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

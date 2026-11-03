@@ -1,0 +1,70 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat04",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "15:58:48.000",
+        "time_evidence_id": "e264",
+        "support_ids": [
+          "e264",
+          "e265"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 在 15:58:48 发生 Allocation Failure 且 GC 暂停达 112ms，随后在 15:56:04 出现 GCLocker Initiated GC。高频率 GC 与 Allocation Failure 是 OOM 的典型前兆，且该节点有明确日志支持。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat04",
+        "start": "15:30:00.000",
+        "end": "16:00:00.000",
+        "tools": [
+          "get_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "Tomcat-MEMORY_7441-MEMORY_JVMMemoryUsedPercent",
+          "OSLinux-CPU_CPU_CPUUserTime"
+        ],
+        "focus": "确认 Tomcat04 在 15:58 附近的 Heap 使用率是否达到阈值，并获取 JVM CPU 负载数据，以验证 OOM 是否由内存泄漏或 GC 风暴引起。",
+        "basis_ids": [
+          "e264",
+          "e265"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "h2: time 15:38:00.000 requires e240 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "not_supported",
+            "component": "apache01",
+            "reason": "high CPU usage",
+            "time": "15:38:00.000",
+            "time_evidence_id": "e240",
+            "support_ids": [],
+            "counter_ids": [
+              "e240",
+              "e241",
+              "e242"
+            ],
+            "explanation": "apache01 在 15:38 和 15:42 虽有 CPU 波动，但随后回落。TCP-CLOSE-WAIT 在 15:59 才触发，与 CPU 高峰无直接因果。且题目限定单故障，Apache 的瞬时波动不足以解释后续 Tomcat04 的严重 OOM 事件。"
+          },
+          "error": "h2: time 15:38:00.000 requires e240 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

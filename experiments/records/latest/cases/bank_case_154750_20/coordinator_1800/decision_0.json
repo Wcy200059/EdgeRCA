@@ -1,0 +1,85 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat01",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "15:25:07.000",
+        "time_evidence_id": "e242",
+        "support_ids": [
+          "e242",
+          "e257",
+          "e258",
+          "e259",
+          "e260",
+          "e261",
+          "e262",
+          "e263",
+          "e264"
+        ],
+        "counter_ids": [],
+        "explanation": "apache01 和 apache02 在 15:25:07 至 15:29 期间集中出现大量 502 错误，时间高度重合。Tomcat01 作为上游服务，其资源耗尽导致下游无法处理请求是合理推断。虽无直接 OOM 日志，但业务失败现象明确且集中在该时段。"
+      },
+      {
+        "id": "h2",
+        "assessment": "supported",
+        "component": "Tomcat02",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "15:25:34.000",
+        "time_evidence_id": "e257",
+        "support_ids": [
+          "e257",
+          "e258",
+          "e259",
+          "e260",
+          "e261",
+          "e262",
+          "e263",
+          "e264"
+        ],
+        "counter_ids": [],
+        "explanation": "apache02 在同一时段（15:25:34 开始）也报告了针对 Tomcat02 路径的 502 错误。考虑到 Tomcat01 和 Tomcat02 共享基础设施或负载模式，两者同时或相继发生内存溢出导致服务不可用是合理的。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "15:25:00.000",
+        "end": "15:30:00.000",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "获取 Tomcat01 在 15:25 至 15:30 期间的日志，确认是否存在 OOM 错误、Full GC 暂停或堆内存耗尽的明确记录，以验证内存故障假设。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat02",
+        "start": "15:25:00.000",
+        "end": "15:30:00.000",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "获取 Tomcat02 在 15:25 至 15:30 期间的日志，确认是否存在与 Tomcat01 类似的 OOM 或严重资源耗尽事件，以区分是单机故障还是集群级问题。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17725,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 68,
+        "available_facts": 335
+      }
+    }
+  ],
+  "labels_used": false
+}

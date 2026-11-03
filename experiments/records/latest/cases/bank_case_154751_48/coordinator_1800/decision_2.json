@@ -1,0 +1,97 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "MG02",
+        "reason": "high CPU usage",
+        "time": "06:26:00",
+        "time_evidence_id": "e59",
+        "support_ids": [
+          "e59",
+          "e54"
+        ],
+        "counter_ids": [],
+        "explanation": "MG02 CPU 在 06:26 从 25% 升至 43% (e59)，且该时段出现慢调用 (e54)。MG02 是下游关键节点，CPU 飙升可能是根因或导致下游延迟的主因。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat02 连接延迟高 (e190)，但缺乏 JVM 具体指标证据。需补查确认是否为高 CPU 负载导致，而非单纯网络或上游问题。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 磁盘 I/O 无直接观测 (e105 缺失)。虽磁盘空间未爆满，但无法排除 I/O 等待导致的延迟。需补查磁盘 I/O 指标确认是否存在高负载。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:MG02",
+        "start": "06:26:00",
+        "end": "06:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUMemUsedMemPerc"
+        ],
+        "focus": "验证 MG02 CPU 升高期间是否伴随内存压力，确认是否为资源耗尽导致的服务异常。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "06:20:00",
+        "end": "06:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Mysql-MySQL_3306_IOWait"
+        ],
+        "focus": "确认 Mysql01 是否存在高磁盘 I/O 等待，排除磁盘瓶颈导致的数据库响应延迟。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat02",
+        "start": "06:20:00",
+        "end": "06:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "获取 Tomcat02 在延迟高峰期的 JVM CPU 使用率，验证是否因应用负载过高导致响应慢。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17686,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 48,
+        "available_facts": 276
+      }
+    }
+  ],
+  "labels_used": false
+}

@@ -1,0 +1,170 @@
+{
+  "case_id": "51e25885838bc109",
+  "cutoff_ms": 1616671800000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 348
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 353
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 355
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 357
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Tomcat02",
+      "start": "19:00:00.000",
+      "end": "19:30:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "Tomcat-MEMORY_7441-MEMORY_JVMMaxMemory",
+        "Tomcat-MEMORY_7441-MEMORY_JVMUsedMemory"
+      ],
+      "focus": "获取 Tomcat02 全时段 JVM 堆内存最大值和使用量，确认 19:04 峰值后是否发生内存溢出 (OOM) 或内存持续增长导致服务不可用。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Tomcat02",
+      "start": "19:00:00.000",
+      "end": "19:30:00.000",
+      "tools": [
+        "get_logs"
+      ],
+      "metrics": [],
+      "focus": "检索 Tomcat02 全时段日志，查找 OOM 错误、Full GC 停顿或线程阻塞信息，以验证内存故障或 CPU 过载的具体表现。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Tomcat01",
+      "start": "19:00:00.000",
+      "end": "19:30:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil",
+        "Tomcat-MEMORY_7441-MEMORY_JVMMemoryUsedPercent"
+      ],
+      "focus": "检查 Tomcat01 全时段 CPU 和 JVM 内存使用情况，确认故障是否仅局限于 Tomcat02 还是已扩散至集群其他节点。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Tomcat02",
+      "start": "19:00:00.000",
+      "end": "19:30:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "完整查看 Tomcat02 全时段 CPU 曲线，确认 19:04 峰值后是否出现二次高峰或持续高负载，以验证其是否为持续根因。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Tomcat01",
+      "start": "19:15:00.000",
+      "end": "19:20:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil",
+        "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+      ],
+      "focus": "检查 Tomcat01 在 19:15 后的 CPU 和内存情况，判断故障是否仅局限于 Tomcat02 还是已扩散至集群其他节点。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Tomcat04",
+      "start": "19:15:00.000",
+      "end": "19:20:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil",
+        "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+      ],
+      "focus": "检查 Tomcat04 在 19:15 后的资源状态，辅助判断故障范围是否涉及多个 Tomcat 实例。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Tomcat01",
+      "start": "19:00:00.000",
+      "end": "19:30:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "检查 Tomcat01 的 CPU 使用率，确认是否存在与 Tomcat02 类似的早期高峰，以排除单点故障或集群级 CPU 压力。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Tomcat04",
+      "start": "19:00:00.000",
+      "end": "19:30:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "检查 Tomcat04 的 CPU 使用率，确认是否存在异常波动，辅助判断故障范围。",
+      "basis_ids": []
+    }
+  ],
+  "peak_gpu_gib": 20.987836360931396,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e338",
+      "e339",
+      "e340",
+      "e341",
+      "e342",
+      "e343",
+      "e344",
+      "e345",
+      "e346",
+      "e347",
+      "e348"
+    ],
+    "notes": "filter invalid; retained all global evidence",
+    "attempts": [
+      {
+        "valid": false,
+        "error": "ids must be unique IDs from global evidence"
+      },
+      {
+        "valid": false,
+        "error": "ids must be unique IDs from global evidence"
+      }
+    ],
+    "fallback": true,
+    "available": 11
+  }
+}

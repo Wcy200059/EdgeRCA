@@ -1,0 +1,124 @@
+{
+  "case_id": "983b3cc637c9117a",
+  "cutoff_ms": 1615035600000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 269
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 304
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 308
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 310
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Mysql01",
+      "start": "20:30:00",
+      "end": "20:50:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKAvgServ",
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKAvgServ",
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdc_DSKAvgServ",
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKTps",
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKTps",
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdc_DSKTps"
+      ],
+      "focus": "核实 Mysql01 在 20:30-20:50 期间是否存在高磁盘 I/O 读取活动，以验证或排除其作为高 CPU 负载根因的可能性。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:IG02",
+      "start": "20:37:00",
+      "end": "20:39:00",
+      "tools": [
+        "get_calls"
+      ],
+      "metrics": [],
+      "focus": "确认 IG02 在 20:38 长调用时的具体下游目标，判断是网络问题还是调用下游资源耗尽导致。",
+      "basis_ids": [
+        "e35"
+      ]
+    },
+    {
+      "node_id": "device:Tomcat04",
+      "start": "20:45:00",
+      "end": "20:50:00",
+      "tools": [
+        "get_calls"
+      ],
+      "metrics": [],
+      "focus": "检查 Tomcat04 在 CPU 高负载期间（20:45-20:50）是否有大量慢调用发出，或其上游调用是否因此变慢。",
+      "basis_ids": [
+        "e180"
+      ]
+    }
+  ],
+  "peak_gpu_gib": 21.16592788696289,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e249",
+      "e250",
+      "e251",
+      "e252",
+      "e253",
+      "e254",
+      "e255",
+      "e256",
+      "e257",
+      "e258",
+      "e259",
+      "e260",
+      "e261",
+      "e262",
+      "e263",
+      "e264",
+      "e265",
+      "e266",
+      "e267",
+      "e268",
+      "e269",
+      "e270",
+      "e271",
+      "e272",
+      "e273",
+      "e274",
+      "e275",
+      "e276",
+      "e277",
+      "e278",
+      "e279",
+      "e280"
+    ],
+    "notes": "筛选所有涉及候选组件（Tomcat/MG/docker）间父子调用的观测。这些边直接关联候选组件，且包含调用量、P95/最大耗时及时间区间不匹配数，是分析资源瓶颈、传播链及异常模式的关键证据。e238-e248为业务统计，未体现组件间调用关系，故排除。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 43
+  }
+}

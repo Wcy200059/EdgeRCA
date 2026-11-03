@@ -1,0 +1,97 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "apache01",
+        "reason": "high CPU usage",
+        "time": "06:57:00.000",
+        "time_evidence_id": "e236",
+        "support_ids": [
+          "e236"
+        ],
+        "counter_ids": [],
+        "explanation": "e236 显示 apache01 CPU 空闲值在 06:57:00 骤降至 0.0，表明 CPU 满载。但需确认是否由下游资源争用或自身进程泄漏引起，且需排除其他节点类似现象。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "apache02",
+        "reason": "high CPU usage",
+        "time": "06:57:00.000",
+        "time_evidence_id": "e246",
+        "support_ids": [
+          "e246"
+        ],
+        "counter_ids": [],
+        "explanation": "e246 显示 apache02 CPU-2 在 06:57:00 触发规则（值达 2.0266），表明 CPU 使用率极高。需核实具体进程及是否影响业务，同时检查是否有其他根因如网络延迟导致重试。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:apache01",
+        "start": "06:55:00",
+        "end": "06:59:00",
+        "tools": [
+          "get_metrics",
+          "get_calls"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUSysTime",
+          "OSLinux-CPU_CPU_CPUWio",
+          "OSLinux-CPU_CPU-2_SingleCpuUtil"
+        ],
+        "focus": "确认 06:57:00 CPU 满载的具体进程及调用链，区分是系统负载还是应用逻辑问题。",
+        "basis_ids": [
+          "e236"
+        ]
+      },
+      {
+        "node_id": "device:apache02",
+        "start": "06:55:00",
+        "end": "06:59:00",
+        "tools": [
+          "get_metrics",
+          "get_calls"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUSysTime",
+          "OSLinux-CPU_CPU-2_SingleCpuUtil"
+        ],
+        "focus": "确认 06:57:00 CPU-2 触发的具体原因，排查是否为同一根因扩散或独立事件。",
+        "basis_ids": [
+          "e246"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "06:55:00",
+        "end": "06:59:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUSysTime",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "检查 Tomcat01 在 Apache 负载高峰时段的 CPU 和内存表现，判断是否存在级联效应。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17591,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 29,
+        "available_facts": 252
+      }
+    }
+  ],
+  "labels_used": false
+}

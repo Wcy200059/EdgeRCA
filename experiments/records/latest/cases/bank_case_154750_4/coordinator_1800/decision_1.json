@@ -1,0 +1,97 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "IG01 存在长调用 (e22)，但当前仅观测到 CPU 波动 (e248, e249)，未确认是否持续高负载导致下游超时。需补查 IG01 的 CPU 具体数值及趋势，确认是否为根因。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat02 收到来自 IG01/IG02 的长调用 (e221)，且本地有 CPU 指标 (e127)。需确认长调用是否由 Tomcat02 自身 CPU 高引起，还是单纯作为受害者。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "MG01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "MG01 是下游瓶颈候选，但缺乏磁盘 I/O 观测。需补查 MG01 磁盘指标以排除或证实高磁盘 I/O 导致延迟的可能性。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:IG01",
+        "start": "00:30:00.000",
+        "end": "01:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-Operating System_7778_JVM_JVM_CPULoad",
+          "OSLinux-CPU_CPU_CPULoad"
+        ],
+        "focus": "获取 IG01 在故障窗口内的 JVM 和 OS CPU 具体数值及趋势，确认是否存在持续高负载。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:MG01",
+        "start": "00:30:00.000",
+        "end": "01:00:00.000",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "DISK",
+          "IO"
+        ],
+        "focus": "列出 MG01 可用的磁盘和 I/O 相关指标名称，以便后续查询是否存在高磁盘 I/O。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat02",
+        "start": "00:30:00.000",
+        "end": "01:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-Operating System_7778_JVM_JVM_CPULoad",
+          "OSLinux-CPU_CPU_CPULoad"
+        ],
+        "focus": "获取 Tomcat02 在故障窗口内的 CPU 具体数值，验证其是否为长调用的发起者或受害者。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17743,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 55,
+        "available_facts": 238
+      }
+    }
+  ],
+  "labels_used": false
+}

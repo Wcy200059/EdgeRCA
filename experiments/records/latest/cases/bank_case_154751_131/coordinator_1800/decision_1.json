@@ -1,0 +1,48 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat02",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "19:31:26.000",
+        "time_evidence_id": "e238",
+        "support_ids": [
+          "e238",
+          "e307"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat02 在 19:31:26 发生 Allocation Failure 导致频繁 GC (e238)，且 apache02 内存自 19:31 起持续 96% 满载 (e307)，符合内存耗尽引发 OOM 的时序与机制。"
+      },
+      {
+        "id": "h2",
+        "assessment": "supported",
+        "component": "apache02",
+        "reason": "high memory usage",
+        "time": "19:31:00.000",
+        "time_evidence_id": "e307",
+        "support_ids": [
+          "e307"
+        ],
+        "counter_ids": [],
+        "explanation": "apache02 内存自 19:31:00 起持续维持在 96% (e307)，该高负载状态先于 Tomcat02 的 GC 事件，是上游资源耗尽的根因。"
+      }
+    ],
+    "requests": []
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17415,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 38,
+        "available_facts": 329
+      }
+    }
+  ],
+  "labels_used": false
+}

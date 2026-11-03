@@ -1,0 +1,88 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat01",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "17:30:57.000",
+        "time_evidence_id": "e284",
+        "support_ids": [
+          "e284",
+          "e157"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat01 在 17:30:57 首次触发 Allocation Failure GC (e284)，随后出现 11s 长调用 (e157)。内存分配失败直接指向堆内存耗尽。其他 Tomcat 节点无此早期 GC 记录，且 Tomcat01 的长调用最早，符合单故障根因特征。"
+      },
+      {
+        "id": "h2",
+        "assessment": "not_supported",
+        "component": "Tomcat04",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [
+          "e284"
+        ],
+        "explanation": "Tomcat04 虽有长调用 (e190)，但缺乏早期 GC 或内存飙升证据。相比之下，Tomcat01 在 17:30:57 即出现 Allocation Failure GC (e284)，时间更早且机制明确。若为 OOM，Tomcat01 应为首发故障点，Tomcat04 的延迟更可能是传播或独立长任务，非根因。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 有海量未加载日志 (249 条) 和缺失的 Trace 证据 (e90)。虽然 Tomcat 长调用可能由数据库慢查询引起，但当前缺乏磁盘 I/O 指标直接读数或慢 SQL 日志证据。需补查磁盘 I/O 指标及日志以确认是否为根因，否则保留未知。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "17:30:00.000",
+        "end": "18:00:00.000",
+        "tools": [
+          "list_metrics",
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadsSec",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKUtilization"
+        ],
+        "focus": "核实 Mysql01 磁盘读取吞吐量和利用率是否在 17:30 后异常飙升，确认是否因数据库高 I/O 导致 Tomcat 下游延迟。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "17:30:00.000",
+        "end": "18:00:00.000",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "检索 Tomcat01 在 17:30:57 之后的日志，确认是否存在 Full GC 或 OOM Error 记录，以佐证内存耗尽导致服务延迟。",
+        "basis_ids": [
+          "e284"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17577,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 48,
+        "available_facts": 258
+      }
+    }
+  ],
+  "labels_used": false
+}

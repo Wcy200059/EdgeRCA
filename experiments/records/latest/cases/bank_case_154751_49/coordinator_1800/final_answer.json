@@ -1,0 +1,38 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Tomcat01",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "19:31:13.030",
+        "evidence_ids": [
+          "e131",
+          "e144"
+        ],
+        "explanation": "e131 记录 Tomcat01 在 19:31:13 出现 5465ms 超长调用，e144 显示线程繁忙。虽无直接 OOM 日志，但极端延迟与线程积压是 OOM 前典型表现，且需与 IG01 故障区分。"
+      },
+      {
+        "component": "IG01",
+        "reason": "high JVM CPU load",
+        "time": "19:34:00.000",
+        "evidence_ids": [
+          "e271",
+          "e268"
+        ],
+        "explanation": "e271 显示 IG01 在 19:34:00 JVM Heap 内存飙升至 1GB 峰值，且 e268 显示该节点日志未到达，符合资源耗尽导致服务不可用的特征。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1614859200000,
+  "model_judgment_verified": false,
+  "expected_failures": 2,
+  "answer_schema": "faults_v1",
+  "field_repairs": [],
+  "warnings": []
+}

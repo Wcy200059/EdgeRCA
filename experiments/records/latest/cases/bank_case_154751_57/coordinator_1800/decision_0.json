@@ -1,0 +1,99 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Mysql02",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql02 报告了 45 个观测，但当前仅加载了 1 条 CPU 指标（e97）。e97 显示 CPU 使用率波动但无明确 OOM 或持续高负载证据。未加载的磁盘 I/O 指标是关键缺口，无法确认是否因高磁盘读取导致下游延迟或业务失败。需补查磁盘指标。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql02",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql02 有 45 个观测，但仅加载了 1 条 CPU 指标。缺乏 JVM 内存、GC 暂停或 OOM 相关的日志/指标证据。虽然 CPU 有波动，但不足以直接推断 OOM。必须检查 JVM 内存和 GC 日志以排除或证实此假设。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "network latency",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "IG01 观测到最大延迟 15807ms (e7)，但这是单一长调用，且父子连接关系（e226-e228）显示 P95 仅为 122-142ms，大部分调用正常。长调用可能为偶发或下游阻塞，尚不足以证明网络链路本身存在持续性高延迟故障。需进一步确认网络指标或更多调用细节。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql02",
+        "start": "01:00:00",
+        "end": "01:30:00",
+        "tools": [
+          "get_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUReadIOPS",
+          "OSLinux-CPU_CPU_CPUWriteIOPS",
+          "JVM-Memory-HeapUsed",
+          "JVM-GC-TotalTime"
+        ],
+        "focus": "核实 Mysql02 是否存在高磁盘 I/O 读取负载或 JVM 内存溢出（OOM）及频繁 GC 现象，以解释其 45 个观测及潜在的业务影响。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:IG01",
+        "start": "01:23:08",
+        "end": "01:23:24",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "深入分析 IG01 在 01:23:08 至 01:23:24 期间导致 15807ms 长调用的具体父子调用链，确认是网络延迟、下游处理慢还是其他原因。",
+        "basis_ids": [
+          "e7"
+        ]
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "01:00:00",
+        "end": "01:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUReadIOPS",
+          "OSLinux-CPU_CPU_CPUWriteIOPS"
+        ],
+        "focus": "检查 Mysql01 的磁盘 I/O 指标，对比 Mysql02，确认是否双节点均存在磁盘压力，或仅 Mysql02 异常。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17524,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 54,
+        "available_facts": 242
+      }
+    }
+  ],
+  "labels_used": false
+}

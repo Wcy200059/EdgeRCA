@@ -1,0 +1,56 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "apache02",
+        "reason": "high CPU usage",
+        "time": "16:29:03.000",
+        "time_evidence_id": "e242",
+        "support_ids": [
+          "e242",
+          "e243",
+          "e244",
+          "e245",
+          "e246",
+          "e241",
+          "e307"
+        ],
+        "counter_ids": [],
+        "explanation": "apache02 在 16:29 密集出现 502 错误（e241-e246），且 e307 显示该时段前 CPU 使用率显著上升（从 0.47 升至 0.59 以上，虽非 100% 但结合上下文及 502 报错，高 CPU 导致服务崩溃是合理根因）。时间匹配最早报错点 e242。"
+      },
+      {
+        "id": "h2",
+        "assessment": "supported",
+        "component": "Tomcat04",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "16:13:42.000",
+        "time_evidence_id": "e208",
+        "support_ids": [
+          "e208",
+          "e27",
+          "e259",
+          "e297"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 在 16:13:42 收到 500 错误（e208），且存在长调用（e27, e297）。同时 dockerA2 在相近时间（16:10-16:11）出现长调用（e259），暗示上游或同集群资源紧张。虽无直接 OOM 数值，但 500 错误结合长调用是 OOM 的典型表现，且是窗口内最早故障。"
+      }
+    ],
+    "requests": []
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17746,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 35,
+        "available_facts": 308
+      }
+    }
+  ],
+  "labels_used": false
+}

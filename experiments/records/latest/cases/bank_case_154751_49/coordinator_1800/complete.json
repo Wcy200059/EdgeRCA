@@ -1,0 +1,179 @@
+{
+  "case_id": "982cc226d9e1ba8f",
+  "cutoff_ms": 1614859200000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 254
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 257
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 259
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 261
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:IG02",
+      "start": "19:30:00.000",
+      "end": "20:00:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil",
+        "JVM-Memory_7778_JVM_Memory_HeapMemoryUsage"
+      ],
+      "focus": "验证IG02在19:30-20:00期间的CPU及JVM内存状态，确认是否存在高负载导致下游延迟。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Tomcat01",
+      "start": "19:30:00.000",
+      "end": "20:00:00.000",
+      "tools": [
+        "get_logs"
+      ],
+      "metrics": [],
+      "focus": "检查Tomcat01在19:31:13长调用发生时的日志，确认是否存在OOM错误或GC停顿。",
+      "basis_ids": [
+        "e131"
+      ]
+    },
+    {
+      "node_id": "device:Tomcat01",
+      "start": "19:30:00",
+      "end": "20:00:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil",
+        "JVM-Memory_7778_JVM_Memory_HeapMemoryUsed"
+      ],
+      "focus": "验证Tomcat01在e131记录5465ms长调用时的CPU及JVM负载，区分是主动过载还是被动接收上游延迟。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Tomcat01",
+      "start": "19:30:00",
+      "end": "20:00:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil",
+        "OSLinux-CPU_CPU_CPUUserTime"
+      ],
+      "focus": "验证Tomcat01在19:31:13慢调用发生时的CPU负载，区分是主动过载还是被动接收上游延迟。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Tomcat02",
+      "start": "19:30:00",
+      "end": "20:00:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil",
+        "OSLinux-CPU_CPU_CPUUserTime"
+      ],
+      "focus": "验证Tomcat02 CPU负载，确认其是否因IG02延迟而被动积压，或自身存在独立的高负载故障。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:IG02",
+      "start": "19:30:00",
+      "end": "20:00:00",
+      "tools": [
+        "get_metrics",
+        "get_logs"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil",
+        "OSLinux-CPU_CPU_CPUUserTime"
+      ],
+      "focus": "验证IG02是否存在高CPU使用率，解释e28中观察到的6618ms长调用是否由本地计算过载引起。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Tomcat01",
+      "start": "19:30:00",
+      "end": "20:00:00",
+      "tools": [
+        "get_metrics",
+        "get_logs"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil",
+        "OSLinux-CPU_CPU_CPUUserTime"
+      ],
+      "focus": "验证Tomcat01 CPU负载情况，确认e131中的慢调用（5465ms）是否源于本地资源耗尽或JVM高负载。",
+      "basis_ids": []
+    }
+  ],
+  "peak_gpu_gib": 20.98679780960083,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e234",
+      "e235",
+      "e236",
+      "e237",
+      "e238",
+      "e239",
+      "e240",
+      "e241",
+      "e242",
+      "e243",
+      "e244",
+      "e245",
+      "e246",
+      "e247",
+      "e248",
+      "e249",
+      "e250",
+      "e251",
+      "e252",
+      "e253",
+      "e254",
+      "e255",
+      "e256",
+      "e257",
+      "e258",
+      "e259",
+      "e260",
+      "e261",
+      "e262",
+      "e263",
+      "e264",
+      "e265"
+    ],
+    "notes": "保留所有涉及候选组件（IG, MG, Tomcat, docker）间父子调用的观测。这些边揭示了服务调用链及延迟特征（P95/Max），有助于区分资源瓶颈传播路径。拒绝e223-e233因仅含业务文本统计，无调用拓扑或时序关联，无法定位故障组件或根因时段。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 43
+  }
+}

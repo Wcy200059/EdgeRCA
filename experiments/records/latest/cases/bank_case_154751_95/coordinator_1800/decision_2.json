@@ -1,0 +1,73 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat04",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "23:26:00",
+        "time_evidence_id": "e210",
+        "support_ids": [
+          "e210",
+          "e236"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 在 23:26:00 明确触发 JVM 内存使用率规则（e210），且 23:00-23:26 间发生 6 次 GC（e236），最后一次为 Allocation Failure。这符合 OOM 特征。虽然业务日志（e237）显示 200 状态，但 OOM 可能导致服务内部崩溃或响应超时，未直接体现在 HTTP 状态码中，需结合线程状态确认。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "apache01",
+        "reason": "high CPU usage",
+        "time": "23:16:00",
+        "time_evidence_id": "e214",
+        "support_ids": [
+          "e214"
+        ],
+        "counter_ids": [],
+        "explanation": "apache01 在 23:16:00 出现 CPU 使用率激增（e214），早于 Tomcat04 的 OOM 事件。若存在调用关系，可能是根因。但目前缺乏 apache01 到 Tomcat04 的父子调用证据，且 apache01 自身日志（e238）未显示错误，需补查调用链确认是否导致下游过载。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat04",
+        "start": "23:20:00",
+        "end": "23:30:00",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "检查 23:20-23:30 期间的日志，确认是否存在 Full GC 暂停、OOM 错误堆栈或大量线程处于 WAITING 状态，以验证内存溢出是否为直接根因。",
+        "basis_ids": [
+          "e236"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "23:00:00",
+        "end": "23:30:00",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "获取 Tomcat04 的调用统计及父子连接信息，确认是否存在来自 apache01 或其他组件的长调用或流量激增，以排查上游资源耗尽导致的连锁反应。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17697,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 43,
+        "available_facts": 238
+      }
+    }
+  ],
+  "labels_used": false
+}

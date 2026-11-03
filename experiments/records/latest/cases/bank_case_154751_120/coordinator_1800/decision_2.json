@@ -1,0 +1,101 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "apache01",
+        "reason": "high disk I/O read usage",
+        "time": "00:21:00",
+        "time_evidence_id": "e254",
+        "support_ids": [
+          "e254",
+          "e255",
+          "e256"
+        ],
+        "counter_ids": [],
+        "explanation": "apache01 在 00:21:00 磁盘读取量激增（e254），随后读写总量（e256）在 00:23:00 仍处高位。此现象符合磁盘 IO 过载导致业务延迟的机制。"
+      },
+      {
+        "id": "h2",
+        "assessment": "supported",
+        "component": "apache01",
+        "reason": "high disk space usage",
+        "time": "00:22:00",
+        "time_evidence_id": "e253",
+        "support_ids": [
+          "e253"
+        ],
+        "counter_ids": [],
+        "explanation": "apache01 在 00:22:00 磁盘使用率（sdb）达到 100%（e253），随后在 00:24:00 规则清除。磁盘空间耗尽可导致写入阻塞或服务不可用。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 有 87 条事实未加载，node_summary 提示有 1 条变化/错误优先展示但未在当前证据中体现具体数值。仅凭目录信息无法确认 CPU 是否过载及其时间。需补查具体指标以验证是否为根因。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "00:00:00",
+        "end": "00:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUUserTime",
+          "OSLinux-CPU_CPU_CPUSysTime",
+          "OSLinux-CPU_CPU_CPUidleutil"
+        ],
+        "focus": "获取 Mysql01 在 00:00-00:30 期间的 CPU 使用率具体数值，验证是否存在高 CPU 负载导致的问题。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "00:00:00",
+        "end": "00:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMFreeMem"
+        ],
+        "focus": "获取 Mysql01 在 00:00-00:30 期间的内存使用率及剩余量，验证是否存在内存耗尽或 OOM 风险。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:apache01",
+        "start": "00:21:00",
+        "end": "00:25:00",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "检查 apache01 在磁盘 IO 激增期间（00:21-00:25）的日志，确认是否有 I/O 等待、连接超时或业务报错。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17779,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 38,
+        "available_facts": 279
+      }
+    }
+  ],
+  "labels_used": false
+}

@@ -1,0 +1,76 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat04",
+        "reason": "high CPU usage",
+        "time": "20:48:00.000",
+        "time_evidence_id": "e180",
+        "support_ids": [
+          "e180",
+          "e18"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 在 20:48:00 观测到 CPU 使用率峰值 98.78% (e180)，早于部分慢调用。结合 IG01 到 Tomcat01 的延迟波动 (e18)，该节点高负载极可能是导致下游延迟或业务失败的根因，符合资源高→下游延迟的机制。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 有日志和指标记录但未加载具体数值，无法确认是否存在高磁盘 I/O 或是否引发了上游 Tomcat 的 CPU 飙升。需补查磁盘指标以验证或排除此假设。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "20:30:00",
+        "end": "21:00:00",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "disk",
+          "IO",
+          "read"
+        ],
+        "focus": "列出 Mysql01 所有可用的磁盘和 I/O 相关指标名称，以便后续确认是否存在高磁盘 I/O 读使用率。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "20:30:00",
+        "end": "21:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-CPU_CPU_CPUSysTime"
+        ],
+        "focus": "获取 Mysql01 的 CPU 使用率和系统时间指标数据，确认其 CPU 负载情况，以判断是否因 CPU 资源竞争导致下游 Tomcat 故障。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17764,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 52,
+        "available_facts": 304
+      }
+    }
+  ],
+  "labels_used": false
+}

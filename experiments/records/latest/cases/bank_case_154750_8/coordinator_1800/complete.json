@@ -1,0 +1,134 @@
+{
+  "case_id": "00c5c6140caea7f6",
+  "cutoff_ms": 1615046400000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 345
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 347
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 349
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 351
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Mysql01",
+      "start": "23:30:00.000",
+      "end": "00:00:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil",
+        "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+      ],
+      "focus": "验证 Mysql01 的 OS CPU 和内存使用率是否在故障时段出现显著升高，以确认是否由数据库负载过高导致上游 Tomcat 长调用。",
+      "basis_ids": [
+        "e98"
+      ]
+    },
+    {
+      "node_id": "device:Mysql01",
+      "start": "23:30:00.000",
+      "end": "00:00:00.000",
+      "tools": [
+        "get_logs"
+      ],
+      "metrics": [],
+      "focus": "检查 Mysql01 日志中是否存在 I/O 错误、死锁或长时间等待等线索，以辅助判断高 I/O 或锁竞争是否为根因。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Tomcat01",
+      "start": "23:30:00.000",
+      "end": "00:00:00.000",
+      "tools": [
+        "get_logs"
+      ],
+      "metrics": [],
+      "focus": "检查 Tomcat01 日志中是否存在 OOM、频繁 GC 或线程阻塞等错误信息，以排除 JVM 内存溢出或资源争用导致的长调用。",
+      "basis_ids": [
+        "e213"
+      ]
+    },
+    {
+      "node_id": "device:Mysql01",
+      "start": "23:30:00.000",
+      "end": "00:00:00.000",
+      "tools": [
+        "list_metrics"
+      ],
+      "metrics": [
+        "DISK",
+        "IO"
+      ],
+      "focus": "获取 Mysql01 可用的磁盘和 I/O 指标名称，以验证是否存在高磁盘 I/O 读操作指标。",
+      "basis_ids": []
+    }
+  ],
+  "peak_gpu_gib": 21.150163650512695,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e325",
+      "e326",
+      "e327",
+      "e328",
+      "e329",
+      "e330",
+      "e331",
+      "e332",
+      "e333",
+      "e334",
+      "e335",
+      "e336",
+      "e337",
+      "e338",
+      "e339",
+      "e340",
+      "e341",
+      "e342",
+      "e343",
+      "e344",
+      "e345",
+      "e346",
+      "e347",
+      "e348",
+      "e349",
+      "e350",
+      "e351",
+      "e352",
+      "e353",
+      "e354",
+      "e355",
+      "e356"
+    ],
+    "notes": "保留所有涉及候选组件（IG, MG, Tomcat, docker）的实际父子调用匹配证据。这些边包含调用次数、P95/最大延迟及时间区间不匹配数，是构建传播链、区分资源瓶颈与调用超时、定位故障源头的关键事实。其他业务统计观测（e314-e324）与候选组件无直接关联，故拒绝。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 43
+  }
+}

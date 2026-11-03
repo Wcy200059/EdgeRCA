@@ -1,0 +1,94 @@
+{
+  "case_id": "37610c21d2faf18e",
+  "cutoff_ms": 1616612400000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 297
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 298
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 301
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 303
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Mysql01",
+      "start": "02:30:00.000",
+      "end": "03:00:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdc_DSKReadBps"
+      ],
+      "focus": "获取 Mysql01 磁盘 sdc 每秒读吞吐量具体数值，确认 e300 请求的缺失指标是否真实存在且在此期间是否出现高负载，以验证磁盘 I/O 故障假设。",
+      "basis_ids": [
+        "e300"
+      ]
+    },
+    {
+      "node_id": "device:apache01",
+      "start": "02:30:00.000",
+      "end": "03:00:00.000",
+      "tools": [
+        "get_calls"
+      ],
+      "metrics": [],
+      "focus": "获取 apache01 的调用链详情，确认 02:48-02:58 期间是否存在长调用或下游服务阻塞，以验证高 CPU 是否由计算密集型任务或网络等待引起。",
+      "basis_ids": [
+        "e268",
+        "e270",
+        "e271"
+      ]
+    }
+  ],
+  "peak_gpu_gib": 21.162039756774902,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e287",
+      "e288",
+      "e289",
+      "e290",
+      "e291",
+      "e292",
+      "e293",
+      "e294",
+      "e295",
+      "e296",
+      "e297"
+    ],
+    "notes": "filter invalid; retained all global evidence",
+    "attempts": [
+      {
+        "valid": false,
+        "error": "ids must be unique IDs from global evidence"
+      },
+      {
+        "valid": false,
+        "error": "ids must be unique IDs from global evidence"
+      }
+    ],
+    "fallback": true,
+    "available": 11
+  }
+}

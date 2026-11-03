@@ -1,0 +1,89 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat04",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "17:59:24.000",
+        "time_evidence_id": "e196",
+        "support_ids": [
+          "e196"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 在 17:59:24 明确记录了一次 HTTP 500 错误，请求路径为 ServiceTest9.json。这是本窗口期内唯一明确的业务失败证据。虽然其他节点有 CPU/内存波动或长调用，但缺乏明确的失败关联。Tomcat04 的 OOM 最符合单点故障特征。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat02 有 CPU 上升趋势（e143），但缺乏明确的业务失败或下游超时直接归因于该节点的强证据。需确认 CPU 高是否导致了具体的调用失败或超时，目前缺口在于具体的失败调用链。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat04",
+        "start": "17:55:00.000",
+        "end": "18:00:00.000",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "获取 17:55-18:00 期间的详细日志，特别是 17:59:24 报错前后的 JVM GC 暂停、堆内存使用情况（Heap Usage）及线程栈信息，以确认是否为 OOM 导致。",
+        "basis_ids": [
+          "e196"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat02",
+        "start": "17:50:00.000",
+        "end": "18:00:00.000",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "查询 Tomcat02 的调用链，确认是否存在大量超时（P95 高）或失败的调用，以验证 CPU 高是否导致了业务中断。",
+        "basis_ids": [
+          "e143"
+        ]
+      },
+      {
+        "node_id": "device:dockerB2",
+        "start": "17:54:00.000",
+        "end": "18:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认 dockerB2 在 17:54-18:00 期间的 CPU 和内存具体数值，判断其是否在 17:59 前已出现资源耗尽迹象，排除其作为根因的可能性。",
+        "basis_ids": [
+          "e244",
+          "e247"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17687,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 71,
+        "available_facts": 294
+      }
+    }
+  ],
+  "labels_used": false
+}

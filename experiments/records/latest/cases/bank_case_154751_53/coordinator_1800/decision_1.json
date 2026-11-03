@@ -1,0 +1,61 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "apache01",
+        "reason": "high memory usage",
+        "time": "04:30:00.000",
+        "time_evidence_id": "e231",
+        "support_ids": [
+          "e231",
+          "e286"
+        ],
+        "counter_ids": [],
+        "explanation": "e231 显示 apache01 内存占用在 04:30:00 触发并持续至 04:32:00，占比高达 96-97%。e286 确认该趋势持续至窗口结束。如此高的内存使用率极可能导致系统不可用或触发 OOM，符合单故障特征。"
+      },
+      {
+        "id": "h2",
+        "assessment": "not_supported",
+        "component": "MG01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [
+          "e43"
+        ],
+        "explanation": "e43 显示 MG01 在窗口内无日志记录到达。虽然本地有未加载的磁盘 I/O 观测，但缺乏任何数值证据支持高磁盘 I/O 故障。在已有强内存证据的情况下，此假设缺乏支持。"
+      },
+      {
+        "id": "h3",
+        "assessment": "not_supported",
+        "component": "Tomcat01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [
+          "e186"
+        ],
+        "explanation": "e186 显示 Tomcat01 存在个别长调用（495ms），但 P95 仅为 89ms，且无 CPU 使用率指标支持高负载。长调用可能是内存不足导致的 GC 停顿或等待，而非 CPU 瓶颈。证据不足以支持高 CPU 为根因。"
+      }
+    ],
+    "requests": []
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17371,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 57,
+        "available_facts": 275
+      }
+    }
+  ],
+  "labels_used": false
+}

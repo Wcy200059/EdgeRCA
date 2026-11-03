@@ -1,0 +1,76 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Mysql01",
+        "reason": "high CPU usage",
+        "time": "02:05:00",
+        "time_evidence_id": "e66",
+        "support_ids": [
+          "e66"
+        ],
+        "counter_ids": [],
+        "explanation": "Mysql01 在 02:05:00 出现 CPU 使用率峰值 97.66% (e66)，随后回落。该时间点早于其他组件的明显异常，且无直接反证。其他节点虽有长调用，但多为下游表现或孤立事件，缺乏根因证据。"
+      },
+      {
+        "id": "h2",
+        "assessment": "not_supported",
+        "component": "Tomcat03",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [
+          "e270"
+        ],
+        "explanation": "Tomcat03 的磁盘读取指标 (e270) 在观测窗口内数值为 0.0，无高负载证据，不支持该假设。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "02:00:00",
+        "end": "02:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认 Mysql01 CPU 在 02:05:00 前后是否持续处于高位或存在波动，以验证 CPU 峰值是否为持续故障。",
+        "basis_ids": [
+          "e66"
+        ]
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "02:00:00",
+        "end": "02:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKRead"
+        ],
+        "focus": "检查 Mysql01 磁盘读取指标，排除磁盘 I/O 高负载导致 CPU 飙升的可能性。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17722,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 49,
+        "available_facts": 260
+      }
+    }
+  ],
+  "labels_used": false
+}

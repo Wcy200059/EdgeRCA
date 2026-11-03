@@ -1,0 +1,126 @@
+{
+  "reply": {
+    "hypotheses": [],
+    "requests": [
+      {
+        "node_id": "device:dockerA2",
+        "start": "15:00:00",
+        "end": "15:30:00",
+        "tools": [
+          "get_calls",
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认15:03至15:29期间最大调用时长规则触发的具体调用链（父调用是谁），并检查CPU和内存使用率是否异常升高导致处理变慢。",
+        "basis_ids": [
+          "e234"
+        ]
+      },
+      {
+        "node_id": "device:dockerB1",
+        "start": "15:00:00",
+        "end": "15:30:00",
+        "tools": [
+          "get_calls",
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认15:01触发最大调用时长规则的具体调用链，并检查该节点在15:01及之后是否有持续的资源压力或异常调用。",
+        "basis_ids": [
+          "e241",
+          "e242"
+        ]
+      },
+      {
+        "node_id": "device:dockerB2",
+        "start": "15:00:00",
+        "end": "15:30:00",
+        "tools": [
+          "get_calls",
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认15:01触发最大调用时长规则的具体调用链，并检查该节点在15:01及之后是否有持续的资源压力或异常调用，以区分是独立故障还是受B1影响。",
+        "basis_ids": [
+          "e245",
+          "e246"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "component must use a public candidate or null",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 0,
+          "item": {
+            "id": "h1",
+            "assessment": "unresolved",
+            "component": "dockerA2",
+            "reason": "maximum_call_duration",
+            "time": null,
+            "time_evidence_id": null,
+            "support_ids": [
+              "e234"
+            ],
+            "counter_ids": [],
+            "explanation": "e234显示dockerA2在15:03-15:29期间多次触发最大调用时长规则（阈值5000ms），最后一次事件在15:29。这是明确的故障信号。但缺少具体的调用链证据（如谁调用了dockerA2导致其变慢）以及资源指标（CPU/Mem）确认根因。需补查调用关系和该节点资源。"
+          },
+          "error": "component must use a public candidate or null"
+        },
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "unresolved",
+            "component": "dockerB1",
+            "reason": "maximum_call_duration",
+            "time": null,
+            "time_evidence_id": null,
+            "support_ids": [
+              "e241",
+              "e242"
+            ],
+            "counter_ids": [],
+            "explanation": "e241和e242显示dockerB1在15:01触发过最大调用时长规则（阈值5000ms，实际10322ms）。这符合故障特征。但该事件发生在窗口早期（15:01），且之后未见持续触发，需确认是否构成唯一故障点，并查找其上游调用者及资源消耗情况。"
+          },
+          "error": "component must use a public candidate or null"
+        },
+        {
+          "section": "hypotheses",
+          "index": 2,
+          "item": {
+            "id": "h3",
+            "assessment": "unresolved",
+            "component": "dockerB2",
+            "reason": "maximum_call_duration",
+            "time": null,
+            "time_evidence_id": null,
+            "support_ids": [
+              "e245",
+              "e246"
+            ],
+            "counter_ids": [],
+            "explanation": "e245和e246显示dockerB2在15:01触发过最大调用时长规则（阈值5000ms，实际6708ms）。与dockerB1类似，这也是早期触发。需区分是独立故障还是与B1相关的连锁反应，并确认是否有后续影响导致业务失败。"
+          },
+          "error": "component must use a public candidate or null"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

@@ -1,0 +1,105 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat04",
+        "reason": "high CPU usage",
+        "time": "15:27:00",
+        "time_evidence_id": "e231",
+        "support_ids": [
+          "e231"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 在 15:27:00 出现 Busy 线程数激增（e231），疑似高 CPU 导致。但缺 OS 层 CPU 利用率证据确认根因，且未验证是否由下游 MySQL 阻塞引起。需补查 OS CPU 及下游连接。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql02",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql02 有 Aborted Clients 异常（e87），可能由磁盘 I/O 阻塞或网络延迟引起。当前无磁盘指标证据，且缺上游调用链证明。需补查磁盘 I/O 及网络延迟。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "apache01",
+        "reason": "high CPU usage",
+        "time": "15:16:00",
+        "time_evidence_id": "e233",
+        "support_ids": [
+          "e233"
+        ],
+        "counter_ids": [],
+        "explanation": "apache01 在 15:16:00 出现单核 CPU 飙升至 100%（e233）。但缺 JVM 指标排除应用层问题，且未确认是否引发下游故障。需补查 JVM 及下游影响。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat04",
+        "start": "15:25:00",
+        "end": "15:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认 15:27:00 Busy 线程激增时 OS 层 CPU 是否同步高负载，以区分应用逻辑与系统资源瓶颈。",
+        "basis_ids": [
+          "e231"
+        ]
+      },
+      {
+        "node_id": "device:apache01",
+        "start": "15:15:00",
+        "end": "15:20:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-Memory_7778_JVM_Memory_HeapMemoryUsage"
+        ],
+        "focus": "排查 apache01 CPU 飙升期间 JVM 堆内存是否泄漏或溢出，排除应用层内存问题导致的高 CPU。",
+        "basis_ids": [
+          "e233"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "basis_ids must use e IDs from current evidence",
+      "rejected_sections": [
+        {
+          "section": "requests",
+          "index": 1,
+          "item": {
+            "node_id": "device:Mysql02",
+            "start": "15:00:00",
+            "end": "15:30:00",
+            "tools": [
+              "list_metrics"
+            ],
+            "metrics": [
+              "DISK"
+            ],
+            "focus": "获取 Mysql02 可用的磁盘 I/O 相关指标名称，以便后续查询高磁盘使用率证据。",
+            "basis_ids": [
+              "e87"
+            ]
+          },
+          "error": "basis_ids must use e IDs from current evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

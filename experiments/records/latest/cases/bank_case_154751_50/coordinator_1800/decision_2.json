@@ -1,0 +1,116 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": "22:07:00.000",
+        "time_evidence_id": "e54",
+        "support_ids": [
+          "e54",
+          "e297",
+          "e265",
+          "e266"
+        ],
+        "counter_ids": [],
+        "explanation": "MG01 CPU 于 22:07 达峰值 40.26% (e54)。IG01 CPU 随后维持高位 (e297)。IG01 向 Tomcat01/02 发起大量调用且 P95 延迟显著 (e265, e266)。时间线吻合：资源高→计算负载高→下游延迟。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "IG02",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "IG02 有 JVM Heap 波动 (e17) 且向 Tomcat 发起大量高延迟调用 (e270, e272)。但缺乏 IG02 自身 CPU 高负载的直接指标证据，需补查确认是否由 CPU 过高引发。"
+      },
+      {
+        "id": "h4",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 在窗口期内无任何 Trace 记录到达 (e112)，无法直接确认其负载状态或 I/O 情况。虽无直接反证，但缺乏确认 I/O 瓶颈的指标数据，需补查磁盘指标以排除或证实。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:IG02",
+        "start": "22:00:00",
+        "end": "22:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认 IG02 在窗口期内 CPU 使用率是否出现显著升高或持续高位，以验证高 CPU 导致下游 Tomcat 延迟的假设。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "22:00:00",
+        "end": "22:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Mysql-MySQL_3306_DiskIO_Read"
+        ],
+        "focus": "获取 Mysql01 磁盘读 I/O 指标数值，确认是否存在 I/O 瓶颈导致业务失败。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql02",
+        "start": "22:00:00",
+        "end": "22:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Mysql-MySQL_3306_DiskIO_Read"
+        ],
+        "focus": "获取 Mysql02 磁盘读 I/O 指标数值，确认是否存在 I/O 瓶颈导致业务失败。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "use unique e IDs from current evidence; node overviews are not evidence",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 2,
+          "item": {
+            "id": "h3",
+            "assessment": "supported",
+            "component": "Tomcat01",
+            "reason": "high JVM CPU load",
+            "time": "22:00:00.000",
+            "time_evidence_id": "e167",
+            "support_ids": [
+              "e167",
+              "e179",
+              "e265",
+              "e269"
+            ],
+            "counter_ids": [],
+            "explanation": "Tomcat01 早期观测到 CPU 单核利用率峰值 100% (e167, time 22:00)。上游 IG01/IG02 均向其发起大量调用且 P95 延迟高 (e179, e265, e269)。证据支持 Tomcat01 因高负载导致处理延迟。"
+          },
+          "error": "use unique e IDs from current evidence; node overviews are not evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

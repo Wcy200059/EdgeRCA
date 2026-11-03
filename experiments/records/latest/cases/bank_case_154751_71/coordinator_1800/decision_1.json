@@ -1,0 +1,112 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": "03:40:00.000",
+        "time_evidence_id": "e263",
+        "support_ids": [
+          "e263",
+          "e4",
+          "e238",
+          "e240",
+          "e241",
+          "e242"
+        ],
+        "counter_ids": [],
+        "explanation": "IG01 在 03:40 出现 CPU 峰值 (99.78%)，且该时间点早于 Tomcat04 的长调用 (03:39:55 结束，但 e191 显示 03:39:53 开始，需确认因果方向，通常上游高负载导致下游排队)。e4 显示早段正常，e263 确认晚段高负载。下游 Tomcat04 在 e191 出现长调用，且 e238 显示 IG01->Tomcat04 连接存在高延迟 (P95 197ms, max 1889ms)，e240/241/242 显示 IG01 到 docker 节点也有高延迟，表明 IG01 处理瓶颈导致下游积压。"
+      },
+      {
+        "id": "h2",
+        "assessment": "not_supported",
+        "component": "Tomcat04",
+        "reason": "high CPU usage",
+        "time": "03:39:55.379",
+        "time_evidence_id": "e191",
+        "support_ids": [
+          "e191"
+        ],
+        "counter_ids": [
+          "e263"
+        ],
+        "explanation": "e191 仅显示 Tomcat04 存在长调用，未提供 CPU 或内存高负载的直接证据。相反，上游 IG01 (e263) 在 03:40 出现 CPU 峰值，且连接延迟 (e238) 指向 IG01 侧问题，Tomcat04 更可能是受压节点而非根因。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "MG01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "pending_requests 已请求 MG01 磁盘指标列表，尚未获取具体数值。e41 显示 MG01 有长调用，但无法确定是磁盘 I/O 导致还是其他原因。需等待 get_metrics 结果确认 I/O 瓶颈。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:MG01",
+        "start": "03:30:00.000",
+        "end": "04:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKRead",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKWrite"
+        ],
+        "focus": "确认 MG01 在 03:30-04:00 期间磁盘读写 I/O 是否存在显著升高，以验证是否因磁盘瓶颈导致下游 docker 节点延迟 (e239-e242) 及上游 Tomcat 调用变慢。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:IG01",
+        "start": "03:35:00.000",
+        "end": "03:45:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "获取 IG01 CPU 使用率在 03:35-03:45 的详细趋势，确认 03:40 峰值的持续时间和回落情况，排除瞬时抖动，确认为持续性高负载。",
+        "basis_ids": [
+          "e263",
+          "e4"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "03:35:00.000",
+        "end": "03:45:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "复核 Tomcat04 在长调用发生时的 CPU 和内存状态，确认是否因自身资源耗尽 (OOM/高 CPU) 导致，以排除根因在 Tomcat04 的可能性。",
+        "basis_ids": [
+          "e191"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17487,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 50,
+        "available_facts": 252
+      }
+    }
+  ],
+  "labels_used": false
+}

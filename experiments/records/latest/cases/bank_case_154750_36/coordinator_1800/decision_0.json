@@ -1,0 +1,87 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "apache01",
+        "reason": "high CPU usage",
+        "time": "22:35:24.000",
+        "time_evidence_id": "e187",
+        "support_ids": [
+          "e187",
+          "e188",
+          "e189",
+          "e200",
+          "e201",
+          "e202",
+          "e203",
+          "e204",
+          "e205",
+          "e206",
+          "e207",
+          "e208",
+          "e209",
+          "e210"
+        ],
+        "counter_ids": [],
+        "explanation": "Apache 节点在 22:35:24 至 22:39:12 期间出现大量 502 错误，涉及多个 ServiceTest 接口。虽然日志未直接显示 CPU 数值，但 502 通常由上游资源耗尽（如 CPU/内存）导致连接拒绝或处理超时引起。结合根因候选列表，高 CPU 是最可能的解释。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:apache01",
+        "start": "22:35:00",
+        "end": "22:40:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认 22:35-22:40 期间 Apache 节点的 CPU 使用率是否飙升，以验证 502 错误是否由高 CPU 导致。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:apache01",
+        "start": "22:35:00",
+        "end": "22:40:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "检查内存使用率，排除内存耗尽（OOM）作为 502 错误的根因。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:apache02",
+        "start": "22:35:00",
+        "end": "22:40:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "对比 Apache02 的 CPU 使用率，确认故障是否仅发生在 Apache01 还是集群普遍现象。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17770,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 72,
+        "available_facts": 260
+      }
+    }
+  ],
+  "labels_used": false
+}

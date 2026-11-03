@@ -1,0 +1,115 @@
+{
+  "case_id": "1c480a61dc70eef0",
+  "cutoff_ms": 1616569200000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 261
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 266
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 268
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 270
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Mysql01",
+      "start": "14:30:00.000",
+      "end": "14:35:00.000",
+      "tools": [
+        "get_logs"
+      ],
+      "metrics": [],
+      "focus": "检查窗口起始段日志中是否存在 I/O 等待超时、磁盘错误或连接重置等迹象。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Tomcat04",
+      "start": "14:30:00.000",
+      "end": "14:35:00.000",
+      "tools": [
+        "get_logs"
+      ],
+      "metrics": [],
+      "focus": "确认日志中是否有明确的 OOM 错误（如 OutOfMemoryError）或堆转储记录，以证实 Allocation Failure 导致崩溃。",
+      "basis_ids": [
+        "e264"
+      ]
+    },
+    {
+      "node_id": "device:Tomcat04",
+      "start": "14:30:00.000",
+      "end": "15:00:00.000",
+      "tools": [
+        "get_logs"
+      ],
+      "metrics": [],
+      "focus": "检查 Tomcat04 日志中是否有明确的 OOM 错误（如 OutOfMemoryError）或堆转储（Heap Dump）记录，以证实 e264 中的 Allocation Failure 导致了进程崩溃。",
+      "basis_ids": [
+        "e264"
+      ]
+    },
+    {
+      "node_id": "device:Mysql01",
+      "start": "14:30:00.000",
+      "end": "15:00:00.000",
+      "tools": [
+        "list_metrics"
+      ],
+      "metrics": [
+        "DISK",
+        "IO"
+      ],
+      "focus": "获取 Mysql01 可用的磁盘 I/O 相关指标名称列表，以便后续查询是否存在高 I/O 使用率。",
+      "basis_ids": []
+    }
+  ],
+  "peak_gpu_gib": 21.13662815093994,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e251",
+      "e252",
+      "e253",
+      "e254",
+      "e255",
+      "e256",
+      "e257",
+      "e258",
+      "e259",
+      "e260",
+      "e261"
+    ],
+    "notes": "filter invalid; retained all global evidence",
+    "attempts": [
+      {
+        "valid": false,
+        "error": "ids must be unique IDs from global evidence"
+      },
+      {
+        "valid": false,
+        "error": "ids must be unique IDs from global evidence"
+      }
+    ],
+    "fallback": true,
+    "available": 11
+  }
+}

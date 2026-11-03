@@ -1,0 +1,196 @@
+{
+  "case_id": "44ea6fd1f5d44ec0",
+  "cutoff_ms": 1614810600000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 269
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 274
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 276
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 278
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:MG02",
+      "start": "06:26:00",
+      "end": "06:30:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+      ],
+      "focus": "确认 MG02 CPU 升高期间是否伴随内存压力，验证是否为资源耗尽导致服务异常。",
+      "basis_ids": [
+        "e59"
+      ]
+    },
+    {
+      "node_id": "device:Tomcat02",
+      "start": "06:26:00",
+      "end": "06:30:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "JVM-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "获取 Tomcat02 在延迟高峰期的 JVM CPU 使用率，验证是否因应用负载过高导致响应慢。",
+      "basis_ids": [
+        "e190"
+      ]
+    },
+    {
+      "node_id": "device:Mysql01",
+      "start": "06:26:00",
+      "end": "06:30:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "Mysql-MySQL_3306_IOWait"
+      ],
+      "focus": "确认 Mysql01 是否存在高磁盘 I/O 等待，排除磁盘瓶颈导致的数据库响应延迟。",
+      "basis_ids": [
+        "e105"
+      ]
+    },
+    {
+      "node_id": "device:Mysql01",
+      "start": "06:20:00",
+      "end": "06:30:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "Mysql-MySQL_3306_IOWait"
+      ],
+      "focus": "确认 Mysql01 是否存在高磁盘 I/O 等待，排除磁盘瓶颈导致的数据库响应延迟。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Tomcat02",
+      "start": "06:20:00",
+      "end": "06:30:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "JVM-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "获取 Tomcat02 在延迟高峰期的 JVM CPU 使用率，验证是否因应用负载过高导致响应慢。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Tomcat02",
+      "start": "06:20:00",
+      "end": "06:30:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "获取 Tomcat02 在延迟高峰期的 OS CPU 使用率，验证是否因系统负载过高导致 JVM 响应慢。",
+      "basis_ids": [
+        "e190"
+      ]
+    },
+    {
+      "node_id": "device:Tomcat02",
+      "start": "06:00:00",
+      "end": "06:30:00",
+      "tools": [
+        "list_metrics",
+        "get_metrics"
+      ],
+      "metrics": [
+        "JVM-CPU_CPU_CPUCpuUtil",
+        "JVM-Memory_HeapMemoryUsage"
+      ],
+      "focus": "获取 Tomcat02 完整的 CPU 和内存指标目录及数值，验证是否存在高 JVM CPU 或内存溢出（OOM）迹象。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Mysql01",
+      "start": "06:00:00",
+      "end": "06:30:00",
+      "tools": [
+        "list_metrics",
+        "get_metrics"
+      ],
+      "metrics": [
+        "Mysql-MySQL_3306_IOWait",
+        "Mysql-MySQL_3306_DiskReads"
+      ],
+      "focus": "确认 Mysql01 是否存在高磁盘 I/O 等待或读取量激增，排除磁盘瓶颈导致的数据库响应延迟。",
+      "basis_ids": []
+    }
+  ],
+  "peak_gpu_gib": 21.14834690093994,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e249",
+      "e250",
+      "e251",
+      "e252",
+      "e253",
+      "e254",
+      "e255",
+      "e256",
+      "e257",
+      "e258",
+      "e259",
+      "e260",
+      "e261",
+      "e262",
+      "e263",
+      "e264",
+      "e265",
+      "e266",
+      "e267",
+      "e268",
+      "e269",
+      "e270",
+      "e271",
+      "e272",
+      "e273",
+      "e274",
+      "e275",
+      "e276",
+      "e277",
+      "e278",
+      "e279",
+      "e280"
+    ],
+    "notes": "保留所有涉及候选组件（IG, MG, Tomcat, docker）间实际父子调用匹配的观测。这些证据展示了组件间的调用关系、延迟（P95/Max）及时间区间不匹配情况，有助于区分资源故障与传播链，且时间均在故障窗口内。业务统计（e238-e248）因无具体组件关联且数值稳定，故拒绝。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 43
+  }
+}

@@ -1,0 +1,155 @@
+{
+  "case_id": "c8327626b5dbfea1",
+  "cutoff_ms": 1615271400000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 289
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 291
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 293
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 296
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Tomcat01",
+      "start": "14:00:00.000",
+      "end": "14:30:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "Tomcat-MEMORY_7441-MEMORY_JVMMemoryUsedPercent",
+        "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+      ],
+      "focus": "确认 Tomcat01 的 JVM 堆内存占比及 OS 内存使用率是否显著升高，以区分是 JVM 内存泄漏/耗尽还是系统内存不足。",
+      "basis_ids": [
+        "e301"
+      ]
+    },
+    {
+      "node_id": "device:MG01",
+      "start": "14:00:00.000",
+      "end": "14:30:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadSec"
+      ],
+      "focus": "直接查询 MG01 磁盘读取吞吐量（ReadSec），验证是否存在高磁盘 I/O 读负载导致下游延迟。",
+      "basis_ids": [
+        "e306"
+      ]
+    },
+    {
+      "node_id": "device:Redis01",
+      "start": "14:00:00.000",
+      "end": "14:30:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+      ],
+      "focus": "获取 Redis01 内存使用百分比的具体数值，确认命令处理速率上升是否伴随内存压力增大。",
+      "basis_ids": [
+        "e157"
+      ]
+    },
+    {
+      "node_id": "device:Tomcat01",
+      "start": "14:00:00.000",
+      "end": "14:30:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "Tomcat-MEMORY_7441-MEMORY_JVMMemoryUsedPercent",
+        "JVM-CPU_CPU-0_SingleCpuUtil"
+      ],
+      "focus": "获取 Tomcat01 JVM 内存占比和 CPU 使用率的具体数值，确认是否为 JVM 内部资源耗尽导致 OS CPU 满载。",
+      "basis_ids": [
+        "e301"
+      ]
+    },
+    {
+      "node_id": "device:MG01",
+      "start": "14:00:00.000",
+      "end": "14:30:00.000",
+      "tools": [
+        "list_metrics"
+      ],
+      "metrics": [
+        "DISK"
+      ],
+      "focus": "列出 MG01 节点所有包含 DISK 字段的指标名称，以便后续查询磁盘 I/O 使用情况，验证高磁盘读 I/O 假设。",
+      "basis_ids": []
+    }
+  ],
+  "peak_gpu_gib": 21.16251802444458,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e269",
+      "e270",
+      "e271",
+      "e272",
+      "e273",
+      "e274",
+      "e275",
+      "e276",
+      "e277",
+      "e278",
+      "e279",
+      "e280",
+      "e281",
+      "e282",
+      "e283",
+      "e284",
+      "e285",
+      "e286",
+      "e287",
+      "e288",
+      "e289",
+      "e290",
+      "e291",
+      "e292",
+      "e293",
+      "e294",
+      "e295",
+      "e296",
+      "e297",
+      "e298",
+      "e299",
+      "e300"
+    ],
+    "notes": "保留所有涉及候选组件（IG, MG, Tomcat, docker）间实际父子调用的观测。这些证据揭示了调用链结构、延迟分布（P95/Max）及时间区间匹配异常数，是区分资源故障传播链与正常背景的关键。e258-e268 为业务统计，无组件映射，拒绝。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 43
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Tomcat02",
+        "reason": "high JVM CPU load",
+        "time": "15:42:27.779",
+        "evidence_ids": [
+          "e24",
+          "e25",
+          "e26",
+          "e59"
+        ],
+        "explanation": "Tomcat02 存在长调用（e26 显示 15:42:27 开始 14s 延迟），且 e59 确认 IG02 调用 Tomcat02 时最大延迟 14290ms。虽无直接 CPU 指标，但长调用是 JVM 高负载的典型表现，相比其他组件（MG01 无磁盘指标触发，Tomcat01 等无明确长调用证据），Tomcat02 是唯一有明确长调用证据的节点。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615536000000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1"
+}

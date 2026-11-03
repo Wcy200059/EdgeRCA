@@ -1,0 +1,113 @@
+{
+  "case_id": "83cf63d8ed85ece7",
+  "cutoff_ms": 1616637600000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 300
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 303
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 304
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 307
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Mysql01",
+      "start": "09:44:00.000",
+      "end": "09:56:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKReadsSec",
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKWTps"
+      ],
+      "focus": "确认 Mysql01 在 Tomcat04 磁盘故障期间是否存在高磁盘读取速率和等待时间，验证是否为 I/O 瓶颈。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:MG01",
+      "start": "09:37:00.000",
+      "end": "09:44:00.000",
+      "tools": [
+        "get_calls"
+      ],
+      "metrics": [],
+      "focus": "检查 MG01 高 CPU 期间是否有大量发往 Mysql01 或 Tomcat04 的调用，验证其高 CPU 是否由下游负载引起。",
+      "basis_ids": [
+        "e30"
+      ]
+    },
+    {
+      "node_id": "device:Mysql01",
+      "start": "09:30:00.000",
+      "end": "10:00:00.000",
+      "tools": [
+        "get_calls"
+      ],
+      "metrics": [],
+      "focus": "获取 Mysql01 的调用统计，确认是否有来自 MG01 或 Tomcat 的长调用，以建立因果链。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:MG01",
+      "start": "09:30:00.000",
+      "end": "10:00:00.000",
+      "tools": [
+        "get_calls"
+      ],
+      "metrics": [],
+      "focus": "确认 MG01 高 CPU 期间是否有大量发往 Mysql01 的调用，验证 CPU 高是否由数据库查询引起。",
+      "basis_ids": []
+    }
+  ],
+  "peak_gpu_gib": 21.10597515106201,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e290",
+      "e291",
+      "e292",
+      "e293",
+      "e294",
+      "e295",
+      "e296",
+      "e297",
+      "e298",
+      "e299",
+      "e300"
+    ],
+    "notes": "filter invalid; retained all global evidence",
+    "attempts": [
+      {
+        "valid": false,
+        "error": "ids must be unique IDs from global evidence"
+      },
+      {
+        "valid": false,
+        "error": "ids must be unique IDs from global evidence"
+      }
+    ],
+    "fallback": true,
+    "available": 11
+  }
+}

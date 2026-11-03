@@ -1,0 +1,94 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": "16:41:00.000",
+        "time_evidence_id": "e230",
+        "support_ids": [
+          "e230"
+        ],
+        "counter_ids": [],
+        "explanation": "apache01 磁盘 sdb 在 16:41 触发规则 (e230)，但 e230 仅显示数值波动，未区分读写方向。Mysql01 无磁盘指标到达。需确认是否为高读 I/O 导致业务延迟。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "16:30:00",
+        "end": "16:35:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-Memory_HeapMemoryUsed"
+        ],
+        "focus": "获取 Tomcat01 JVM 堆内存使用量具体数值，验证长调用 (e217) 是否由 OOM 引起。",
+        "basis_ids": [
+          "e306"
+        ]
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "16:30:00",
+        "end": "16:45:00",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "DISK"
+        ],
+        "focus": "查询 Mysql01 磁盘相关指标名称，确认是否存在磁盘 I/O 监控数据以排查根因。",
+        "basis_ids": [
+          "e90"
+        ]
+      },
+      {
+        "node_id": "device:apache01",
+        "start": "16:40:00",
+        "end": "16:45:00",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "查看 apache01 在磁盘规则触发时段 (e230) 的日志，确认是否有磁盘错误或业务报错。",
+        "basis_ids": [
+          "e230"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "h1: time 16:30:00.000 requires e217 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 0,
+          "item": {
+            "id": "h1",
+            "assessment": "unresolved",
+            "component": "Tomcat01",
+            "reason": "JVM Out of Memory (OOM) Heap",
+            "time": "16:30:00.000",
+            "time_evidence_id": "e217",
+            "support_ids": [
+              "e217",
+              "e305",
+              "e306"
+            ],
+            "counter_ids": [],
+            "explanation": "Tomcat01 在 16:30:02 出现 12s 长调用 (e217)，且内存指标显示使用率持续 98% (e305)，但具体堆内存 (Heap) 未到达 (e306)。长调用可能是 OOM 症状而非根因，需确认堆内存是否耗尽。"
+          },
+          "error": "h1: time 16:30:00.000 requires e217 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

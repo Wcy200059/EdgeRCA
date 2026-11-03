@@ -1,0 +1,82 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat01",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "16:56:26.000",
+        "time_evidence_id": "e271",
+        "support_ids": [
+          "e168",
+          "e271",
+          "e243"
+        ],
+        "counter_ids": [],
+        "explanation": "e168 显示 Tomcat01 在 16:56 出现 10019ms 长调用。e271 记录同一时刻 (16:56:26) 发生 GC 暂停，原因为 'Allocation Failure'，强烈暗示堆内存耗尽。e243 确认上游连接正常，排除网络导致。符合单故障题目要求。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "high JVM CPU load",
+        "time": "16:56:02.079",
+        "time_evidence_id": "e168",
+        "support_ids": [
+          "e168",
+          "e243"
+        ],
+        "counter_ids": [],
+        "explanation": "e168 显示 Tomcat02 在 16:56 出现 10019ms 长调用。e243 确认 IG02 到 Tomcat02 连接正常。需补查 JVM CPU 负载及日志，区分是应用逻辑阻塞还是资源耗尽，目前缺乏 JVM 内部指标支持。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat02",
+        "start": "16:56:00",
+        "end": "16:57:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-CPU_7779_JVM_CPU_LoadAverage",
+          "JVM-Memory_7779_JVM_Memory_HeapMemoryUsage"
+        ],
+        "focus": "确认 Tomcat02 在 16:56 长调用期间 JVM CPU 负载是否异常升高，以及堆内存使用率是否接近上限，以验证高 CPU 或 OOM 假设。",
+        "basis_ids": [
+          "e168"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "16:56:00",
+        "end": "16:57:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-Memory_7779_JVM_Memory_HeapMemoryUsage"
+        ],
+        "focus": "确认 Tomcat01 在 16:56 GC 暂停期间 JVM 堆内存使用率是否接近或达到最大值，以证实 OOM 假设。",
+        "basis_ids": [
+          "e271"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17722,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 37,
+        "available_facts": 267
+      }
+    }
+  ],
+  "labels_used": false
+}

@@ -1,0 +1,112 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "apache01",
+        "reason": "high JVM CPU load",
+        "time": "19:15:04.000",
+        "time_evidence_id": "e305",
+        "support_ids": [
+          "e299",
+          "e300",
+          "e301",
+          "e302",
+          "e303",
+          "e304",
+          "e305",
+          "e306",
+          "e307",
+          "e308",
+          "e309",
+          "e321",
+          "e322",
+          "e323",
+          "e324",
+          "e325",
+          "e326",
+          "e327",
+          "e328",
+          "e329",
+          "e330",
+          "e331"
+        ],
+        "counter_ids": [],
+        "explanation": "Apache 节点在 19:15-19:19 期间集中出现大量 502 错误，涉及 ServiceTest 和 person 业务流。时间最早始于 19:15:04。鉴于 Tomcat 资源高但未直接观测到业务失败，且 Apache 作为反向代理最先暴露错误，推断其上游（如 Tomcat）因高 CPU 或 OOM 导致处理超时/拒绝连接。需确认 Tomcat 资源峰值时间是否与 Apache 错误起始时间一致。"
+      },
+      {
+        "id": "h2",
+        "assessment": "supported",
+        "component": "Tomcat02",
+        "reason": "high JVM CPU load",
+        "time": "19:04:00.000",
+        "time_evidence_id": "e11",
+        "support_ids": [
+          "e11"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat02 在 19:04 出现 CPU 使用率 94.4% 的极端峰值，随后在 19:17 回落。该时间点早于 Apache 的 502 错误爆发（19:15）。高 CPU 可能导致后续请求处理超时，进而引发 Apache 返回 502。虽然 19:04 时 Apache 未报错，但资源耗尽的影响可能延迟显现或仅影响部分长尾请求。需补查 Tomcat02 在 19:15 后的 CPU 状态及 JVM 堆内存情况，确认是否持续高压或发生 OOM。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat02",
+        "start": "19:00:00.000",
+        "end": "19:30:00.000",
+        "tools": [
+          "get_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "JVM-Memory_7779_JVM_Memory_HeapMemoryUsage"
+        ],
+        "focus": "核实 Tomcat02 在 19:04 峰值后是否持续高 CPU 或发生内存溢出，以及 19:15 错误爆发时的资源状态。",
+        "basis_ids": [
+          "e11"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "19:00:00.000",
+        "end": "19:30:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "检查 Tomcat01 的 CPU 使用率，确认是否存在与 Tomcat02 类似的早期高峰，以排除单点故障或集群级 CPU 压力。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "19:00:00.000",
+        "end": "19:30:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "检查 Tomcat04 的 CPU 使用率，确认是否存在异常波动，辅助判断故障范围。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17415,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 47,
+        "available_facts": 348
+      }
+    }
+  ],
+  "labels_used": false
+}

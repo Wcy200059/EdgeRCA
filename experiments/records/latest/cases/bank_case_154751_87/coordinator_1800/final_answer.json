@@ -1,0 +1,36 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Tomcat01",
+        "reason": "high JVM CPU load",
+        "time": "10:13:00.000",
+        "evidence_ids": [
+          "e205"
+        ],
+        "explanation": "e205显示Tomcat01繁忙线程数在10:13触发并持续至10:23，数值从5升至21.5，符合高JVM负载特征。OS CPU指标(e355)未飙升，支持JVM内部负载高的判断。"
+      },
+      {
+        "component": "Tomcat04",
+        "reason": "high disk I/O read usage",
+        "time": "10:25:52.026",
+        "evidence_ids": [
+          "e259"
+        ],
+        "explanation": "e259显示Tomcat04在10:25-10:26出现46秒长调用，p95达1089ms，max达46320ms。虽缺直接磁盘IO读数，但长尾调用是磁盘IO阻塞的典型症状，且该节点报告数极少，异常显著。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615516200000,
+  "model_judgment_verified": false,
+  "expected_failures": 2,
+  "answer_schema": "faults_v1",
+  "field_repairs": [],
+  "warnings": []
+}

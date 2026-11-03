@@ -1,0 +1,78 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Redis02",
+        "reason": "high memory usage",
+        "time": "18:10:00.000",
+        "time_evidence_id": "e167",
+        "support_ids": [
+          "e167"
+        ],
+        "counter_ids": [],
+        "explanation": "e167 显示 Redis02 内存于 18:10 达到 98% 峰值，且状态为 triggered。这是窗口内最显著的异常事件，符合单故障特征。虽暂无直接业务失败证据，但作为根因候选最强，需进一步确认其持续性及对下游影响。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "IG02",
+        "reason": "network latency",
+        "time": "18:00:23.394",
+        "time_evidence_id": "e34",
+        "support_ids": [
+          "e34"
+        ],
+        "counter_ids": [],
+        "explanation": "e34 记录 IG02 在 18:00:23 出现 15 秒长调用。但缺乏明确因果链证明此延迟导致单点业务失败，且后续分钟级延迟波动较大。需补查 IG02 调用详情及是否造成下游 Tomcat 超时。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Redis02",
+        "start": "18:10:00",
+        "end": "18:16:00",
+        "tools": [
+          "get_metrics",
+          "get_calls"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc",
+          "JVM-Memory_7779_JVM_Memory_HeapMemoryUsage"
+        ],
+        "focus": "核实 18:10-18:16 期间内存是否持续处于高位（非瞬时峰值），并检查该时段是否有长调用或 GC 暂停，以验证内存压力是否导致业务故障。",
+        "basis_ids": [
+          "e167"
+        ]
+      },
+      {
+        "node_id": "device:IG02",
+        "start": "18:00:23",
+        "end": "18:01:00",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "确认 18:00:23 长调用是否导致下游 Tomcat 节点超时或业务失败，验证网络延迟是否为根因。",
+        "basis_ids": [
+          "e34"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17705,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 38,
+        "available_facts": 355
+      }
+    }
+  ],
+  "labels_used": false
+}

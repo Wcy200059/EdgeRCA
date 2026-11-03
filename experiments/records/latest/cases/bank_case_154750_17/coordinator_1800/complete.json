@@ -1,0 +1,136 @@
+{
+  "case_id": "fc5432258f1f8cac",
+  "cutoff_ms": 1615260600000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 303
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 307
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 308
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 310
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Mysql02",
+      "start": "11:24:00.000",
+      "end": "11:30:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "JVM-Memory_7778_JVM_Memory_HeapMemoryUsage"
+      ],
+      "focus": "确认 Mysql02 内存是否确实达到耗尽状态，以及是否有内存回收或进程重启迹象，验证内存耗尽作为根因。",
+      "basis_ids": [
+        "e316"
+      ]
+    },
+    {
+      "node_id": "device:MG01",
+      "start": "11:24:00.000",
+      "end": "11:30:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil",
+        "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+      ],
+      "focus": "确认 MG01 在 Mysql02 故障时段自身资源正常，排除其自身 CPU/内存问题导致长调用，验证故障传播路径。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:MG01",
+      "start": "11:00:00.000",
+      "end": "11:30:00.000",
+      "tools": [
+        "list_metrics"
+      ],
+      "metrics": [
+        "NETWORK"
+      ],
+      "focus": "获取 MG01 可用网络指标名称，以便后续查询网络延迟或丢包情况，彻底排除网络故障作为 11:06 长调用的根因。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Tomcat01",
+      "start": "11:24:00.000",
+      "end": "11:30:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil",
+        "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+      ],
+      "focus": "检查 Tomcat01 在 Mysql02 故障期间是否有资源异常，确认其是否因等待数据库响应而出现高负载，验证故障传播路径。",
+      "basis_ids": []
+    }
+  ],
+  "peak_gpu_gib": 21.167176723480225,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e283",
+      "e284",
+      "e285",
+      "e286",
+      "e287",
+      "e288",
+      "e289",
+      "e290",
+      "e291",
+      "e292",
+      "e293",
+      "e294",
+      "e295",
+      "e296",
+      "e297",
+      "e298",
+      "e299",
+      "e300",
+      "e301",
+      "e302",
+      "e303",
+      "e304",
+      "e305",
+      "e306",
+      "e307",
+      "e308",
+      "e309",
+      "e310",
+      "e311",
+      "e312",
+      "e313",
+      "e314"
+    ],
+    "notes": "保留所有涉及候选组件（IG, MG, Tomcat, docker）的实际父子调用匹配证据。这些边包含调用次数、P95/最大延迟及时间区间不匹配数量，是构建传播链、定位高延迟源头及区分资源故障的关键依据。e272-e282 为业务统计，无组件映射，拒绝。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 43
+  }
+}

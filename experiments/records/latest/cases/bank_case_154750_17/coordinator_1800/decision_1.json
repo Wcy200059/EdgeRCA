@@ -1,0 +1,93 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Mysql02",
+        "reason": "high memory usage",
+        "time": "11:24:00.000",
+        "time_evidence_id": "e132",
+        "support_ids": [
+          "e132",
+          "e316"
+        ],
+        "counter_ids": [],
+        "explanation": "Mysql02 内存占用在 11:24-11:30 期间持续处于 98% 高位（e316），且 CPU 使用率同步上升（e132）。内存耗尽通常导致进程挂起或触发 GC，进而引发下游长调用（如 MG01 观测到的 9.5s 慢调用）。缺乏其他组件同等严重的资源指标，支持此单点故障。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql02",
+        "start": "11:24:00.000",
+        "end": "11:30:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认 Mysql02 内存是否确实达到耗尽状态（98%），以及是否有内存回收或进程重启的迹象，以验证内存耗尽作为根因。",
+        "basis_ids": [
+          "e316"
+        ]
+      },
+      {
+        "node_id": "device:MG01",
+        "start": "11:24:00.000",
+        "end": "11:30:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "检查 MG01 在 11:24 后是否有 CPU 飙升或内存压力，以排除其自身资源问题导致长调用，确认长调用是否主要由下游 Mysql02 引起。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "11:24:00.000",
+        "end": "11:30:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "检查 Tomcat01 在 Mysql02 故障期间是否有资源异常，确认其是否因等待数据库响应而出现高负载，验证故障传播路径。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "h2: time 11:06:12.514 requires e43 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "not_supported",
+            "component": "MG01",
+            "reason": "network latency",
+            "time": "11:06:12.514",
+            "time_evidence_id": "e43",
+            "support_ids": [],
+            "counter_ids": [
+              "e43"
+            ],
+            "explanation": "MG01 观测到的长调用（e43）发生在 11:06，而任务要求的故障时间为 11:00-11:30 内的唯一故障。更关键的证据是 Mysql02 在 11:24 出现的内存耗尽，时间上更符合“唯一故障”描述，且内存问题更能解释后续持续的高延迟。MG01 的长调用可能是 Mysql02 故障后的结果，而非根因。"
+          },
+          "error": "h2: time 11:06:12.514 requires e43 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

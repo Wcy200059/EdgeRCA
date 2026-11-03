@@ -1,0 +1,29 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "apache01",
+        "reason": "high CPU usage",
+        "time": "07:36:21",
+        "evidence_ids": [
+          "e25",
+          "e26",
+          "e27",
+          "e28",
+          "e29"
+        ],
+        "explanation": "e25 显示 apache01 在 07:36:21 触发 http_5xx 规则。e26-e29 证实该节点在同一秒内收到多笔 502 错误请求，涉及 ServiceTest 业务流。这些错误发生在窗口早期，且 apache01 作为入口节点，其处理失败直接导致业务中断，符合单故障特征。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615075200000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1"
+}

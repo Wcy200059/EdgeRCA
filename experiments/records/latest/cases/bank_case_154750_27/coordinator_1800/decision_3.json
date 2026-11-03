@@ -1,0 +1,113 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": "15:08:27.300",
+        "time_evidence_id": "e13",
+        "support_ids": [
+          "e13"
+        ],
+        "counter_ids": [],
+        "explanation": "e13 显示 IG01 在 15:08:27 出现 13 秒长调用，且 e26 等显示其到 Tomcat 的 P95 延迟极高。但 e1 仅显示 CPU 等待 I/O 波动，未确认 CPU 利用率是否爆满。需补查 IG01 CPU 具体数值以确认是否因计算过载导致无法及时处理请求。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e158 显示 Tomcat02 OS CPU 在 15:02 曾达 100%，但 e268-e273 仅显示调用连接，未证实 Tomcat02 自身 JVM 资源耗尽。需补查 Tomcat02 JVM CPU 及内存具体数值以确认是否因高 CPU 或 OOM 导致延迟。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e75 显示 Mysql01 trace 缺失，e72 显示 Bytes Received 有波动。Tomcat 频繁调用数据库，可能存在 I/O 瓶颈。但无直接磁盘 I/O 证据，且 e72 仅反映网络接收字节数，不直接等同于磁盘读取。需补查 Mysql01 磁盘读取指标。"
+      },
+      {
+        "id": "h4",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e300 显示 Tomcat01 OS CPU 利用率稳定在 27% 左右，无高负载迹象。e301 缺失 JVM 内存指标。虽有长调用 e26，但无法区分是 Tomcat 处理慢还是上游 IG01 或网络问题。需补查 Tomcat01 JVM CPU 及内存具体数值。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:IG01",
+        "start": "15:00:00",
+        "end": "15:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认 IG01 在 15:08 长调用发生时 CPU 利用率是否达到高位，以验证高 CPU 导致处理延迟的假设。",
+        "basis_ids": [
+          "e13"
+        ]
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "15:00:00",
+        "end": "15:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Mysql-MySQL_3306_Threads_running",
+          "Mysql-MySQL_3306_Threads_connected"
+        ],
+        "focus": "检查 Mysql01 线程状态，确认是否存在大量连接等待或线程阻塞，以辅助判断磁盘 I/O 或连接数瓶颈。",
+        "basis_ids": [
+          "e75"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat02",
+        "start": "15:00:00",
+        "end": "15:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-Memory_7778_JVM_Memory_NoHeapMemoryUsed",
+          "JVM-Memory_7778_JVM_Memory_HeapMemoryUsed"
+        ],
+        "focus": "获取 Tomcat02 的 JVM 内存使用情况，确认是否存在内存耗尽或频繁 GC 导致的高延迟。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17741,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 40,
+        "available_facts": 294
+      }
+    }
+  ],
+  "labels_used": false
+}

@@ -1,0 +1,162 @@
+{
+  "case_id": "fc9fff9d8d8b25af",
+  "cutoff_ms": 1615253400000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 296
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 298
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 300
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 302
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Tomcat01",
+      "start": "09:17:00",
+      "end": "09:18:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "JVM-Memory_7779_JVM_Memory_HeapMemoryUsage"
+      ],
+      "focus": "获取 Tomcat01 在 09:17:24 错误发生时的 JVM 堆内存具体使用数值，确认是否达到溢出阈值以验证 OOM 假设。",
+      "basis_ids": [
+        "e173",
+        "e299"
+      ]
+    },
+    {
+      "node_id": "device:apache01",
+      "start": "09:17:00",
+      "end": "09:18:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU-0_SingleCpuUtil"
+      ],
+      "focus": "获取 apache01 在 09:17:48 错误发生时的 CPU 使用率具体数值，确认是否达到耗尽阈值以验证高 CPU 导致 502 错误的假设。",
+      "basis_ids": [
+        "e215"
+      ]
+    },
+    {
+      "node_id": "device:apache02",
+      "start": "09:17:00",
+      "end": "09:18:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU-0_SingleCpuUtil"
+      ],
+      "focus": "获取 apache02 在 09:17:50 错误发生时的 CPU 使用率具体数值，确认是否达到耗尽阈值以验证高 CPU 导致 502 错误的假设。",
+      "basis_ids": [
+        "e226"
+      ]
+    },
+    {
+      "node_id": "device:apache01",
+      "start": "09:00:00",
+      "end": "09:30:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU-0_SingleCpuUtil"
+      ],
+      "focus": "获取 apache01 在故障时段的具体 CPU 使用率数值，确认是否达到耗尽阈值以验证高 CPU 导致 502 错误的假设。",
+      "basis_ids": [
+        "e215"
+      ]
+    },
+    {
+      "node_id": "device:Mysql02",
+      "start": "09:00:00",
+      "end": "09:30:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_DISK_DISK-0_DiskReadBps",
+        "OSLinux-OSLinux_DISK_DISK-0_DiskWriteBps"
+      ],
+      "focus": "核实Mysql02在故障时段是否存在磁盘读取或写入流量激增，排除单点故障。",
+      "basis_ids": []
+    }
+  ],
+  "peak_gpu_gib": 21.107664108276367,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e258",
+      "e259",
+      "e260",
+      "e261",
+      "e262",
+      "e263",
+      "e264",
+      "e265",
+      "e266",
+      "e267",
+      "e268",
+      "e269",
+      "e270",
+      "e271",
+      "e272",
+      "e273",
+      "e274",
+      "e275",
+      "e276",
+      "e277",
+      "e278",
+      "e279",
+      "e280",
+      "e281",
+      "e282",
+      "e283",
+      "e284",
+      "e285",
+      "e286",
+      "e287",
+      "e288",
+      "e289",
+      "e290",
+      "e291",
+      "e292",
+      "e293",
+      "e294",
+      "e295",
+      "e296"
+    ],
+    "notes": "保留所有涉及候选组件（IG, MG, Tomcat, docker）的父子调用匹配观测（e269-e296），用于分析调用链延迟、最大耗时及时间区间不匹配情况，以定位传播链或资源瓶颈。保留业务流观测（e258-e268）作为背景参考。拒绝其他无关项。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 39
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "case_id": "866248d17a0a0ea3",
+  "cutoff_ms": 1615363200000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 276
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 280
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 282
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 285
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Tomcat01",
+      "start": "15:30:00.000",
+      "end": "15:59:59.000",
+      "tools": [
+        "get_metrics",
+        "get_logs"
+      ],
+      "metrics": [
+        "Tomcat-MEMORY_7441-MEMORY_JVMMemoryUsedPercent",
+        "Tomcat-MEMORY_7441-MEMORY_JVMMaxMemory",
+        "Tomcat-MEMORY_7441-MEMORY_JVMFreeMemory"
+      ],
+      "focus": "确认 Tomcat01 JVM 堆内存使用率是否持续高位或耗尽，以及是否存在 OOM 错误日志，以区分是 CPU 过载还是内存溢出导致频繁 GC。",
+      "basis_ids": [
+        "e289",
+        "e292",
+        "e294",
+        "e295",
+        "e296"
+      ]
+    },
+    {
+      "node_id": "device:dockerB1",
+      "start": "15:30:00",
+      "end": "16:00:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadOps",
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadBytes"
+      ],
+      "focus": "验证 dockerB1 的磁盘读取活动是否异常，以确认长调用是否由磁盘 IO 瓶颈引起。",
+      "basis_ids": []
+    }
+  ],
+  "peak_gpu_gib": 21.153404712677002,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e256",
+      "e257",
+      "e258",
+      "e259",
+      "e260",
+      "e261",
+      "e262",
+      "e263",
+      "e264",
+      "e265",
+      "e266",
+      "e267",
+      "e268",
+      "e269",
+      "e270",
+      "e271",
+      "e272",
+      "e273",
+      "e274",
+      "e275",
+      "e276",
+      "e277",
+      "e278",
+      "e279",
+      "e280",
+      "e281",
+      "e282",
+      "e283",
+      "e284",
+      "e285",
+      "e286",
+      "e287"
+    ],
+    "notes": "筛选所有涉及候选组件（Tomcat/MG/docker）间父子调用的观测。e256-263覆盖IG到Tomcat链路，e264-271覆盖MG到docker链路，e272-279覆盖Tomcat到MG链路，e280-287覆盖docker到MG链路。这些边包含P95/最大延迟及时间区间不匹配数，是区分资源故障与传播链的关键证据。e245-255为业务统计，无组件调用细节，拒绝。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 43
+  }
+}

@@ -1,0 +1,294 @@
+{
+  "case_id": "3feaf8072fdab1d5",
+  "node_id": "device:IG01",
+  "request_id": "q81a0dcd801688ef4",
+  "window_start_ms": 1615073400000,
+  "cutoff_ms": 1615075200000,
+  "query_end_ms": 1615074000000,
+  "scope": {
+    "start": "07:30:00.000",
+    "end": "07:40:00.000"
+  },
+  "requested_scope": {
+    "reference": {
+      "start_ms": 1615073400000,
+      "end_ms": 1615073400000,
+      "seconds": 0.0,
+      "bounds": "[start,end)"
+    },
+    "current": {
+      "start_ms": 1615073400000,
+      "end_ms": 1615074000000,
+      "seconds": 600.0,
+      "bounds": "[start,end)"
+    },
+    "rows_considered": 2344,
+    "prefix_rows": 2344,
+    "counts_by_modality": {
+      "metric": 486,
+      "trace": 1858
+    },
+    "must_report_ids": [],
+    "raw_archive_preserved": true
+  },
+  "request": {
+    "node_id": "device:IG01",
+    "start": "07:30:00",
+    "end": "07:40:00",
+    "tools": [
+      "get_metrics"
+    ],
+    "metrics": [
+      "OSLinux-CPU_CPU_CPUCpuUtil"
+    ],
+    "focus": "核实 07:30-07:40 期间 IG01 的 CPU 使用率是否出现显著突增，以确认是否为导致下游 07:36 502 错误的根因。",
+    "basis_ids": []
+  },
+  "tools_executed": [
+    "get_metrics"
+  ],
+  "facts": [
+    {
+      "id": "f1",
+      "metric": "OSLinux-CPU_CPU_CPUCpuUtil",
+      "meaning": "OS CPU使用率",
+      "unit": "%",
+      "reference": {
+        "count": 0,
+        "median": null
+      },
+      "current": {
+        "count": 7,
+        "median": 25.5883,
+        "min": 25.4365,
+        "max": 25.7306
+      },
+      "early": {
+        "count": 4,
+        "median": 25.6179
+      },
+      "late": {
+        "count": 4,
+        "median": 25.6164
+      },
+      "early_late_change": {
+        "direction": "down",
+        "delta": -0.0015,
+        "ratio": 0.999941
+      },
+      "extremes": [
+        {
+          "time_ms": 1615073580000,
+          "value": 25.4365
+        },
+        {
+          "time_ms": 1615073820000,
+          "value": 25.7306
+        }
+      ],
+      "change": {
+        "direction": "unknown",
+        "delta": null,
+        "ratio": null
+      },
+      "quality": {
+        "invalid": 0,
+        "conflicts": 0,
+        "counter_resets": 0
+      }
+    }
+  ],
+  "catalog": {
+    "f1": {
+      "observation_id": "e255348e84916a8b56ac",
+      "modality": "metric",
+      "status": "available",
+      "name": "OSLinux-CPU_CPU_CPUCpuUtil",
+      "semantics": {
+        "kind": "gauge",
+        "analysis_unit": "%",
+        "meaning": "OS CPU使用率"
+      },
+      "record_count": 7,
+      "sample_count": 7,
+      "invalid_count": 0,
+      "conflicting_record_count": 0,
+      "counter_reset_count": 0,
+      "reference": {
+        "count": 0,
+        "mean": null,
+        "median": null,
+        "p50": null,
+        "p95": null,
+        "min": null,
+        "max": null
+      },
+      "current": {
+        "count": 7,
+        "mean": 25.597199999999997,
+        "median": 25.5883,
+        "p50": 25.5883,
+        "p95": 25.7306,
+        "min": 25.4365,
+        "max": 25.7306
+      },
+      "change": {
+        "direction": "unknown",
+        "delta": null,
+        "ratio": null
+      },
+      "early": {
+        "count": 4,
+        "mean": 25.584125,
+        "median": 25.6179,
+        "p50": 25.5883,
+        "p95": 25.6642,
+        "min": 25.4365,
+        "max": 25.6642
+      },
+      "late": {
+        "count": 4,
+        "mean": 25.62285,
+        "median": 25.6164,
+        "p50": 25.5853,
+        "p95": 25.7306,
+        "min": 25.528000000000002,
+        "max": 25.7306
+      },
+      "early_late_change": {
+        "direction": "down",
+        "delta": -0.0015000000000000568,
+        "ratio": 0.9999414471912218
+      },
+      "early_late_window_ms": 300000,
+      "comparison_status": "limited_history",
+      "sample_interval_median_ms": 90000.0,
+      "sample_interval_max_ms": 120000,
+      "current_first_last": {
+        "direction": "down",
+        "delta": -0.13619999999999877,
+        "ratio": 0.9946929964697907
+      },
+      "extremes": [
+        {
+          "time_ms": 1615073580000,
+          "value": 25.4365,
+          "evidence_ids": [
+            "Bank:2021_03_07/metric/metric_container.csv:000000391308"
+          ]
+        },
+        {
+          "time_ms": 1615073820000,
+          "value": 25.7306,
+          "evidence_ids": [
+            "Bank:2021_03_07/metric/metric_container.csv:000000395002"
+          ]
+        }
+      ],
+      "evidence_ids": [
+        "Bank:2021_03_07/metric/metric_container.csv:000000389250",
+        "Bank:2021_03_07/metric/metric_container.csv:000000396658",
+        "Bank:2021_03_07/metric/metric_container.csv:000000391308",
+        "Bank:2021_03_07/metric/metric_container.csv:000000395002"
+      ],
+      "quality_note": "相邻值与窗口变化是观测，不自动等于趋势或异常；参考段不保证正常。"
+    }
+  },
+  "available_metric_names": [
+    "JVM-Memory_7778_JVM_Memory_HeapMemoryMax",
+    "JVM-Memory_7778_JVM_Memory_HeapMemoryUsage",
+    "JVM-Memory_7778_JVM_Memory_HeapMemoryUsed",
+    "JVM-Memory_7778_JVM_Memory_NoHeapMemoryUsed",
+    "JVM-Operating System_7778_JVM_JVM_CPULoad",
+    "JVM-Runtime_7778_JVM_JVM_Uptime",
+    "JVM-Threads_7778_JVM_ThreadCount_Threads",
+    "OSLinux-CPU_CPU-0_SingleCpuUtil",
+    "OSLinux-CPU_CPU-0_SingleCpuidle",
+    "OSLinux-CPU_CPU-2_SingleCpuUtil",
+    "OSLinux-CPU_CPU-2_SingleCpuidle",
+    "OSLinux-CPU_CPU_CPUCpuUtil",
+    "OSLinux-CPU_CPU_CPULoad",
+    "OSLinux-CPU_CPU_CPUSysTime",
+    "OSLinux-CPU_CPU_CPUUserTime",
+    "OSLinux-CPU_CPU_CPUWio",
+    "OSLinux-CPU_CPU_CPUidleutil",
+    "OSLinux-OSLinux_FILESYSTEM_-_FSAvailableSpace",
+    "OSLinux-OSLinux_FILESYSTEM_-_FSCapacity",
+    "OSLinux-OSLinux_FILESYSTEM_-_FSInodeUsedPercent",
+    "OSLinux-OSLinux_FILESYSTEM_-_FSUsedSpace",
+    "OSLinux-OSLinux_FILESYSTEM_-boot_FSAvailableSpace",
+    "OSLinux-OSLinux_FILESYSTEM_-boot_FSCapacity",
+    "OSLinux-OSLinux_FILESYSTEM_-boot_FSInodeUsedPercent",
+    "OSLinux-OSLinux_FILESYSTEM_-boot_FSUsedSpace",
+    "OSLinux-OSLinux_FILESYSTEM_-cmbc_admin_FSAvailableSpace",
+    "OSLinux-OSLinux_FILESYSTEM_-cmbc_admin_FSCapacity",
+    "OSLinux-OSLinux_FILESYSTEM_-cmbc_admin_FSInodeUsedPercent",
+    "OSLinux-OSLinux_FILESYSTEM_-cmbc_admin_FSUsedSpace",
+    "OSLinux-OSLinux_FILESYSTEM_-home_FSAvailableSpace",
+    "OSLinux-OSLinux_FILESYSTEM_-home_FSCapacity",
+    "OSLinux-OSLinux_FILESYSTEM_-home_FSInodeUsedPercent",
+    "OSLinux-OSLinux_FILESYSTEM_-home_FSUsedSpace",
+    "OSLinux-OSLinux_FILESYSTEM_-tmp_FSAvailableSpace",
+    "OSLinux-OSLinux_FILESYSTEM_-tmp_FSCapacity",
+    "OSLinux-OSLinux_FILESYSTEM_-tmp_FSInodeUsedPercent",
+    "OSLinux-OSLinux_FILESYSTEM_-tmp_FSUsedSpace",
+    "OSLinux-OSLinux_FILESYSTEM_-tomcat_FSAvailableSpace",
+    "OSLinux-OSLinux_FILESYSTEM_-tomcat_FSCapacity",
+    "OSLinux-OSLinux_FILESYSTEM_-tomcat_FSInodeUsedPercent",
+    "OSLinux-OSLinux_FILESYSTEM_-tomcat_FSUsedSpace",
+    "OSLinux-OSLinux_FILE_-tmp-zabbix_agentd.log_FileSizeMB",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKAvgServ",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKBps",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKPercentBusy",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKRTps",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKRead",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadWrite",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKTps",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKWTps",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKWrite",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKAvgServ",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKBps",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKPercentBusy",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKRTps",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKRead",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKReadWrite",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKTps",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKWTps",
+    "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKWrite",
+    "OSLinux-OSLinux_MEMORY_MEMORY_CacheMem",
+    "OSLinux-OSLinux_MEMORY_MEMORY_MEMFreeMem",
+    "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc",
+    "OSLinux-OSLinux_MEMORY_MEMORY_NoCacheMemPerc",
+    "OSLinux-OSLinux_MEMORY_MEMORY_UserMem",
+    "OSLinux-OSLinux_NETWORK_NETWORK_TCP-CLOSE-WAIT",
+    "OSLinux-OSLinux_NETWORK_NETWORK_TCP-FIN-WAIT",
+    "OSLinux-OSLinux_NETWORK_NETWORK_TotalTcpConnNum",
+    "OSLinux-OSLinux_NETWORK_ens160_NETBandwidthUtil",
+    "OSLinux-OSLinux_NETWORK_ens160_NETInErr",
+    "OSLinux-OSLinux_NETWORK_ens160_NETInErrPrc",
+    "OSLinux-OSLinux_NETWORK_ens160_NETKBTotalPerSec",
+    "OSLinux-OSLinux_NETWORK_ens160_NETOutErr",
+    "OSLinux-OSLinux_NETWORK_ens160_NETOutErrPrcc",
+    "OSLinux-OSLinux_NETWORK_ens160_NETPacketsIn",
+    "OSLinux-OSLinux_NETWORK_ens160_NETPacketsOut",
+    "OSLinux-OSLinux_PROCESS_PROCESS_PROCNoZombies",
+    "OSLinux-OSLinux_PROCESS_PROCESS_PROCPPMem",
+    "OSLinux-OSLinux_PROCESS_PROCESS_PROCPPMemPerc",
+    "OSLinux-OSLinux_PROCESS_zabbix-zabbix_agentd_PROCPPCPUPerc",
+    "OSLinux-OSLinux_PROCESS_zabbix_PROCPPCount",
+    "OSLinux-OSLinux_SWAP_SWAP_SWPTotSwapSize",
+    "OSLinux-OSLinux_SWAP_SWAP_SWPTotSwapUsedPercent",
+    "OSLinux-OSLinux_SWAP_SWAP_Si",
+    "OSLinux-OSLinux_SWAP_SWAP_So",
+    "OSLinux-OSLinux_SYSTEM_SYSTEM_Check-DefaultRoute",
+    "OSLinux-OSLinux_SYSTEM_SYSTEM_Check-Hostname",
+    "OSLinux-OSLinux_ZABBIX_Host_Uptime"
+  ],
+  "missing_metrics": [],
+  "limitations": [
+    "只检查请求节点、指定范围与最多前5分钟对照；参考段不保证正常。",
+    "请求之外的指标尚未检查；原始记录和工具完整结果保留。",
+    "没有相应字段或记录不能证明设备正常；慢调用不是网络RTT。"
+  ],
+  "labels_used": false
+}

@@ -1,0 +1,69 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat01",
+        "reason": "high JVM CPU load",
+        "time": "15:31:00.000",
+        "time_evidence_id": "e289",
+        "support_ids": [
+          "e289",
+          "e256"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat01 在 15:31:00 发生首次 GC 暂停（Allocation Failure，e289），且 IG01→Tomcat01 调用 P95 高达 10014ms（e256），表明上游延迟。虽缺具体 JVM CPU 数值，但 GC 触发是 CPU/内存过载的直接表现，且无其他组件有更强证据。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "存在 Allocation Failure 提示内存压力，但尚未观测到 Heap 使用率爆满或 OOM Killer 日志。需补查 Tomcat01 的 JVM 内存指标及更详细的 GC 日志以确认是否为 OOM 根因。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "15:30:00.000",
+        "end": "15:59:59.000",
+        "tools": [
+          "get_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "Tomcat-MEMORY_7441-MEMORY_JVMMemoryUsedPercent",
+          "Tomcat-MEMORY_7441-MEMORY_JVMMaxMemory",
+          "Tomcat-MEMORY_7441-MEMORY_JVMFreeMemory"
+        ],
+        "focus": "确认 Tomcat01 JVM 堆内存使用率是否持续高位或耗尽，以及是否存在 OOM 错误日志，以区分是 CPU 过载还是内存溢出导致频繁 GC。",
+        "basis_ids": [
+          "e289",
+          "e292",
+          "e294",
+          "e295",
+          "e296"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17744,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 38,
+        "available_facts": 285
+      }
+    }
+  ],
+  "labels_used": false
+}

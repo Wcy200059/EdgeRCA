@@ -1,0 +1,98 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat03",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "证据e199显示Tomcat03存在最大5020ms的长调用，但缺乏该节点CPU或JVM指标直接佐证。需补查Tomcat03的CPU使用率及JVM负载，确认是否因高负载导致处理延迟，进而引发下游MG01长调用。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "MG01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "证据e53显示MG01存在5020ms长调用，且e269/e271显示其接收自Tomcat的调用中也有长调用。需补查MG01自身CPU使用率，确认是否为资源瓶颈导致无法及时处理上游请求，造成整体链路延迟。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "证据e15显示IG01存在5028ms长调用。虽然IG01是上游，但需确认其自身资源是否充足。需补查IG01 CPU使用率，排除因IG01自身负载过高导致下游Tomcat响应慢的可能性。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat03",
+        "start": "21:00:00",
+        "end": "21:30:00",
+        "tools": [
+          "list_metrics",
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "JVM-Memory_7778_JVM_Memory_HeapMemoryUsage"
+        ],
+        "focus": "确认Tomcat03在21:00-21:30期间的CPU使用率是否异常升高，以及JVM内存使用情况，以验证高CPU负载是否导致长调用。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:MG01",
+        "start": "21:00:00",
+        "end": "21:30:00",
+        "tools": [
+          "list_metrics",
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认MG01在21:00-21:30期间的CPU使用率是否异常，验证其是否因资源耗尽导致处理下游Tomcat请求时出现长延迟。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:IG01",
+        "start": "21:00:00",
+        "end": "21:30:00",
+        "tools": [
+          "list_metrics",
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认IG01在21:00-21:30期间的CPU使用率，排除其自身高负载导致整个业务链延迟的可能性。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17634,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 53,
+        "available_facts": 269
+      }
+    }
+  ],
+  "labels_used": false
+}

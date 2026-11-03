@@ -1,0 +1,100 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat04",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat04 观测到 4 次 GC（e271），最后一次在 23:52:26，原因为 Allocation Failure，暗示内存或 CPU 压力。但缺乏 CPU 或内存具体数值证据，且未确认是否导致业务失败。需补查 CPU 和内存指标。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat03",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat03 对 MG01 的调用 P95 高达 1465ms（e60），且自身 CPU 指标（e233）显示早期曾达到 100%。需确认高 CPU 是否持续至故障时段，以及是否引发下游延迟。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Mysql02",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql02 保留大量未加载事实（567 条），且磁盘相关指标缺失。作为核心存储，其 I/O 异常可能阻塞所有应用。需补查磁盘 I/O 指标以排除根因。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat04",
+        "start": "23:30:00",
+        "end": "00:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认 Tomcat04 在 23:30-00:00 期间的 CPU 使用率和内存占用率，以验证高 CPU 负载或内存不足是否导致 GC 频繁。",
+        "basis_ids": [
+          "e271"
+        ]
+      },
+      {
+        "node_id": "device:Mysql02",
+        "start": "23:30:00",
+        "end": "00:00:00",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "DISK"
+        ],
+        "focus": "列出 Mysql02 上所有包含 DISK 的指标名称，以便后续查询磁盘 I/O 使用情况。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "basis_ids must use e IDs from current evidence",
+      "rejected_sections": [
+        {
+          "section": "requests",
+          "index": 2,
+          "item": {
+            "node_id": "device:Tomcat03",
+            "start": "23:30:00",
+            "end": "00:00:00",
+            "tools": [
+              "get_metrics"
+            ],
+            "metrics": [
+              "OSLinux-CPU_CPU_CPUCpuUtil"
+            ],
+            "focus": "确认 Tomcat03 在故障窗口内的 CPU 使用率变化，验证早期 100% 是否持续并导致下游延迟。",
+            "basis_ids": [
+              "e233"
+            ]
+          },
+          "error": "basis_ids must use e IDs from current evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

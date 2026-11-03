@@ -1,0 +1,82 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 本地保留大量未加载观测（319 条），且 Redis01 有 IO 下降信号，可能暗示下游负载变化。但缺乏 Mysql01 具体的磁盘 IO 指标证据，无法确认是否因高读导致业务失败。需补查 Mysql01 磁盘指标。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "apache01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "apache01 有 CPU 使用率波动证据（e266, e268），但具体故障时间点不明，且无下游 Tomcat/Mysql 的调用链证据证明该 CPU 高负载导致了业务中断。需补查具体数值及关联调用。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "14:30:00",
+        "end": "15:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadBps",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadIOPS"
+        ],
+        "focus": "核实 Mysql01 在 14:30-15:00 期间是否存在磁盘读取带宽或 IOPS 的异常高峰，以验证‘高磁盘读取’是否为根因。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:apache01",
+        "start": "14:30:00",
+        "end": "15:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "获取 apache01 全时段 CPU 使用率具体数值，确认是否存在持续或突发性的高 CPU 占用，并寻找与业务失败时间点的关联。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:dockerA2",
+        "start": "14:30:00",
+        "end": "15:00:00",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "检查 dockerA2 容器内的调用链，确认是否有长调用或超时现象，以定位故障发生的具体业务环节及上游组件。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17457,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 39,
+        "available_facts": 291
+      }
+    }
+  ],
+  "labels_used": false
+}

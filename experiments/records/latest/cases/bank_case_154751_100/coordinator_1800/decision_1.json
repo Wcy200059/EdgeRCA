@@ -1,0 +1,84 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Mysql02",
+        "reason": "high disk I/O read usage",
+        "time": "19:23:00.000",
+        "time_evidence_id": "e252",
+        "support_ids": [
+          "e252"
+        ],
+        "counter_ids": [],
+        "explanation": "Apache02 磁盘读取量在 19:23 显著上升（e252），早于多数其他波动。作为数据库客户端，其高 IO 可能直接导致下游 Mysql02 负载过高。需确认 Mysql02 是否同步出现 IO 飙升或连接异常。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql02",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql02 尚未加载具体磁盘 IO 指标数值（e123 仅含目录）。虽 Apache02 有 IO 异常，但需 Mysql02 自身数据确认是否因 IO 瓶颈导致业务失败。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "MG01 报告 JVM CPU 高（e12），但 Tomcat01 本地无资源观测。MG01 可能非 Tomcat01 实例。需补查 Tomcat01 本地 JVM 负载以确认根因。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql02",
+        "start": "19:00:00.000",
+        "end": "19:30:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Mysql-MySQL_3306_DiskReads",
+          "Mysql-MySQL_3306_DiskReadBytes"
+        ],
+        "focus": "获取 Mysql02 在 19:00-19:30 的磁盘读取量趋势，验证是否出现与 Apache02 异常同步的 IO 飙升。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "19:00:00.000",
+        "end": "19:30:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-Operating System_JVM_CPULoad"
+        ],
+        "focus": "获取 Tomcat01 本地 JVM CPU 负载，确认是否如 MG01 报告般存在高负载，排除代理误差。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17465,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 38,
+        "available_facts": 303
+      }
+    }
+  ],
+  "labels_used": false
+}

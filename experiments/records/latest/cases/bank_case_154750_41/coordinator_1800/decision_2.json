@@ -1,0 +1,61 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat04",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "16:30:17.000",
+        "time_evidence_id": "e209",
+        "support_ids": [
+          "e209",
+          "e229"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 在窗口起始即发生 Allocation Failure 导致的 GC（e209），且内存占比持续高位 97-98%（e229），符合 OOM 导致资源争用链。"
+      },
+      {
+        "id": "h2",
+        "assessment": "supported",
+        "component": "Tomcat04",
+        "reason": "high disk I/O read usage",
+        "time": "16:40:00.000",
+        "time_evidence_id": "e198",
+        "support_ids": [
+          "e198"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 磁盘读取规则在 16:40 触发并持续至 16:57（e198），与 OOM 事件时间重叠，可能是 OOM 引发的日志刷盘或缓存重建导致的 I/O 风暴。"
+      },
+      {
+        "id": "h3",
+        "assessment": "supported",
+        "component": "Tomcat04",
+        "reason": "high memory usage",
+        "time": "16:31:00.000",
+        "time_evidence_id": "e229",
+        "support_ids": [
+          "e229"
+        ],
+        "counter_ids": [],
+        "explanation": "e229 显示内存占比 97-98% 且早期即达到高位（16:31），早于部分 GC 峰值，确认为高内存使用是根本诱因。"
+      }
+    ],
+    "requests": []
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17596,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 41,
+        "available_facts": 235
+      }
+    }
+  ],
+  "labels_used": false
+}

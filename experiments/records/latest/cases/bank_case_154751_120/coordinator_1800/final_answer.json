@@ -1,0 +1,38 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "apache01",
+        "reason": "high disk I/O read usage",
+        "time": "00:21:00",
+        "evidence_ids": [
+          "e254",
+          "e255",
+          "e256"
+        ],
+        "explanation": "e254 显示 00:21:00 磁盘读取量激增，e255 证实读取数值极高，e256 显示读写总量随后仍处高位。证据链完整，符合磁盘 IO 过载根因。"
+      },
+      {
+        "component": "apache01",
+        "reason": "high disk space usage",
+        "time": "00:22:00",
+        "evidence_ids": [
+          "e253"
+        ],
+        "explanation": "e253 明确记录 00:22:00 磁盘使用率（sdb）达到 100%，随后规则清除。磁盘空间耗尽是独立且明确的故障事件。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1616603400000,
+  "model_judgment_verified": false,
+  "expected_failures": 2,
+  "answer_schema": "faults_v1",
+  "field_repairs": [],
+  "warnings": []
+}

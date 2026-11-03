@@ -1,0 +1,113 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "apache01",
+        "reason": "high disk I/O read usage",
+        "time": "16:41:00.000",
+        "time_evidence_id": "e230",
+        "support_ids": [
+          "e230"
+        ],
+        "counter_ids": [],
+        "explanation": "apache01 磁盘 sdb 在 16:41:00 触发规则 (e230)，数值波动。但 e230 未区分读写方向，且无日志佐证业务失败。可能是高读 I/O 导致延迟，也可能是其他原因。需确认读写方向及对业务影响。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "16:30:00",
+        "end": "17:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Tomcat-MEMORY_7441-MEMORY_JVMMemoryUsedPercent"
+        ],
+        "focus": "获取 Tomcat01 JVM 堆内存使用百分比具体数值，验证 e306 缺失数据原因，确认是否达到 OOM 阈值。",
+        "basis_ids": [
+          "e306"
+        ]
+      },
+      {
+        "node_id": "device:dockerB2",
+        "start": "16:30:00",
+        "end": "17:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "获取 dockerB2 内存使用率，结合 e243 长调用判断是否存在内存压力导致服务延迟。",
+        "basis_ids": [
+          "e303"
+        ]
+      },
+      {
+        "node_id": "device:apache01",
+        "start": "16:41:00",
+        "end": "16:42:00",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "查看 apache01 在 16:41 磁盘规则触发时段的日志，确认是否有磁盘 I/O 错误或业务报错，以验证 e230 是否为根因。",
+        "basis_ids": [
+          "e230"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "h1: time 16:30:00.000 requires e217 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 0,
+          "item": {
+            "id": "h1",
+            "assessment": "unresolved",
+            "component": "Tomcat01",
+            "reason": "JVM Out of Memory (OOM) Heap",
+            "time": "16:30:00.000",
+            "time_evidence_id": "e217",
+            "support_ids": [
+              "e217",
+              "e305",
+              "e306"
+            ],
+            "counter_ids": [],
+            "explanation": "Tomcat01 在 16:30:02 出现 12s 长调用 (e217)。内存指标 e305 显示 MEMUsedMemPerc 持续 98%，e306 缺失 JVM Heap 数据。高内存占用是 OOM 强信号，长调用可能是 OOM 前兆或后果。需补查 JVM Heap 具体数值确认是否耗尽。"
+          },
+          "error": "h1: time 16:30:00.000 requires e217 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        },
+        {
+          "section": "hypotheses",
+          "index": 2,
+          "item": {
+            "id": "h3",
+            "assessment": "unresolved",
+            "component": "dockerB2",
+            "reason": "JVM Out of Memory (OOM) Heap",
+            "time": "16:30:00.000",
+            "time_evidence_id": "e243",
+            "support_ids": [
+              "e243",
+              "e303"
+            ],
+            "counter_ids": [],
+            "explanation": "dockerB2 在 16:30:02 出现 12.9s 长调用 (e243)。e303 显示缺失 JVM Heap 和内存占比指标。长调用发生在业务流上游，可能是根因。需补查 dockerB2 内存指标确认是否 OOM。"
+          },
+          "error": "component must use a public candidate or null"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

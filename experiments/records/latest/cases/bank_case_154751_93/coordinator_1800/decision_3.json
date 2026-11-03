@@ -1,0 +1,105 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat01",
+        "reason": "high JVM CPU load",
+        "time": "10:13:00",
+        "time_evidence_id": "e205",
+        "support_ids": [
+          "e205"
+        ],
+        "counter_ids": [],
+        "explanation": "e205显示Tomcat01线程繁忙指标在10:13触发并持续至10:23，数值从5升至21.5，符合高CPU特征。虽缺直接JVM指标，但线程阻塞是高JVM负载的典型表现，且该时段早于其他节点异常，符合根因时序。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Redis01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e184显示Redis01 CPU在10:25触发后10:27解除，呈短暂波动。虽符合CPU故障模式，但状态已恢复，且缺乏具体数值证明其导致下游阻塞。需确认该波动是否引起IG或MG节点延迟，以及是否仅为瞬时干扰。"
+      },
+      {
+        "id": "h3",
+        "assessment": "not_supported",
+        "component": "Tomcat04",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [
+          "e259"
+        ],
+        "explanation": "e259仅显示Tomcat04在10:25-10:26出现单次46秒长调用，P95仅1089ms，属偶发长尾。虽存在异常，但不足以支撑持续的高CPU或OOM故障。需排查该长调用原因及Tomcat04资源指标，确认是否为孤立事件或故障前兆。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "10:13:00",
+        "end": "10:23:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPULoad",
+          "Tomcat-MEMORY_7441-MEMORY_JVMMemoryUsedPercent"
+        ],
+        "focus": "核实e205中线程繁忙是否由OS高负载或堆内存溢出引起，确认10:13-10:23期间资源耗尽情况。",
+        "basis_ids": [
+          "e205"
+        ]
+      },
+      {
+        "node_id": "device:IG01",
+        "start": "10:26:00",
+        "end": "10:27:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "检查IG01在e14长调用期间（10:26-10:27）的CPU使用率，确认是否存在因下游Tomcat01或Redis01故障导致的IG01资源耗尽。",
+        "basis_ids": [
+          "e14"
+        ]
+      },
+      {
+        "node_id": "device:Redis01",
+        "start": "10:20:00",
+        "end": "10:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "获取Redis01在e184触发前后的完整CPU使用率曲线，确认10:25的波动是否持续或仅为瞬时干扰，评估其对下游的影响。",
+        "basis_ids": [
+          "e184"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17745,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 33,
+        "available_facts": 350
+      }
+    }
+  ],
+  "labels_used": false
+}

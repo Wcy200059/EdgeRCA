@@ -1,0 +1,39 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "apache01",
+        "reason": "high memory usage",
+        "time": "14:22:00.000",
+        "time_evidence_id": "e407",
+        "support_ids": [
+          "e407",
+          "e408",
+          "e422",
+          "e426",
+          "e427",
+          "e442"
+        ],
+        "counter_ids": [],
+        "explanation": "Apache01 在 14:22 起爆发大量 502 错误（e407-e413），请求者含 IG01/IG02，表明上游受阻。Apache01 内存指标 e442 显示 14:22 时内存占比达 77% 且稳定高位，结合业务流依赖，推测高内存导致服务拒绝或 OOM，引发故障。MG02 连接数 e76 在 14:21 骤降佐证了服务不可用时间点。"
+      }
+    ],
+    "requests": []
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17674,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 44,
+        "available_facts": 442
+      }
+    }
+  ],
+  "labels_used": false
+}

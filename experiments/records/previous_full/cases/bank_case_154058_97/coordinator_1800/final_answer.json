@@ -1,0 +1,27 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Mysql02",
+        "reason": "high disk I/O read usage",
+        "time": "11:56:00.000",
+        "evidence_ids": [
+          "e17",
+          "e18",
+          "e16"
+        ],
+        "explanation": "Mysql02 在 11:56 出现磁盘读峰值 (e17)，且内存长期 98% (e18)，事务锁内存持续高位 (e16)。磁盘 IO 饱和导致数据库响应延迟，引发上游 Tomcat 及 Apache 大量 502 错误 (e27-e49)，时间线吻合。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1616558400000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1"
+}

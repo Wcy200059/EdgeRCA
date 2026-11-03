@@ -1,0 +1,124 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h3",
+        "assessment": "not_supported",
+        "component": "Redis01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [
+          "e121"
+        ],
+        "explanation": "e121明确指出Redis01在查询范围内无trace记录，无法判断其状态。虽然e125显示Redis02 CPU曾飙升至99%，但这指向Redis02而非Redis01。缺乏Redis01磁盘IO高企的直接证据，且下游Tomcat延迟主要关联IG01，故不支持Redis01磁盘故障。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:dockerB1",
+        "start": "14:36:00.000",
+        "end": "14:36:30.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认dockerB1在14:36:03出现17s长调用期间，是否存在CPU或内存资源耗尽情况，排除本地资源瓶颈导致的延迟。",
+        "basis_ids": [
+          "e233"
+        ]
+      },
+      {
+        "node_id": "device:Redis01",
+        "start": "14:30:00.000",
+        "end": "15:00:00.000",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "DISK"
+        ],
+        "focus": "列出Redis01可用的磁盘相关指标名称，以便后续查询磁盘IO使用情况，验证是否因磁盘IO高企导致服务异常。",
+        "basis_ids": [
+          "e121"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "use unique e IDs from current evidence; node overviews are not evidence",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 0,
+          "item": {
+            "id": "h1",
+            "assessment": "supported",
+            "component": "IG01",
+            "reason": "high JVM CPU load",
+            "time": "14:36:00.000",
+            "time_evidence_id": "e17",
+            "support_ids": [
+              "e17",
+              "e255",
+              "e285"
+            ],
+            "counter_ids": [],
+            "explanation": "e17显示IG01在14:36发生11s长调用。e255确认IG01→Tomcat03链路P95高达3100ms，且该时段Tomcat节点无自身资源瓶颈证据。e285显示IG01 JVM内存波动剧烈（2.6%-42.7%），结合长调用特征，高度疑似JVM负载过高导致GC停顿或线程阻塞，引发下游延迟。"
+          },
+          "error": "use unique e IDs from current evidence; node overviews are not evidence"
+        },
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "unresolved",
+            "component": "IG01",
+            "reason": "high CPU usage",
+            "time": "14:36:00.000",
+            "time_evidence_id": "e17",
+            "support_ids": [
+              "e17"
+            ],
+            "counter_ids": [
+              "e286"
+            ],
+            "explanation": "e17证实IG01存在长调用。e286显示IG01 OS CPU使用率整体平稳（25.9%-26.6%），未出现明显飙升。若根因为OS CPU耗尽，通常伴随系统级高负载，目前证据不支持此假设，需进一步确认JVM线程CPU占用情况。"
+          },
+          "error": "use unique e IDs from current evidence; node overviews are not evidence"
+        },
+        {
+          "section": "requests",
+          "index": 0,
+          "item": {
+            "node_id": "device:IG01",
+            "start": "14:36:00.000",
+            "end": "14:36:30.000",
+            "tools": [
+              "get_metrics"
+            ],
+            "metrics": [
+              "JVM-Memory_7778_JVM_Memory_HeapMemoryUsage",
+              "JVM-CPU_CPU_CPUUser"
+            ],
+            "focus": "验证IG01在14:36长调用期间JVM堆内存是否异常增长及JVM线程CPU占用率，以确认是否因JVM负载过高导致服务延迟。",
+            "basis_ids": [
+              "e17",
+              "e285"
+            ]
+          },
+          "error": "basis_ids must use e IDs from current evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

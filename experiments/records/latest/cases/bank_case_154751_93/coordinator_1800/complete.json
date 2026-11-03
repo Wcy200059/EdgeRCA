@@ -1,0 +1,174 @@
+{
+  "case_id": "ec80d4731dace151",
+  "cutoff_ms": 1615516200000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 343
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 345
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 348
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 350
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Tomcat01",
+      "start": "10:13:00",
+      "end": "10:23:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPULoad",
+        "Tomcat-MEMORY_7441-MEMORY_JVMMemoryUsedPercent"
+      ],
+      "focus": "核实e205中线程繁忙是否由OS高负载或堆内存溢出引起，确认10:13-10:23期间资源耗尽情况。",
+      "basis_ids": [
+        "e205"
+      ]
+    },
+    {
+      "node_id": "device:IG01",
+      "start": "10:26:00",
+      "end": "10:27:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "检查IG01在e14长调用期间（10:26-10:27）的CPU使用率，确认是否存在因下游Tomcat01或Redis01故障导致的IG01资源耗尽。",
+      "basis_ids": [
+        "e14"
+      ]
+    },
+    {
+      "node_id": "device:Redis01",
+      "start": "10:20:00",
+      "end": "10:30:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "获取Redis01在e184触发前后的完整CPU使用率曲线，确认10:25的波动是否持续或仅为瞬时干扰，评估其对下游的影响。",
+      "basis_ids": [
+        "e184"
+      ]
+    },
+    {
+      "node_id": "device:IG01",
+      "start": "10:25:00",
+      "end": "10:30:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "检查IG01在e14长调用期间（10:26-10:27）的CPU使用率，确认是否存在因下游Tomcat01或Redis01故障导致的IG01资源耗尽。",
+      "basis_ids": [
+        "e14"
+      ]
+    },
+    {
+      "node_id": "device:IG01",
+      "start": "10:25:00",
+      "end": "10:27:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil",
+        "OSLinux-CPU_CPU_CPUCpuUser"
+      ],
+      "focus": "检查IG01在e14长调用期间（10:26-10:27）的CPU使用率，确认是否存在因下游Tomcat01或Redis01故障导致的IG01资源耗尽。",
+      "basis_ids": [
+        "e14"
+      ]
+    },
+    {
+      "node_id": "device:Tomcat04",
+      "start": "10:25:00",
+      "end": "10:27:00",
+      "tools": [
+        "get_metrics",
+        "get_calls"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil",
+        "JVM-Operating System_JVM_CPULoad"
+      ],
+      "focus": "确认e259中46秒长调用发生时Tomcat04的CPU使用率和JVM负载，判断该长调用是否由资源耗尽引起，或仅为偶发网络/下游延迟。",
+      "basis_ids": [
+        "e259"
+      ]
+    }
+  ],
+  "peak_gpu_gib": 21.00345468521118,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e323",
+      "e324",
+      "e325",
+      "e326",
+      "e327",
+      "e328",
+      "e329",
+      "e330",
+      "e331",
+      "e332",
+      "e333",
+      "e334",
+      "e335",
+      "e336",
+      "e337",
+      "e338",
+      "e339",
+      "e340",
+      "e341",
+      "e342",
+      "e343",
+      "e344",
+      "e345",
+      "e346",
+      "e347",
+      "e348",
+      "e349",
+      "e350",
+      "e351",
+      "e352",
+      "e353",
+      "e354"
+    ],
+    "notes": "筛选所有涉及候选组件（IG, MG, Tomcat, docker）间实际父子调用匹配的观测。这些边直接反映服务依赖关系及延迟传播（P95/Max值异常），是区分资源故障与调用链问题的关键证据。e312-e322为业务文本统计，无组件关联，予以拒绝。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 43
+  }
+}

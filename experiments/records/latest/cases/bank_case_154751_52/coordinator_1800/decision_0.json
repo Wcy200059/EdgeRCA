@@ -1,0 +1,95 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e131 显示 Tomcat01 存在长调用（5465ms），疑似 OOM 导致线程阻塞或 GC 停顿。但 e127 显示 CPU 空闲值极低（0.0），未明确显示 Heap 内存爆满。需补查 Tomcat01 的 JVM Heap 使用率及 GC 日志，确认是否因内存耗尽导致长调用。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e144 显示 Tomcat02 忙碌线程数在 19:38-19:59 间多次触发规则，且 e139 (e132 对应节点) 显示 CPU 空闲为 100%（反常），疑似 OOM 导致线程堆积。但 e132 仅显示 CPU 空闲，无直接内存指标。需补查 Tomcat02 的 JVM Heap 使用率及 GC 日志，确认内存故障。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat02",
+        "start": "19:30:00",
+        "end": "20:00:00",
+        "tools": [
+          "get_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "JVM-Memory_7778_JVM_Memory_HeapMemoryUsed",
+          "JVM-Memory_7778_JVM_Memory_HeapMemoryUsage",
+          "JVM-GC_7778_GC_PauseTime"
+        ],
+        "focus": "核实 Tomcat02 是否存在 JVM Heap 内存爆满（OOM）及伴随的 GC 暂停，解释 e144 中忙碌线程数频繁触发规则的原因。",
+        "basis_ids": [
+          "e144"
+        ]
+      },
+      {
+        "node_id": "device:IG02",
+        "start": "19:30:00",
+        "end": "20:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "补查 IG02 的 CPU 使用率趋势，确认其作为上游调用方是否存在资源瓶颈导致下游 Tomcat 压力增大，辅助判断故障根因位置。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "basis_ids must use e IDs from current evidence",
+      "rejected_sections": [
+        {
+          "section": "requests",
+          "index": 0,
+          "item": {
+            "node_id": "device:Tomcat01",
+            "start": "19:30:00",
+            "end": "20:00:00",
+            "tools": [
+              "get_metrics",
+              "get_logs"
+            ],
+            "metrics": [
+              "JVM-Memory_7778_JVM_Memory_HeapMemoryUsed",
+              "JVM-Memory_7778_JVM_Memory_HeapMemoryUsage",
+              "JVM-GC_7778_GC_PauseTime"
+            ],
+            "focus": "核实 Tomcat01 是否存在 JVM Heap 内存爆满（OOM）及伴随的 GC 暂停，解释 e131 中长调用和 e127 中 CPU 空闲异常的原因。",
+            "basis_ids": [
+              "e131",
+              "e127"
+            ]
+          },
+          "error": "basis_ids must use e IDs from current evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

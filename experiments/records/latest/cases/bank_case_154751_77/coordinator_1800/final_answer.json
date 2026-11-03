@@ -1,0 +1,31 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": "13:25:00",
+        "evidence_ids": [
+          "e5",
+          "e260",
+          "e261",
+          "e262",
+          "e263"
+        ],
+        "explanation": "IG01 在 13:25 触发 CPU 高告警 (e5)，随后下游所有 Tomcat 节点均出现长调用。调用关系 (e260-e263) 证实 IG01 是 Tomcat 上游，资源瓶颈导致下游延迟累积，符合单点故障特征。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615095000000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1",
+  "field_repairs": [],
+  "warnings": []
+}

@@ -1,0 +1,96 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 有 43 条事实未加载，仅知 e80 缺失 trace。现有证据未显示磁盘 I/O 具体数值或趋势。需补查磁盘指标以确认是否因高 I/O 导致服务延迟或失败。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat01 有 30 条事实未加载，仅知 e130 为连接观测。现有证据未显示 CPU 具体数值或趋势。需补查 CPU 指标以确认是否因高负载导致处理延迟。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "IG01 有 32 条事实未加载，仅知 e13 为连接观测。现有证据未显示 CPU 具体数值或趋势。需补查 CPU 指标以确认是否因高负载导致调用延迟。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "01:00:00",
+        "end": "01:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKPercentBusy",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKBps"
+        ],
+        "focus": "确认 Mysql01 在故障窗口内是否存在磁盘 I/O 使用率飙升或吞吐量异常，以验证高磁盘 I/O 是否导致服务故障。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "01:00:00",
+        "end": "01:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认 Tomcat01 在故障窗口内是否存在 CPU 使用率过高或内存占用异常，以验证高 CPU 是否导致服务处理延迟。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:IG01",
+        "start": "01:00:00",
+        "end": "01:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认 IG01 在故障窗口内是否存在 CPU 使用率过高，以验证高 CPU 是否导致其发出的调用出现高延迟。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17406,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 41,
+        "available_facts": 195
+      }
+    }
+  ],
+  "labels_used": false
+}

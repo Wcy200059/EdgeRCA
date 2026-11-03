@@ -1,0 +1,30 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Tomcat01",
+        "reason": "high CPU usage",
+        "time": "12:12:52.686",
+        "evidence_ids": [
+          "e773",
+          "e805"
+        ],
+        "explanation": "e773 显示 Tomcat01 在 12:12:52 出现 20072ms 的极端长调用，e805 确认该调用源自 IG02。尽管 Mysql 日志未直接报错，但 Tomcat 作为直接承载慢调用的组件，其高 CPU 或线程阻塞是故障的直接表现。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "reason must be a public candidate or null"
+    },
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615523400000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1"
+}

@@ -1,0 +1,107 @@
+{
+  "case_id": "ec4279082366c659",
+  "cutoff_ms": 1615276800000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 264
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 267
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 269
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 271
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:IG01",
+      "start": "15:30:00",
+      "end": "16:00:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_NETWORK_NETWORK-NET_RXBytes",
+        "OSLinux-OSLinux_NETWORK_NETWORK-NET_TXBytes"
+      ],
+      "focus": "确认当前故障窗口（15:30-16:00）内 IG01 网卡收发字节数是否存在持续上升趋势或异常波动，以验证网络拥塞假设。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Tomcat04",
+      "start": "15:30:00",
+      "end": "16:00:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKPercentBusy"
+      ],
+      "focus": "获取 Tomcat04 磁盘繁忙百分比的具体数值曲线，确认 e182 中的波动是否对应持续的高 I/O 使用率。",
+      "basis_ids": []
+    }
+  ],
+  "peak_gpu_gib": 21.134150505065918,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e244",
+      "e245",
+      "e246",
+      "e247",
+      "e248",
+      "e249",
+      "e250",
+      "e251",
+      "e252",
+      "e253",
+      "e254",
+      "e255",
+      "e256",
+      "e257",
+      "e258",
+      "e259",
+      "e260",
+      "e261",
+      "e262",
+      "e263",
+      "e264",
+      "e265",
+      "e266",
+      "e267",
+      "e268",
+      "e269",
+      "e270",
+      "e271",
+      "e272",
+      "e273",
+      "e274",
+      "e275"
+    ],
+    "notes": "保留所有涉及候选组件（IG, MG, Tomcat, docker）间父子调用的观测。这些边直接反映调用链关系、P95/最大值延迟及时间区间匹配情况，是区分资源故障与传播链、定位根因组件的关键证据。业务统计观测（e233-e243）未关联具体设备，暂不保留。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 43
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "case_id": "adccf0ff8d753b3e",
+  "cutoff_ms": 1616430600000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 271
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 272
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 274
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 275
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Tomcat03",
+      "start": "00:08:00",
+      "end": "00:10:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKBps",
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKWTps"
+      ],
+      "focus": "确认 Tomcat03 在 00:08 高 CPU 时段，主磁盘 sda 的读写流量 (Bps/WTps) 是否出现同步尖峰，以验证是否为磁盘 IO 瓶颈导致 CPU 飙升。",
+      "basis_ids": [
+        "e215"
+      ]
+    },
+    {
+      "node_id": "device:Tomcat01",
+      "start": "00:00:00",
+      "end": "00:30:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "获取 Tomcat01 具体 CPU 使用率数值，验证 e199 中的空闲下降是否代表高负载故障。",
+      "basis_ids": [
+        "e199"
+      ]
+    },
+    {
+      "node_id": "device:Tomcat03",
+      "start": "00:00:00",
+      "end": "00:30:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKBps"
+      ],
+      "focus": "检查 Tomcat03 另一块磁盘 sdb 的读写流量，排除多盘 IO 问题。",
+      "basis_ids": []
+    }
+  ],
+  "peak_gpu_gib": 21.12100124359131,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e261",
+      "e262",
+      "e263",
+      "e264",
+      "e265",
+      "e266",
+      "e267",
+      "e268",
+      "e269",
+      "e270",
+      "e271"
+    ],
+    "notes": "filter invalid; retained all global evidence",
+    "attempts": [
+      {
+        "valid": false,
+        "error": "ids must be unique IDs from global evidence"
+      },
+      {
+        "valid": false,
+        "error": "ids must be unique IDs from global evidence"
+      }
+    ],
+    "fallback": true,
+    "available": 11
+  }
+}

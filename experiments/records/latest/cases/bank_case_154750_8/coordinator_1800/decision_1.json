@@ -1,0 +1,87 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [
+          "e213"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat01 存在长调用（e213），上游 IG 连接延迟高（e18, e29）。但缺乏 JVM CPU 直接飙升证据，且 OS CPU 变化不大（e270）。需补查 Tomcat01 内部资源指标确认根因。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [
+          "e98"
+        ],
+        "counter_ids": [],
+        "explanation": "Mysql01 有 CPU 波动（e98），可能因磁盘 I/O 高导致慢查询进而引起 Tomcat 长调用。但磁盘 I/O 指标未加载，且无直接 I/O 错误日志。需补查磁盘 I/O 确认。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "23:30:00.000",
+        "end": "00:00:00.000",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "JVM",
+          "CPU"
+        ],
+        "focus": "获取 Tomcat01 可用的 JVM 和 CPU 指标名称，以验证是否存在高 CPU 或内存使用率指标。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "23:30:00.000",
+        "end": "00:00:00.000",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "DISK",
+          "IO"
+        ],
+        "focus": "获取 Mysql01 可用的磁盘和 I/O 指标名称，以验证是否存在高磁盘 I/O 读操作指标。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "23:30:00.000",
+        "end": "00:00:00.000",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "检查 Tomcat01 日志，寻找 OOM、GC 暂停或线程阻塞等错误信息，辅助判断长调用原因。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17594,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 51,
+        "available_facts": 347
+      }
+    }
+  ],
+  "labels_used": false
+}

@@ -1,0 +1,339 @@
+{
+  "answer": {
+    "case_id": "7b49c428918c105c",
+    "node_id": "device:Tomcat02",
+    "request_id": "q0f36097f5de36294",
+    "cutoff_ms": 1615275000000,
+    "requested_scope": {
+      "reference": {
+        "start_ms": 1615274400000,
+        "end_ms": 1615274700000,
+        "seconds": 300.0,
+        "bounds": "[start,end)"
+      },
+      "current": {
+        "start_ms": 1615274700000,
+        "end_ms": 1615275000000,
+        "seconds": 300.0,
+        "bounds": "[start,end)"
+      },
+      "rows_considered": 37862,
+      "prefix_rows": 115546,
+      "counts_by_modality": {
+        "metric": 521,
+        "trace": 37333,
+        "log": 8
+      },
+      "must_report_ids": [],
+      "raw_archive_preserved": true
+    },
+    "tools_executed": [
+      "get_logs"
+    ],
+    "missing_metrics": [],
+    "available_metric_names": [],
+    "metric_catalog_in_facts": false,
+    "facts": [
+      {
+        "id": "f1",
+        "tool_fact": "日志类别gc，共3条，出现范围15:25:33.000—15:29:08.000；内容{\"gc_kind\": \"young_or_unspecified\", \"gc_reason\": \"Allocation Failure\"}；明确错误标记=False。最大GC暂停=76.9586毫秒；普通GC或Allocation Failure不等于OOM。",
+        "time_marks": [
+          "15:25:33.000",
+          "15:29:08.000"
+        ],
+        "template_payload": {
+          "subject": "gc",
+          "pattern": "observation_only",
+          "fields": {
+            "category": "gc",
+            "details": {
+              "gc_kind": "young_or_unspecified",
+              "gc_reason": "Allocation Failure"
+            },
+            "count": 3,
+            "first": "15:25:33.000",
+            "last": "15:29:08.000",
+            "explicit_error": false,
+            "gc_pause_max_ms": 76.9586,
+            "status": "available"
+          },
+          "protected": false
+        },
+        "detail_fields": {
+          "category": "gc",
+          "details": {
+            "gc_kind": "young_or_unspecified",
+            "gc_reason": "Allocation Failure"
+          },
+          "count": 3,
+          "first": "15:25:33.000",
+          "last": "15:29:08.000",
+          "explicit_error": false,
+          "gc_pause_max_ms": 76.9586,
+          "status": "available"
+        }
+      },
+      {
+        "id": "f2",
+        "tool_fact": "日志类别gc，共1条，出现范围15:29:08.000—15:29:08.000；内容{\"gc_kind\": \"young_or_unspecified\", \"gc_reason\": \"GCLocker Initiated GC\"}；明确错误标记=False。最大GC暂停=29.6999毫秒；普通GC或Allocation Failure不等于OOM。",
+        "time_marks": [
+          "15:29:08.000"
+        ],
+        "template_payload": {
+          "subject": "gc",
+          "pattern": "observation_only",
+          "fields": {
+            "category": "gc",
+            "details": {
+              "gc_kind": "young_or_unspecified",
+              "gc_reason": "GCLocker Initiated GC"
+            },
+            "count": 1,
+            "first": "15:29:08.000",
+            "last": "15:29:08.000",
+            "explicit_error": false,
+            "gc_pause_max_ms": 29.6999,
+            "status": "available"
+          },
+          "protected": false
+        },
+        "detail_fields": {
+          "category": "gc",
+          "details": {
+            "gc_kind": "young_or_unspecified",
+            "gc_reason": "GCLocker Initiated GC"
+          },
+          "count": 1,
+          "first": "15:29:08.000",
+          "last": "15:29:08.000",
+          "explicit_error": false,
+          "gc_pause_max_ms": 29.6999,
+          "status": "available"
+        }
+      }
+    ],
+    "groups": [],
+    "pending_fact_ids": [
+      "f1",
+      "f2"
+    ],
+    "questions": [],
+    "self_requests": [],
+    "request_errors": [],
+    "template_rows": [
+      {
+        "id": "f1",
+        "subject": "gc",
+        "fields": {
+          "category": "gc",
+          "details": {
+            "gc_kind": "young_or_unspecified",
+            "gc_reason": "Allocation Failure"
+          },
+          "count": 3,
+          "first": "15:25:33.000",
+          "last": "15:29:08.000",
+          "explicit_error": false,
+          "gc_pause_max_ms": 76.9586,
+          "status": "available"
+        },
+        "pattern": "observation_only",
+        "pattern_description": "已有观测；未据此判故障",
+        "protected": false,
+        "node_id": "device:Tomcat02",
+        "template": "log_event",
+        "question": "【组件】在【起止】出现【日志类型】，共【次数】条。这说明【reading】，应【use】。",
+        "reading_options": {
+          "uncertain": "现有材料不足，暂不作该项解释",
+          "routine_event": "当前所见属于运行事件，尚不足以说明故障"
+        },
+        "catalogue_action": "expand",
+        "model_selection": {
+          "id": "f1",
+          "reading": "uncertain",
+          "use": "uncertain",
+          "related_ids": [],
+          "relation_to_request": "insufficient"
+        },
+        "model_valid": true,
+        "handling": "model_checked",
+        "filled_statement": "device:Tomcat02：日志gc；15:25:33.000～15:29:08.000；3条。模型填项：现有材料不足，暂不作该项解释；等待更多信息。"
+      },
+      {
+        "id": "f2",
+        "subject": "gc",
+        "fields": {
+          "category": "gc",
+          "details": {
+            "gc_kind": "young_or_unspecified",
+            "gc_reason": "GCLocker Initiated GC"
+          },
+          "count": 1,
+          "first": "15:29:08.000",
+          "last": "15:29:08.000",
+          "explicit_error": false,
+          "gc_pause_max_ms": 29.6999,
+          "status": "available"
+        },
+        "pattern": "observation_only",
+        "pattern_description": "已有观测；未据此判故障",
+        "protected": false,
+        "node_id": "device:Tomcat02",
+        "template": "log_event",
+        "question": "【组件】在【起止】出现【日志类型】，共【次数】条。这说明【reading】，应【use】。",
+        "reading_options": {
+          "uncertain": "现有材料不足，暂不作该项解释",
+          "routine_event": "当前所见属于运行事件，尚不足以说明故障"
+        },
+        "catalogue_action": "expand",
+        "model_selection": {
+          "id": "f2",
+          "reading": "uncertain",
+          "use": "uncertain",
+          "related_ids": [],
+          "relation_to_request": "insufficient"
+        },
+        "model_valid": true,
+        "handling": "model_checked",
+        "filled_statement": "device:Tomcat02：日志gc；15:29:08.000～15:29:08.000；1条。模型填项：现有材料不足，暂不作该项解释；等待更多信息。"
+      }
+    ],
+    "node_model_status": "incomplete",
+    "labels_used": false,
+    "report_mode": "template",
+    "note": "程序固定数值与来源；仅变化/错误/告警候选自动调用模型，其余本地保留，不等于正常。",
+    "screening": {
+      "total": 2,
+      "model_candidates": 2,
+      "screen_limit": null,
+      "unchanged_reused": 0,
+      "retained_by_rule": 0,
+      "labels_used": false
+    },
+    "selection_mode": "catalogue",
+    "catalogue_audit": {
+      "total_observations": 2,
+      "unique_entries": 2,
+      "aliases": {},
+      "pages": [
+        {
+          "page": 0,
+          "pages": 1,
+          "ids": [
+            "f1",
+            "f2"
+          ],
+          "attempts": [
+            {
+              "valid": true
+            }
+          ],
+          "reply": {
+            "report": [
+              "f1",
+              "f2"
+            ],
+            "defer": []
+          },
+          "omitted_ids": []
+        }
+      ],
+      "decisions": {
+        "f1": "expand",
+        "f2": "expand"
+      },
+      "omitted_count": 0,
+      "coverage": {
+        "available": 2,
+        "shown": 2,
+        "pages": 1
+      },
+      "note": "全部观测已分批展示并逐项决定；未展示项只可能来自无效页，标记为 unprocessed。"
+    },
+    "question_response": {
+      "question": "获取 Tomcat02 在 15:25 至 15:30 期间的日志，确认是否存在与 Tomcat01 类似的 OOM 错误、Full GC 暂停或堆内存耗尽的明确记录，以验证内存故障假设并区分单机与集群故障。",
+      "checked_scope": {
+        "reference": {
+          "start_ms": 1615274400000,
+          "end_ms": 1615274700000,
+          "seconds": 300.0,
+          "bounds": "[start,end)"
+        },
+        "current": {
+          "start_ms": 1615274700000,
+          "end_ms": 1615275000000,
+          "seconds": 300.0,
+          "bounds": "[start,end)"
+        },
+        "rows_considered": 37862,
+        "prefix_rows": 115546,
+        "counts_by_modality": {
+          "metric": 521,
+          "trace": 37333,
+          "log": 8
+        },
+        "must_report_ids": [],
+        "raw_archive_preserved": true
+      },
+      "tools": [
+        "get_logs"
+      ],
+      "observation_ids": [
+        "f1",
+        "f2"
+      ],
+      "reported_ids": [],
+      "interpretations_unverified": [
+        {
+          "id": "f1",
+          "reading": "uncertain",
+          "relation_to_request": "insufficient"
+        },
+        {
+          "id": "f2",
+          "reading": "uncertain",
+          "relation_to_request": "insufficient"
+        }
+      ],
+      "unresolved_ids": [
+        "f1",
+        "f2"
+      ],
+      "limitations": [
+        "只检查请求节点、指定范围与最多前5分钟对照；参考段不保证正常。",
+        "请求之外的指标尚未检查；原始记录和工具完整结果保留。",
+        "没有相应字段或记录不能证明设备正常；慢调用不是网络RTT。",
+        "模型解释是待核实意见；工具不支持的问题不能强行回答，缺少记录不等于正常。"
+      ]
+    }
+  },
+  "pages": [
+    {
+      "page": 0,
+      "reply": {
+        "items": [
+          {
+            "id": "f1",
+            "reading": "uncertain",
+            "use": "uncertain",
+            "related_ids": [],
+            "relation_to_request": "insufficient"
+          },
+          {
+            "id": "f2",
+            "reading": "uncertain",
+            "use": "uncertain",
+            "related_ids": [],
+            "relation_to_request": "insufficient"
+          }
+        ],
+        "request_id": null
+      },
+      "attempts": [
+        {
+          "valid": true
+        }
+      ]
+    }
+  ]
+}

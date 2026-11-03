@@ -1,0 +1,85 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Mysql02",
+        "reason": "high disk I/O read usage",
+        "time": "17:17:00.000",
+        "time_evidence_id": "e141",
+        "support_ids": [
+          "e141",
+          "e294"
+        ],
+        "counter_ids": [],
+        "explanation": "Mysql02 的 OS CPU 使用率在 17:17:00 出现 99.98% 的极端峰值 (e141)，随后规则清除。该节点缺失磁盘 IO 指标记录 (e294)，但在高负载下磁盘 IO 通常是瓶颈。现有证据虽未直接展示磁盘数值，但 CPU 瞬时满载且无其他明显竞争者，符合高磁盘 IO 导致 CPU 等待的特征，需确认磁盘指标以确证。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql02",
+        "start": "17:00:00",
+        "end": "17:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_DISK_DISKIOReadBytes"
+        ],
+        "focus": "确认 Mysql02 在故障窗口内是否存在高磁盘读取量，验证是否为高磁盘 IO 导致 CPU 满载及业务故障。",
+        "basis_ids": [
+          "e294"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "use unique e IDs from current evidence; node overviews are not evidence",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "unresolved",
+            "component": "Tomcat04",
+            "reason": "high CPU usage",
+            "time": "17:17:00.000",
+            "time_evidence_id": "e141",
+            "support_ids": [
+              "e196"
+            ],
+            "counter_ids": [],
+            "explanation": "Tomcat04 观测到 CPU 曾达到 100% (e196)，时间上与 Mysql02 的 CPU 峰值一致。但缺乏该节点 CPU 随时间变化的完整趋势证据，也未见明确的下游业务失败或上游延迟传导证据。需补查 Tomcat04 详细 CPU 指标以确认是否持续高负载及其对业务的影响。"
+          },
+          "error": "use unique e IDs from current evidence; node overviews are not evidence"
+        },
+        {
+          "section": "requests",
+          "index": 1,
+          "item": {
+            "node_id": "device:Tomcat04",
+            "start": "17:00:00",
+            "end": "17:30:00",
+            "tools": [
+              "get_metrics"
+            ],
+            "metrics": [
+              "OSLinux-CPU_CPU_CPUCpuUtil"
+            ],
+            "focus": "获取 Tomcat04 在故障窗口内的 CPU 使用率详细数值，确认 e196 中的 100% 峰值是否持续存在及其持续时间。",
+            "basis_ids": [
+              "e196"
+            ]
+          },
+          "error": "basis_ids must use e IDs from current evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

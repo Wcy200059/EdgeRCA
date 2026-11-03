@@ -1,0 +1,66 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 本地保留 142 条未加载事实，目录显示有 121 条日志。需补查日志确认是否存在大量慢查询或连接错误导致的磁盘 I/O 激增，以及是否有异常 CPU 使用率变化。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat01 有 30 条未加载事实，且 IG 到 Tomcat01 的调用 P95 较高。需补查 Tomcat01 日志确认是否有 OOM 错误及 Full GC 记录，并检查内存指标趋势。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "18:00:00",
+        "end": "18:30:00",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "确认 Mysql01 在 18:00-18:30 期间是否有大量慢查询日志、连接超时错误或磁盘 I/O 相关的警告信息。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "18:00:00",
+        "end": "18:30:00",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "确认 Tomcat01 在 18:00-18:30 期间是否有 JVM OOM 错误、Full GC 频繁触发或堆内存耗尽的日志记录。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17735,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 61,
+        "available_facts": 257
+      }
+    }
+  ],
+  "labels_used": false
+}

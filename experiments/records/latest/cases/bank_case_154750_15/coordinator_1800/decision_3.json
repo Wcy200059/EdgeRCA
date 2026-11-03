@@ -1,0 +1,77 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "IG01",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "08:04:00.000",
+        "time_evidence_id": "e353",
+        "support_ids": [
+          "e353",
+          "e38",
+          "e323",
+          "e326"
+        ],
+        "counter_ids": [],
+        "explanation": "IG01 在 08:04:00 出现 JVM 内存峰值 (868793000.0)，随后显著下降，符合 OOM 后回收特征。该节点存在长调用 (e38)，且是 Tomcat01/03/04 的上游 (e323, e326)，时间先于下游报错。虽无直接 OOM 报错，但资源耗尽导致的长调用和下游级联失败机制吻合。"
+      },
+      {
+        "id": "h2",
+        "assessment": "not_supported",
+        "component": "IG02",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [
+          "e355"
+        ],
+        "explanation": "IG02 虽有长调用 (e38)，但其内存指标 e355 显示早期中位数 (793770000.0) 高于当前中位数 (465498000.0)，并未表现出类似 IG01 的‘先飙升后骤降’的 OOM 典型特征。且 IG01 作为上游已具备充分解释力。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "IG01 存在长调用 (e38) 且是故障上游，但当前指标 e354 仅显示 CPU 负载在 0.1-0.2 之间波动，未出现显著过载。需确认 CPU 指标单位及是否存在瞬时尖峰，或是否存在非 CPU 资源导致的阻塞。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:IG01",
+        "start": "08:00:00",
+        "end": "08:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-Operating System_7778_JVM_JVM_CPULoad"
+        ],
+        "focus": "获取 IG01 JVM CPU 负载的完整数值序列，确认是否存在与内存峰值 (e353) 时间吻合的 CPU 过载或阻塞，以区分 OOM 与 CPU 过载根因。",
+        "basis_ids": [
+          "e354"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17731,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 37,
+        "available_facts": 356
+      }
+    }
+  ],
+  "labels_used": false
+}

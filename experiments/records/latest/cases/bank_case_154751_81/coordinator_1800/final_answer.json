@@ -1,0 +1,30 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": "18:05:12.000",
+        "evidence_ids": [
+          "e370",
+          "e374",
+          "e375",
+          "e386"
+        ],
+        "explanation": "Mysql01 日志显示多起慢查询（Query_time>0.4s），最早发生于 18:05:12（e370）。这些长尾查询通常导致磁盘 I/O 阻塞，引发下游延迟。尽管 CPU 指标看似平稳，但 I/O 等待可能未直接反映在 CPU 使用率上，而是表现为应用层超时。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615285800000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1",
+  "field_repairs": [],
+  "warnings": []
+}

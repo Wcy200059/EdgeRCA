@@ -1,0 +1,90 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "apache01",
+        "reason": "high memory usage",
+        "time": "09:53:36.000",
+        "time_evidence_id": "e267",
+        "support_ids": [
+          "e267",
+          "e268",
+          "e269",
+          "e270",
+          "e271",
+          "e280",
+          "e281",
+          "e282",
+          "e283",
+          "e284",
+          "e285",
+          "e286",
+          "e287",
+          "e288"
+        ],
+        "counter_ids": [],
+        "explanation": "09:53:36 起 apache01/apache02 集中出现大量 502 错误，符合服务因资源耗尽崩溃特征。apache01 内存指标 (e355) 虽未显示当前飙升，但结合业务失败时间点，高内存导致服务不可用仍为最可能根因。需确认 apache01 在 09:53 时刻内存是否确实发生突变。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat01 作为上游，其高 CPU 可能导致下游 502。但现有证据仅显示调用延迟，缺乏 Tomcat01 自身 CPU 或 JVM 指标异常的直接观测。需补查 Tomcat01 在 09:53 左右的 CPU 和 Heap 内存使用情况。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:apache01",
+        "start": "09:53:00.000",
+        "end": "09:54:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认 09:53:36 错误爆发期间，apache01 内存占用比例是否出现显著上升或接近 100%，以验证高内存导致服务崩溃的假设。",
+        "basis_ids": [
+          "e355"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "09:53:00.000",
+        "end": "09:54:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Tomcat-MEMORY_7441-MEMORY_JVMMaxMemory",
+          "Tomcat-MEMORY_7441-MEMORY_JVMFreeMemory"
+        ],
+        "focus": "检查 Tomcat01 在 09:53 时刻的 JVM 堆内存最大值与空闲值，判断是否存在内存耗尽或高负载导致无法响应下游请求的情况。",
+        "basis_ids": [
+          "e357"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17727,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 46,
+        "available_facts": 358
+      }
+    }
+  ],
+  "labels_used": false
+}

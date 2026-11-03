@@ -1,0 +1,98 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 仅加载了磁盘忙碌度（e290，值为 0），未加载读取字节数（e291）。无法确认是否存在高 I/O 瓶颈。需补查具体读取指标数值。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql02",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql02 当前仅加载了 CPU 指标（e110），未加载磁盘 I/O 指标。虽然 CPU 有波动，但无法排除磁盘 I/O 作为根因。需补查磁盘读取数据。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Tomcat03",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat03 当前仅加载了 e178（连接延迟），未加载 CPU 指标。虽然节点状态显示 cpu_only_metrics 较高，但缺乏具体数值证据支持根因。需补查 CPU 使用率。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql02",
+        "start": "14:30:00",
+        "end": "15:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadBytes",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKPercentBusy"
+        ],
+        "focus": "核实 Mysql02 磁盘读取字节数及忙碌度是否存在异常，以确认高磁盘 I/O 是否为根因。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat03",
+        "start": "14:30:00",
+        "end": "15:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "获取 Tomcat03 的 OS CPU 使用率具体数值，确认是否存在高 CPU 使用导致服务延迟。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "basis_ids must use e IDs from current evidence",
+      "rejected_sections": [
+        {
+          "section": "requests",
+          "index": 0,
+          "item": {
+            "node_id": "device:Mysql01",
+            "start": "14:30:00",
+            "end": "15:00:00",
+            "tools": [
+              "get_metrics"
+            ],
+            "metrics": [
+              "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadBytes"
+            ],
+            "focus": "核实 Mysql01 磁盘读取字节数是否存在异常增长，以确认高磁盘 I/O 是否为根因。",
+            "basis_ids": [
+              "e291"
+            ]
+          },
+          "error": "basis_ids must use e IDs from current evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

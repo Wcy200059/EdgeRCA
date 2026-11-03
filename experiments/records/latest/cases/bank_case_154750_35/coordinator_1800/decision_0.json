@@ -1,0 +1,75 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "发现 Tomcat01 存在 P95 为 43254ms 的长调用（e197），疑似 OOM 导致处理变慢。但缺乏直接的 OOM 日志或内存指标证据，且无法确认是否导致业务失败。需补查 Tomcat01 日志确认 OOM 事件及内存使用情况。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "16:00:00.000",
+        "end": "16:30:00.000",
+        "tools": [
+          "get_logs",
+          "list_metrics"
+        ],
+        "metrics": [
+          "JVM-Operating System_7779_JVM_JVM_HeapUsed",
+          "JVM-Operating System_7779_JVM_JVM_CPULoad"
+        ],
+        "focus": "确认 16:00-16:30 期间是否存在 JVM OOM 错误日志，并获取 JVM 堆内存使用率及 CPU 负载指标，以验证长调用是否由内存溢出引起。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:dockerB1",
+        "start": "16:00:00.000",
+        "end": "16:30:00.000",
+        "tools": [
+          "list_metrics",
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadTime",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadBytes"
+        ],
+        "focus": "查询 dockerB1 的磁盘读取时间和读取字节数指标，确认是否存在高磁盘 I/O 导致长调用，排除网络或应用层原因。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "component must use a public candidate or null",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "unresolved",
+            "component": "dockerB1",
+            "reason": "high disk I/O read usage",
+            "time": null,
+            "time_evidence_id": null,
+            "support_ids": [],
+            "counter_ids": [],
+            "explanation": "dockerB1 出现 P95 高达 64659ms 的长调用（e275），且调用规则曾触发（e272, e273）。这可能是磁盘 I/O 瓶颈导致的延迟。但当前证据仅显示长调用，未见明确的磁盘 I/O 指标飙升或磁盘空间不足证据。需补查 dockerB1 磁盘相关指标。"
+          },
+          "error": "component must use a public candidate or null"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

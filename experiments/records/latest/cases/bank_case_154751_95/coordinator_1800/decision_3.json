@@ -1,0 +1,105 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat04",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "23:26:00",
+        "time_evidence_id": "e210",
+        "support_ids": [
+          "e210",
+          "e236"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 在 23:26:00 明确触发 JVM 内存使用率规则（e210），且 23:00-23:26 间发生 6 次 GC（e236），最后一次为 Allocation Failure。这符合 OOM 特征。虽然 HTTP 状态码正常，但 OOM 可能导致内部崩溃或超时。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Tomcat04",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat04 存在磁盘 I/O 波动证据（e209, e210 等），但未明确关联到业务失败或 OOM 的直接因果。需确认 I/O 是否由应用负载引起或独立故障。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat04",
+        "start": "23:00:00",
+        "end": "23:30:00",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "检查 Tomcat04 日志中 23:26 前后的 OOM 错误堆栈、Full GC 暂停详情及线程 WAITING 状态，以确认内存溢出是否为直接根因。",
+        "basis_ids": [
+          "e236",
+          "e210"
+        ]
+      },
+      {
+        "node_id": "device:apache01",
+        "start": "23:00:00",
+        "end": "23:30:00",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "获取 apache01 到 Tomcat04 的调用链及长调用样本，确认 23:16 CPU 激增时是否有大量请求转发至 Tomcat04 导致其过载。",
+        "basis_ids": [
+          "e214"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "23:00:00",
+        "end": "23:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Tomcat-Threads_7441-\"http-nio-8003\"_CurrentThreadsBusyThreadInfo",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKTps"
+        ],
+        "focus": "获取 Tomcat04 线程繁忙度及磁盘 I/O 详细数值趋势，验证高 CPU 是计算负载还是线程阻塞，并确认 I/O 是否与 OOM 事件同步。",
+        "basis_ids": [
+          "e211",
+          "e209"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "h2: time 23:16:00 requires e214 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "not_supported",
+            "component": "apache01",
+            "reason": "high CPU usage",
+            "time": "23:16:00",
+            "time_evidence_id": "e214",
+            "support_ids": [],
+            "counter_ids": [
+              "e238"
+            ],
+            "explanation": "apache01 在 23:16 出现 CPU 激增（e214），早于 Tomcat04 OOM。但其访问日志 e238 显示全部为 200 状态，无超时或错误，且缺乏父子调用链证明其负载直接导致 Tomcat04 内存耗尽，故不支持为根因。"
+          },
+          "error": "h2: time 23:16:00 requires e214 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

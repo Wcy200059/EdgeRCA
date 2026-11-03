@@ -1,0 +1,92 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Mysql02",
+        "reason": "high memory usage",
+        "time": "11:24:00.000",
+        "time_evidence_id": "e132",
+        "support_ids": [
+          "e132",
+          "e316"
+        ],
+        "counter_ids": [],
+        "explanation": "Mysql02 内存持续 98% (e316)，CPU 同步上升 (e132)。该资源耗尽状态足以导致进程挂起或触发长 GC，解释 MG01 观测到的长调用。无其他组件出现同等严重资源指标，支持单点故障。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql02",
+        "start": "11:24:00.000",
+        "end": "11:30:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadOps"
+        ],
+        "focus": "确认 Mysql02 内存高时是否伴随磁盘读 I/O 激增，验证是否为磁盘瓶颈加剧内存压力或导致 IO 等待。",
+        "basis_ids": [
+          "e317"
+        ]
+      },
+      {
+        "node_id": "device:Mysql02",
+        "start": "11:24:00.000",
+        "end": "11:30:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-Memory_7778_JVM_Memory_HeapMemoryUsage"
+        ],
+        "focus": "确认 Mysql02 内存是否确实达到耗尽状态，以及是否有内存回收或进程重启迹象，验证内存耗尽作为根因。",
+        "basis_ids": [
+          "e316"
+        ]
+      },
+      {
+        "node_id": "device:MG01",
+        "start": "11:24:00.000",
+        "end": "11:30:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认 MG01 在 Mysql02 故障时段自身资源正常，排除其自身 CPU/内存问题导致长调用，验证故障传播路径。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "unresolved without citations needs null time and time_evidence_id",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "unresolved",
+            "component": "MG01",
+            "reason": "network latency",
+            "time": "11:06:12.514",
+            "time_evidence_id": "e43",
+            "support_ids": [],
+            "counter_ids": [],
+            "explanation": "MG01 观测到 11:06 长调用 (e43)，但缺乏网络指标支持。需确认是否为 Mysql02 故障传播所致，或网络问题。"
+          },
+          "error": "unresolved without citations needs null time and time_evidence_id"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

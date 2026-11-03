@@ -1,0 +1,28 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "apache01",
+        "reason": "high CPU usage",
+        "time": "18:44:00",
+        "evidence_ids": [
+          "e42",
+          "e43",
+          "e44",
+          "e55"
+        ],
+        "explanation": "apache01 在 18:44 触发 CPU 高负载 (e42/e44)，空闲率骤降 (e43)，且最大调用时长规则在此时段触发 (e55)，直接导致下游 Tomcat 调用超时 (e67)。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615114800000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1"
+}

@@ -1,0 +1,95 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql02",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql02 日志 (e172) 显示页面清理耗时异常 (42s)，暗示 I/O 瓶颈，但缺乏具体的 I/O 指标数值确认。需补查 Mysql02 磁盘读取指标以确认是否为根因或从属现象。"
+      },
+      {
+        "id": "h3",
+        "assessment": "not_supported",
+        "component": "apache01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [
+          "e279"
+        ],
+        "explanation": "apache01 虽有 CPU 波动 (e279)，但未见持续高负载证据，且缺乏与业务失败的直接因果链。相比 Mysql01 明确的 I/O 异常，CPU 高负载证据不足且非根因特征。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql02",
+        "start": "15:00:00",
+        "end": "15:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadBps",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadIOPS"
+        ],
+        "focus": "核实 Mysql02 磁盘读取 I/O 是否异常，确认 e172 中页面清理慢是否由 I/O 瓶颈导致。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "use unique e IDs from current evidence; node overviews are not evidence",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 0,
+          "item": {
+            "id": "h1",
+            "assessment": "supported",
+            "component": "Mysql01",
+            "reason": "high disk I/O read usage",
+            "time": "15:09:00.000",
+            "time_evidence_id": "e112",
+            "support_ids": [
+              "e112"
+            ],
+            "counter_ids": [],
+            "explanation": "Mysql01 在 15:09:00 出现大量磁盘 I/O 读取日志 (e112)，且该时间点早于其他组件的明显异常。Mysql01 作为核心存储组件，其 I/O 瓶颈可直接导致后续业务延迟或失败。现有证据支持此根因。"
+          },
+          "error": "use unique e IDs from current evidence; node overviews are not evidence"
+        },
+        {
+          "section": "requests",
+          "index": 1,
+          "item": {
+            "node_id": "device:Mysql01",
+            "start": "15:00:00",
+            "end": "15:30:00",
+            "tools": [
+              "get_metrics"
+            ],
+            "metrics": [
+              "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadBps",
+              "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadIOPS"
+            ],
+            "focus": "获取 Mysql01 磁盘读取 I/O 具体数值，确认 15:09:00 时的 I/O 峰值是否达到故障阈值。",
+            "basis_ids": [
+              "e112"
+            ]
+          },
+          "error": "basis_ids must use e IDs from current evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

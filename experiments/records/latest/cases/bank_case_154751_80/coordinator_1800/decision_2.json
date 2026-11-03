@@ -1,0 +1,103 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e286 显示 IG01 CPU 使用率整体平稳（median 26%），未显示显著飙升，难以直接支持 CPU 高企导致故障。需进一步确认 e17 长调用期间 CPU 瞬时峰值或具体 CPU 核使用情况，以区分是 JVM 负载还是系统 CPU 瓶颈。"
+      },
+      {
+        "id": "h3",
+        "assessment": "not_supported",
+        "component": "Redis01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [
+          "e121"
+        ],
+        "explanation": "e121 明确指出 Redis01 在查询范围内无 trace 记录，无法判定其状态。缺乏磁盘 IO 高企的直接证据，且下游 Tomcat 延迟主要关联 IG01，故不支持 Redis01 磁盘故障。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:IG01",
+        "start": "14:30:00.000",
+        "end": "15:00:00.000",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "检查 IG01 在故障时段是否有 GC 暂停、Full GC 或 JVM 错误日志，以佐证高 JVM 负载或内存压力。",
+        "basis_ids": [
+          "e285",
+          "e286"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "use unique e IDs from current evidence; node overviews are not evidence",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 0,
+          "item": {
+            "id": "h1",
+            "assessment": "supported",
+            "component": "IG01",
+            "reason": "high JVM CPU load",
+            "time": "14:36:00.000",
+            "time_evidence_id": "e17",
+            "support_ids": [
+              "e17",
+              "e35",
+              "e145",
+              "e180",
+              "e205",
+              "e285",
+              "e286"
+            ],
+            "counter_ids": [],
+            "explanation": "e17 显示 IG01 在 14:36 出现长调用，且 e285/e286 虽数值波动但未达 OOM 阈值。结合 e35/e145/e180/e205 显示 IG01 下游 Tomcat 节点均存在高延迟（P95>3000ms），符合资源耗尽导致下游阻塞的因果链。e121 确认 Redis01 无 trace 记录，排除其直接故障。"
+          },
+          "error": "use unique e IDs from current evidence; node overviews are not evidence"
+        },
+        {
+          "section": "requests",
+          "index": 0,
+          "item": {
+            "node_id": "device:IG01",
+            "start": "14:36:00.000",
+            "end": "14:37:00.000",
+            "tools": [
+              "get_metrics"
+            ],
+            "metrics": [
+              "OSLinux-CPU_CPU_CPUCpuUtil",
+              "JVM-Memory_7778_JVM_Memory_HeapMemoryUsage"
+            ],
+            "focus": "确认 14:36 长调用期间 IG01 的 CPU 瞬时使用率及 JVM 堆内存占用峰值，验证是否因资源耗尽导致下游延迟。",
+            "basis_ids": [
+              "e17",
+              "e285",
+              "e286"
+            ]
+          },
+          "error": "basis_ids must use e IDs from current evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

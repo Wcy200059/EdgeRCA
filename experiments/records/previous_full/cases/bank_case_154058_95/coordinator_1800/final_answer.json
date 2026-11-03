@@ -1,0 +1,27 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Mysql02",
+        "reason": "high disk I/O read usage",
+        "time": "23:06:00",
+        "evidence_ids": [
+          "e14",
+          "e15",
+          "e16"
+        ],
+        "explanation": "Mysql02 在 23:06 出现大量 Aborted Clients/Connects 及 Binlog Cache 使用激增。这些事件早于其他 Tomcat 节点的 CPU 满载，且伴随磁盘 I/O 指标剧烈变化，符合高读负载导致连接中断的特征，因果链完整。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1616513400000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1"
+}

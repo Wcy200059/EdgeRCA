@@ -1,0 +1,104 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat01",
+        "reason": "high JVM CPU load",
+        "time": "10:13:00.000",
+        "time_evidence_id": "e205",
+        "support_ids": [
+          "e205"
+        ],
+        "counter_ids": [],
+        "explanation": "e205显示Tomcat01线程繁忙指标在10:13触发并持续至10:23，数值从5升至21.5，符合高CPU特征。虽缺具体CPU使用率数值，但线程阻塞是JVM高负载的直接表现，足以支撑假设。"
+      },
+      {
+        "id": "h2",
+        "assessment": "supported",
+        "component": "Tomcat04",
+        "reason": "high disk I/O read usage",
+        "time": "10:25:52.026",
+        "time_evidence_id": "e259",
+        "support_ids": [
+          "e259"
+        ],
+        "counter_ids": [],
+        "explanation": "e259显示Tomcat04在10:25-10:26出现46s长调用。虽然当前无磁盘IO直接读数，但长调用是磁盘IO阻塞的典型症状，且该节点报告数极少，异常显著，暂保留为根因候选。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "IG01在e14中显示P95延迟高达6049ms，且e323-e326显示其到Tomcat各节点的调用均有长尾，疑似上游瓶颈。但缺IG01自身CPU/内存指标证据，无法确认是IG01处理慢还是下游慢。需补查IG01资源指标。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:IG01",
+        "start": "10:00:00.000",
+        "end": "10:30:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认IG01自身资源（CPU/内存）是否在10:26长调用时段出现瓶颈，以区分是IG01处理慢还是下游Tomcat慢。",
+        "basis_ids": [
+          "e14"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "10:00:00.000",
+        "end": "10:30:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_DISK_DISKReadsPerSec"
+        ],
+        "focus": "确认Tomcat04在10:25-10:26期间磁盘读取IO是否异常升高，以支持高磁盘IO假设。",
+        "basis_ids": [
+          "e259"
+        ]
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "10:00:00.000",
+        "end": "10:30:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Mysql-MySQL_3306_Connect",
+          "Mysql-MySQL_3306_Slave_IO_Running"
+        ],
+        "focus": "检查Mysql01连接数及主从复制状态，排除数据库侧连接耗尽或复制延迟导致Tomcat等待的可能性。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17748,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 51,
+        "available_facts": 344
+      }
+    }
+  ],
+  "labels_used": false
+}

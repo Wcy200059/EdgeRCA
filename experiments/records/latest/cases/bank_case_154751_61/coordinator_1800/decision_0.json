@@ -1,0 +1,100 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e142 显示 Tomcat02 在 02:58:25 有 397ms 长调用。但缺乏该节点 CPU/内存的具体观测数据支持根因判断，且无明确时间标记。需补查 Tomcat02 资源指标。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e71 确认 Mysql01 无 trace 记录，无法判断状态。虽然 Mysql 常因磁盘 IO 导致延迟，但当前证据链断裂，无直接 IO 指标或慢查询日志支持。需补查 Mysql01 磁盘 IO 及慢日志。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat04",
+        "start": "02:30:00",
+        "end": "03:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUUserTime",
+          "OSLinux-CPU_CPU_CPUSysTime",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "核实 Tomcat04 在 02:59 前后是否存在 CPU 飙升或内存不足，以解释 e8 中的长调用。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat02",
+        "start": "02:30:00",
+        "end": "03:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUUserTime",
+          "OSLinux-CPU_CPU_CPUSysTime"
+        ],
+        "focus": "核实 Tomcat02 在 02:58 长调用期间是否伴随 CPU 负载升高，确认是否为资源瓶颈。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "02:30:00",
+        "end": "03:00:00",
+        "tools": [
+          "get_logs",
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLOCALDISK_LOCALDISK-sda_DSKRead",
+          "OSLinux-OSLOCALDISK_LOCALDISK-sda_DSKWTps"
+        ],
+        "focus": "查询 Mysql01 是否有慢 SQL 日志及磁盘读取/写入吞吐异常，排查数据库侧故障。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "unresolved without citations needs null time and time_evidence_id",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 0,
+          "item": {
+            "id": "h1",
+            "assessment": "unresolved",
+            "component": "Tomcat04",
+            "reason": "high CPU usage",
+            "time": "02:59:08",
+            "time_evidence_id": "e8",
+            "support_ids": [],
+            "counter_ids": [],
+            "explanation": "e8 显示 IG01 在 02:59:08 出现 4009ms 长调用，指向 Tomcat 层。但 e152 仅展示 Tomcat04 单核 CPU 指标目录，未提供具体数值或趋势，无法确认其是否过载。需补查 Tomcat04 实时 CPU 及内存。"
+          },
+          "error": "unresolved without citations needs null time and time_evidence_id"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

@@ -1,0 +1,106 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat04",
+        "reason": "high JVM CPU load",
+        "time": "19:37:00.000",
+        "time_evidence_id": "e246",
+        "support_ids": [
+          "e246",
+          "e249",
+          "e276"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 线程繁忙计数于 19:37 首次触发（e246），随后频繁发生 GC（e249），且线程池计数在高位波动（e276）。虽缺 JVM CPU 具体数值，但线程阻塞与 GC 压力强相关，符合高负载特征。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "apache01",
+        "reason": "high CPU usage",
+        "time": "19:48:00.000",
+        "time_evidence_id": "e251",
+        "support_ids": [
+          "e251"
+        ],
+        "counter_ids": [],
+        "explanation": "apache01 在 19:48 出现单核 CPU 100%（e251），但缺乏上游调用链证据证明其是根因，且该时间点晚于 Tomcat04 的初始异常，需确认因果方向。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 有大量未加载观测，且 candidate_slate 显示其连接被中断（e54 早期数值极高），疑似高负载或网络问题导致。需补查磁盘 I/O 及连接状态以确认是否为根因。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "19:30:00.000",
+        "end": "20:00:00.000",
+        "tools": [
+          "list_metrics",
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-CPU_CPU_CPUCpuRead",
+          "Mysql-MySQL_3306_Connections"
+        ],
+        "focus": "确认 Mysql01 是否存在 CPU 飙升、磁盘读取负载过高或连接数异常激增，以验证其是否为导致下游 Tomcat 高负载的根因。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "19:30:00.000",
+        "end": "20:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "获取 Tomcat04 的 OS 级 CPU 使用率数值，确认高 CPU 使用是否与线程阻塞（e276）及 GC 活动（e249）直接相关。",
+        "basis_ids": [
+          "e276",
+          "e249"
+        ]
+      },
+      {
+        "node_id": "device:apache01",
+        "start": "19:30:00.000",
+        "end": "20:00:00.000",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "检查 apache01 在 19:48 高 CPU 时段是否有大量来自上游的慢调用或失败请求，以确认其是否为根因还是被影响节点。",
+        "basis_ids": [
+          "e251"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17424,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 41,
+        "available_facts": 281
+      }
+    }
+  ],
+  "labels_used": false
+}

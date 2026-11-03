@@ -1,0 +1,33 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Tomcat04",
+        "reason": "high JVM CPU load",
+        "time": "16:31:00",
+        "evidence_ids": [
+          "e39",
+          "e40",
+          "e64",
+          "e79",
+          "e83"
+        ],
+        "explanation": "Tomcat04 在 16:31 触发长调用规则 (e39, e40)，最大耗时 5212ms。其上游调用 (e64, e79, e83) 均显示高延迟且超时严重。虽无直接 CPU 数值，但长调用是 JVM 负载过高的典型表现，且为当前证据链中最显著的异常点。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "reason must be a public candidate or null"
+    },
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615280400000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1"
+}

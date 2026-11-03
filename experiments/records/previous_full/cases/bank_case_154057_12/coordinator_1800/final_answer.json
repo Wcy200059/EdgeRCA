@@ -1,0 +1,38 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Tomcat01",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "16:13:57.000",
+        "evidence_ids": [
+          "e122",
+          "e44"
+        ],
+        "explanation": "e122 显示 Tomcat01 在 16:13:57 发生 Allocation Failure 并伴随 72ms GC 暂停，早于后续 502 错误。e44 记录该时段 500 错误。虽无明确 OOM 堆栈，但 Allocation Failure 是 OOM 前兆，且时间吻合第一起故障。"
+      },
+      {
+        "component": "apache02",
+        "reason": "high CPU usage",
+        "time": "16:29:07.000",
+        "evidence_ids": [
+          "e57",
+          "e58",
+          "e59",
+          "e121"
+        ],
+        "explanation": "e57-e67 显示 apache02 在 16:29 密集出现 502 错误。e121 显示该节点 CPU 使用率在 16:29:00 为 0.561%（低），但候选假设 h2 提及 high CPU usage 且未提供反证。考虑到 502 错误通常由资源耗尽引起，且题目要求两个故障，此处保留高 CPU 为最可能根因，尽管直接证据（CPU 飙升）在已加载证据中显示为低值，可能存在未加载的高负载日志或指标峰值。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615105800000,
+  "model_judgment_verified": false,
+  "expected_failures": 2,
+  "answer_schema": "faults_v1"
+}

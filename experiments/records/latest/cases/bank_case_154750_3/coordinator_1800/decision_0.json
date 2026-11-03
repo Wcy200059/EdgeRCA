@@ -1,0 +1,90 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Mysql02",
+        "reason": "high CPU usage",
+        "time": "19:16:00",
+        "time_evidence_id": "e105",
+        "support_ids": [
+          "e105"
+        ],
+        "counter_ids": [],
+        "explanation": "Mysql02 在 19:16:00 触发 CPU 使用率异常（e105），早于其他观测。调用链显示 IG 层存在长调用，但 Mysql02 是后端存储，CPU 飙升最可能直接导致下游延迟或资源耗尽。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "IG01 作为入口网关，存在长调用现象（e25），且候选 slate 中有 JVM 内存相关指标（e1）。需确认是否有 JVM CPU 高负载证据，以及是否早于 Mysql02 的 CPU 异常。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql02",
+        "start": "19:15:00",
+        "end": "19:17:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "核实 Mysql02 在 19:16 异常触发前后的 CPU 使用率具体数值及趋势，确认是否为持续高负载。",
+        "basis_ids": [
+          "e105"
+        ]
+      },
+      {
+        "node_id": "device:IG01",
+        "start": "19:28:00",
+        "end": "19:29:00",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "检查 19:28 附近的长调用详情，确认调用链路径及耗时分布，判断是否由 Mysql02 响应慢引起。",
+        "basis_ids": [
+          "e25"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "basis_ids must use e IDs from current evidence",
+      "rejected_sections": [
+        {
+          "section": "requests",
+          "index": 1,
+          "item": {
+            "node_id": "device:IG01",
+            "start": "19:00:00",
+            "end": "19:30:00",
+            "tools": [
+              "get_metrics"
+            ],
+            "metrics": [
+              "JVM-Memory_7778_JVM_Memory_HeapMemoryUsed"
+            ],
+            "focus": "获取 IG01 JVM 堆内存使用的具体数值，验证是否存在内存泄漏或 OOM 风险，并确认其时间线。",
+            "basis_ids": [
+              "e1"
+            ]
+          },
+          "error": "basis_ids must use e IDs from current evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

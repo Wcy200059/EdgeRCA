@@ -1,0 +1,64 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": "13:25:00",
+        "time_evidence_id": "e5",
+        "support_ids": [
+          "e5",
+          "e260",
+          "e261",
+          "e262",
+          "e263",
+          "e264",
+          "e265",
+          "e266",
+          "e267",
+          "e27",
+          "e189",
+          "e203",
+          "e236",
+          "e240"
+        ],
+        "counter_ids": [],
+        "explanation": "IG01 在 13:25 触发 CPU 高告警 (e5)，随后下游 Tomcat 节点 (e189, e203, e236, e240) 均出现长调用。调用关系 (e260-e267) 显示 IG01 是 Tomcat 的上游，资源瓶颈导致下游延迟累积，符合单点故障特征。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:IG01",
+        "start": "13:24:00",
+        "end": "13:26:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "JVM-Memory-MemoryHeapUsedPercent"
+        ],
+        "focus": "获取 IG01 在 13:25 告警时刻的精确 CPU 数值和 JVM 内存使用率，确认是否达到资源耗尽阈值，排除误报。",
+        "basis_ids": [
+          "e5"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17692,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 43,
+        "available_facts": 282
+      }
+    }
+  ],
+  "labels_used": false
+}

@@ -1,0 +1,87 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "apache01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "apache01 存在 CPU 空闲率下降（e267, e268）和负载波动，但未获取具体使用率数值（CPUCpuUtil），无法确认是否达到故障阈值，也未证实与 Mysql01 故障的因果链。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "14:30:00",
+        "end": "15:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadBps",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadIOPS"
+        ],
+        "focus": "确认 Mysql01 在 14:30-15:00 期间磁盘读取带宽和 IOPS 是否存在持续或突发性的高峰，以验证高磁盘读取是否为根因。",
+        "basis_ids": [
+          "e292"
+        ]
+      },
+      {
+        "node_id": "device:apache01",
+        "start": "14:30:00",
+        "end": "15:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "获取 apache01 全时段 CPU 使用率具体数值，确认是否存在持续或突发性的高 CPU 占用，并寻找与业务失败时间点的关联。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "14:30:00",
+        "end": "15:00:00",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "检查 Mysql01 的调用链，确认是否有长调用或超时现象，以及上游组件（如 Tomcat/MG）的调用情况，以定位故障发生的具体业务环节。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "h1: time 14:47:00 requires e292 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 0,
+          "item": {
+            "id": "h1",
+            "assessment": "supported",
+            "component": "Mysql01",
+            "reason": "high disk I/O read usage",
+            "time": "14:47:00",
+            "time_evidence_id": "e292",
+            "support_ids": [
+              "e292"
+            ],
+            "counter_ids": [],
+            "explanation": "Mysql01 在 14:47:00 出现磁盘读取指标异常（e292），且该节点保留大量未加载的磁盘相关观测。虽然具体数值需确认，但这是目前唯一指向磁盘 I/O 故障的直接证据，且时间早于业务失败窗口。"
+          },
+          "error": "h1: time 14:47:00 requires e292 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

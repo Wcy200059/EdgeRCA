@@ -1,0 +1,128 @@
+{
+  "case_id": "560a2e1bd4397e10",
+  "cutoff_ms": 1614861000000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 295
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 298
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 301
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 303
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Mysql02",
+      "start": "20:13:40",
+      "end": "20:14:10",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadOps"
+      ],
+      "focus": "确认 Mysql02 在 20:13:40 长调用期间是否存在磁盘读取操作数飙升，以验证是否为导致 Tomcat 延迟的根因。",
+      "basis_ids": [
+        "e313"
+      ]
+    },
+    {
+      "node_id": "device:Tomcat02",
+      "start": "20:13:40",
+      "end": "20:14:10",
+      "tools": [
+        "get_metrics",
+        "get_logs"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil",
+        "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+      ],
+      "focus": "核实 Tomcat02 在 20:13:42 长调用期间是否存在 CPU 或内存飙升，以区分是自身资源耗尽还是单纯网络延迟。",
+      "basis_ids": [
+        "e192"
+      ]
+    },
+    {
+      "node_id": "device:dockerB2",
+      "start": "20:08:00",
+      "end": "20:08:50",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil",
+        "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+      ],
+      "focus": "获取 dockerB2 在 20:08 长调用触发时的具体资源数值，确认是否为独立故障或风暴前兆。",
+      "basis_ids": [
+        "e259"
+      ]
+    }
+  ],
+  "peak_gpu_gib": 21.134713649749756,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e275",
+      "e276",
+      "e277",
+      "e278",
+      "e279",
+      "e280",
+      "e281",
+      "e282",
+      "e283",
+      "e284",
+      "e285",
+      "e286",
+      "e287",
+      "e288",
+      "e289",
+      "e290",
+      "e291",
+      "e292",
+      "e293",
+      "e294",
+      "e295",
+      "e296",
+      "e297",
+      "e298",
+      "e299",
+      "e300",
+      "e301",
+      "e302",
+      "e303",
+      "e304",
+      "e305",
+      "e306"
+    ],
+    "notes": "保留所有涉及候选组件（IG, MG, Tomcat, docker）间实际父子调用匹配的观测。这些证据提供了调用链结构、P95/最大值及时间区间不匹配情况，是区分资源故障与传播链、定位根因组件的关键依据。e264-e274为业务统计，未体现组件间调用关系，故拒绝。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 43
+  }
+}

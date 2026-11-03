@@ -1,0 +1,29 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Tomcat04",
+        "reason": "high JVM CPU load",
+        "time": "19:37:00.000",
+        "evidence_ids": [
+          "e246",
+          "e249",
+          "e276"
+        ],
+        "explanation": "Tomcat04 在 19:37 首次触发线程繁忙（e246），随后频繁 GC（e249）且线程计数高位波动（e276）。虽缺 JVM CPU 具体数值，但线程阻塞与 GC 压力强相关，符合高负载特征。apache01 高 CPU 时间晚于该异常，且无上游调用链证据，故排除。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1616587200000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1",
+  "field_repairs": [],
+  "warnings": []
+}

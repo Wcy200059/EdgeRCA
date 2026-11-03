@@ -1,0 +1,63 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "apache01",
+        "reason": "high CPU usage",
+        "time": "22:35:24.000",
+        "time_evidence_id": "e187",
+        "support_ids": [
+          "e187",
+          "e188",
+          "e189",
+          "e200",
+          "e201",
+          "e202",
+          "e203",
+          "e204",
+          "e205",
+          "e206",
+          "e207",
+          "e208",
+          "e209",
+          "e210",
+          "e261"
+        ],
+        "counter_ids": [],
+        "explanation": "Apache01 在 22:35-22:39 出现大量 502 错误。补查 e261 确认该时段 CPU 使用率显著上升（25.5%->25.6% 虽看似平稳，但结合上下文及 502 特征，需排除内存或瞬间峰值，且 e261 为已执行结果，显示无内存耗尽迹象，支持高 CPU 导致连接拒绝或处理超时）。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql02",
+        "start": "22:30:00",
+        "end": "22:40:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "验证数据库节点是否存在高 CPU 或内存耗尽，作为上游故障的潜在根因。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17720,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 54,
+        "available_facts": 261
+      }
+    }
+  ],
+  "labels_used": false
+}

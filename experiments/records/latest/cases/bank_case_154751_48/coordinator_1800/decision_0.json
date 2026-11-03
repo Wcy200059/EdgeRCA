@@ -1,0 +1,105 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "MG02",
+        "reason": "high CPU usage",
+        "time": "06:26:00",
+        "time_evidence_id": "e59",
+        "support_ids": [
+          "e59"
+        ],
+        "counter_ids": [],
+        "explanation": "MG02 CPU 在 06:26 显著上升（25%→43%），但缺乏下游业务失败或上游资源耗尽的直接证据。需确认 CPU 升高是否导致调用延迟或业务中断，并检查是否有其他并发故障。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "候选 Tomcat02 高 JVM CPU 缺乏直接指标证据（如 CPU 使用率或线程阻塞日志）。现有连接观测仅显示延迟，未证实 JVM 负载过高。需补查 Tomcat02 资源指标及日志以验证。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 磁盘 I/O 无直接观测记录（trace 查询缺失）。虽然磁盘空间未爆满，但无法排除 I/O 等待导致的延迟。需补查磁盘 I/O 指标确认是否存在高负载。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:MG02",
+        "start": "06:25:00",
+        "end": "06:27:00",
+        "tools": [
+          "get_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-CPU_CPU_CPUMemUsedMemPerc",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKWTps"
+        ],
+        "focus": "验证 MG02 在 06:26 CPU 升高期间是否伴随内存压力或磁盘 I/O 飙升，确认是否为资源耗尽导致的服务异常。",
+        "basis_ids": [
+          "e59"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat02",
+        "start": "06:00:00",
+        "end": "06:30:00",
+        "tools": [
+          "list_metrics",
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-CPU_CPU_CPUCpuUtil",
+          "JVM-Memory_HeapMemoryUsage"
+        ],
+        "focus": "获取 Tomcat02 完整的 CPU 和内存指标目录及数值，验证是否存在高 JVM CPU 或内存溢出（OOM）迹象。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "06:00:00",
+        "end": "06:30:00",
+        "tools": [
+          "list_metrics",
+          "get_metrics"
+        ],
+        "metrics": [
+          "Mysql-MySQL_3306_IOWait",
+          "Mysql-MySQL_3306_DiskReads"
+        ],
+        "focus": "确认 Mysql01 是否存在高磁盘 I/O 等待或读取量激增，排除磁盘瓶颈导致的数据库响应延迟。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17388,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 58,
+        "available_facts": 269
+      }
+    }
+  ],
+  "labels_used": false
+}

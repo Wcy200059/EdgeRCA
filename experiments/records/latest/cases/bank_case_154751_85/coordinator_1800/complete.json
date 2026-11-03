@@ -1,0 +1,176 @@
+{
+  "case_id": "cbe25beae3d66b49",
+  "cutoff_ms": 1615323600000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 234
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 239
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 242
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 244
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Tomcat01",
+      "start": "04:38:00",
+      "end": "04:40:00",
+      "tools": [
+        "get_metrics",
+        "get_logs"
+      ],
+      "metrics": [
+        "Tomcat-MEMORY_7441-MEMORY_JVMFreeMemory",
+        "Tomcat-MEMORY_7441-MEMORY_JVMMemoryUsedPercent"
+      ],
+      "focus": "确认 04:38:20 前后 JVM 堆内存是否急剧下降至接近 0，验证 Allocation Failure 导致的 OOM 根因。",
+      "basis_ids": [
+        "e248",
+        "e247"
+      ]
+    },
+    {
+      "node_id": "device:Mysql01",
+      "start": "04:35:00",
+      "end": "04:45:00",
+      "tools": [
+        "list_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKRead",
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadTime"
+      ],
+      "focus": "检查 Mysql01 是否有除 DSKRead 外的其他磁盘 I/O 指标，确认是否存在未被监测到的 I/O 瓶颈。",
+      "basis_ids": [
+        "e251"
+      ]
+    },
+    {
+      "node_id": "device:Tomcat01",
+      "start": "04:38:00",
+      "end": "04:40:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "Tomcat-MEMORY_7441-MEMORY_JVMFreeMemory",
+        "Tomcat-MEMORY_7441-MEMORY_JVMMemoryUsedPercent"
+      ],
+      "focus": "直接观测 JVM 堆内存使用量，确认在 04:38:20 前后 FreeMemory 是否急剧下降至接近 0，验证 Heap 耗尽假设。",
+      "basis_ids": [
+        "e247"
+      ]
+    },
+    {
+      "node_id": "device:Mysql01",
+      "start": "04:35:00",
+      "end": "04:45:00",
+      "tools": [
+        "get_logs"
+      ],
+      "metrics": [],
+      "focus": "检查 Mysql01 在 04:38:00 附近的日志，寻找 I/O 等待错误或磁盘空间不足提示，以佐证或排除磁盘 I/O 故障假设。",
+      "basis_ids": [
+        "e71"
+      ]
+    },
+    {
+      "node_id": "device:Tomcat01",
+      "start": "04:38:00",
+      "end": "04:45:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "Tomcat-MEMORY_7441-MEMORY_JVMFreeMemory",
+        "Tomcat-MEMORY_7441-MEMORY_JVMMaxMemory"
+      ],
+      "focus": "直接观测 Tomcat01 的 JVM 堆内存使用情况，确认 04:38:00 至 04:40:00 期间是否存在 Heap 内存耗尽（FreeMemory 接近 0 或 MaxMemory 阈值），以最终确认 OOM 根因。",
+      "basis_ids": [
+        "e248"
+      ]
+    },
+    {
+      "node_id": "device:Mysql01",
+      "start": "04:35:00.000",
+      "end": "04:45:00.000",
+      "tools": [
+        "get_metrics",
+        "get_logs"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadTime",
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKRead"
+      ],
+      "focus": "确认 04:38:00 附近 CPU SysTime 升高是否由磁盘读取 I/O 阻塞导致，排除 CPU 计算密集型负载。",
+      "basis_ids": [
+        "e71"
+      ]
+    }
+  ],
+  "peak_gpu_gib": 21.121294021606445,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e214",
+      "e215",
+      "e216",
+      "e217",
+      "e218",
+      "e219",
+      "e220",
+      "e221",
+      "e222",
+      "e223",
+      "e224",
+      "e225",
+      "e226",
+      "e227",
+      "e228",
+      "e229",
+      "e230",
+      "e231",
+      "e232",
+      "e233",
+      "e234",
+      "e235",
+      "e236",
+      "e237",
+      "e238",
+      "e239",
+      "e240",
+      "e241",
+      "e242",
+      "e243",
+      "e244",
+      "e245"
+    ],
+    "notes": "筛选所有涉及候选组件（IG, MG, Tomcat, docker）间实际父子调用匹配的观测。这些边直接反映服务依赖关系及延迟传播（P95/Max值），用于区分资源故障与调用链异常。e203-e213 仅含业务统计无组件关联，故拒绝。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 43
+  }
+}

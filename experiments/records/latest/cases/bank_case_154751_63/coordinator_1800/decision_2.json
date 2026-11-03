@@ -1,0 +1,102 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat01",
+        "reason": "high memory usage",
+        "time": "14:01:00.000",
+        "time_evidence_id": "e325",
+        "support_ids": [
+          "e325",
+          "e327",
+          "e293",
+          "e297"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat01 内存占用在 14:01:00 达到 98% 且持续 (e325)，伴随大量 Allocation Failure 导致的 GC (e327)。这直接导致高 CPU 负载，进而引发下游 IG01/IG02 调用延迟升高 (e293, e297)。资源耗尽是系统级故障的强有力证据。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat04",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat04 CPU 指标曾达 100% (e218)，但缺乏该节点内存状态及下游 MG 节点受影响的直接证据。需确认 CPU 高峰是否伴随内存不足或导致下游超时，否则可能仅为瞬时压力。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat04",
+        "start": "14:00:00",
+        "end": "14:30:00",
+        "tools": [
+          "get_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认 Tomcat04 的 CPU 峰值是否持续，并检查是否有 OOM 或线程阻塞日志，以区分瞬时高负载与持续性故障。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "14:00:00",
+        "end": "14:30:00",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "检索 Tomcat01 日志中关于 Full GC 暂停时间、堆内存耗尽错误及线程阻塞的具体记录，确认资源耗尽对业务线程的影响。",
+        "basis_ids": [
+          "e327"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "use unique e IDs from current evidence; node overviews are not evidence",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "supported",
+            "component": "Tomcat04",
+            "reason": "high CPU usage",
+            "time": "14:00:00.000",
+            "time_evidence_id": "e218",
+            "support_ids": [
+              "e218",
+              "e229"
+            ],
+            "counter_ids": [],
+            "explanation": "Tomcat04 CPU 使用率在 14:00 达到 100% (e218)，且作为上游被 IG01 调用时 P95 延迟显著升高 (e229)。高 CPU 导致处理能力下降，引发下游延迟，符合故障特征。"
+          },
+          "error": "use unique e IDs from current evidence; node overviews are not evidence"
+        }
+      ]
+    },
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17721,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 55,
+        "available_facts": 319
+      }
+    }
+  ],
+  "labels_used": false
+}

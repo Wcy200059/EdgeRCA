@@ -1,0 +1,78 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Redis01",
+        "reason": "high memory usage",
+        "time": "20:10:00.000",
+        "time_evidence_id": "e203",
+        "support_ids": [
+          "e203"
+        ],
+        "counter_ids": [],
+        "explanation": "Redis01 在 20:10:00 出现 ops/sec 显著上升（1912->2735），早于其他节点波动。虽未直接观测到内存指标，但高操作量常导致内存飙升。需补查 Redis01 内存占比以确认是否为 OOM 或内存泄漏。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "apache02",
+        "reason": "high memory usage",
+        "time": "20:00:00.000",
+        "time_evidence_id": "e293",
+        "support_ids": [
+          "e293"
+        ],
+        "counter_ids": [],
+        "explanation": "apache02 在窗口起始 20:00:00 即触发内存占用 96% 规则，且状态为 triggered。若此高内存持续至故障发生点，则可能是根因。需确认该高内存是否导致后续服务超时或崩溃，并查看具体内存使用曲线。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Redis01",
+        "start": "20:00:00.000",
+        "end": "20:30:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "验证 Redis01 在 20:10:00 操作量激增期间内存使用率是否达到高位，确认是否因高负载引发内存问题。",
+        "basis_ids": [
+          "e203"
+        ]
+      },
+      {
+        "node_id": "device:apache02",
+        "start": "20:00:00.000",
+        "end": "20:30:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "获取 apache02 内存使用率完整趋势，确认 20:00:00 触发的高内存是否持续存在，以及是否伴随 CPU 或磁盘 I/O 异常。",
+        "basis_ids": [
+          "e293"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17721,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 41,
+        "available_facts": 310
+      }
+    }
+  ],
+  "labels_used": false
+}

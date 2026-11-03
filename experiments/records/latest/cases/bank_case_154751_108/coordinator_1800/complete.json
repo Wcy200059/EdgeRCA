@@ -1,0 +1,127 @@
+{
+  "case_id": "6330bc79d72f31c9",
+  "cutoff_ms": 1616671800000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 348
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 351
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 355
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 358
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:apache01",
+      "start": "19:15:00.000",
+      "end": "19:20:00.000",
+      "tools": [
+        "get_calls"
+      ],
+      "metrics": [],
+      "focus": "检查 apache01 在 502 报错时段 (19:15-19:18) 的调用链，识别是否存在指向 Tomcat 或上游组件的长调用，以验证 502 错误是由后端处理超时或资源耗尽引起的。",
+      "basis_ids": [
+        "e305",
+        "e307",
+        "e308"
+      ]
+    },
+    {
+      "node_id": "device:Tomcat02",
+      "start": "19:00:00.000",
+      "end": "19:30:00.000",
+      "tools": [
+        "get_calls"
+      ],
+      "metrics": [],
+      "focus": "获取 Tomcat02 的调用链详情，识别是否存在长调用或死锁，解释高 CPU 使用率的原因，并确认是否影响了下游 apache 节点。",
+      "basis_ids": [
+        "e11"
+      ]
+    },
+    {
+      "node_id": "device:Tomcat02",
+      "start": "19:00:00.000",
+      "end": "19:10:00.000",
+      "tools": [
+        "get_metrics",
+        "get_calls"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil",
+        "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+      ],
+      "focus": "补查 Tomcat02 在 19:04 时段的 CPU 和内存指标，确认其是否受到 IG02 高负载的影响，或自身是否存在资源问题，以建立从 IG02 到 apache01 的因果链。",
+      "basis_ids": [
+        "e11"
+      ]
+    },
+    {
+      "node_id": "device:apache01",
+      "start": "19:15:00.000",
+      "end": "19:20:00.000",
+      "tools": [
+        "list_metrics",
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_NETWORK_ens160_NETPacketsOut",
+        "OSLinux-OSLinux_NETWORK_ens160_NETPacketsIn"
+      ],
+      "focus": "检查 apache01 在 502 报错时段（19:15-19:18）的网络流量变化，确认是否存在网络拥塞或丢包，以验证 h2 的网络延迟假设。",
+      "basis_ids": [
+        "e305",
+        "e307"
+      ]
+    }
+  ],
+  "peak_gpu_gib": 20.984387397766113,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e338",
+      "e339",
+      "e340",
+      "e341",
+      "e342",
+      "e343",
+      "e344",
+      "e345",
+      "e346",
+      "e347",
+      "e348"
+    ],
+    "notes": "filter invalid; retained all global evidence",
+    "attempts": [
+      {
+        "valid": false,
+        "error": "ids must be unique IDs from global evidence"
+      },
+      {
+        "valid": false,
+        "error": "ids must be unique IDs from global evidence"
+      }
+    ],
+    "fallback": true,
+    "available": 11
+  }
+}

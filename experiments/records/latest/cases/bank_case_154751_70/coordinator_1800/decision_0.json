@@ -1,0 +1,84 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Mysql01",
+        "reason": "high CPU usage",
+        "time": "02:05:00",
+        "time_evidence_id": "e66",
+        "support_ids": [
+          "e66"
+        ],
+        "counter_ids": [],
+        "explanation": "Mysql01 在 02:05:00 出现 CPU 使用率峰值 97.66%，随后回落。该时间点早于其他组件的明显异常，且无直接反证。其他节点虽有长调用，但多为下游表现或孤立事件，缺乏根因证据。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat03",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "候选来自公开范围，但当前证据中 Tomcat03 仅有 CPU WIO 波动记录（e166），未确认是否为根因级磁盘 I/O 故障，且无明确触发时间点，需补查磁盘指标。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat03",
+        "start": "02:00:00",
+        "end": "02:30:00",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUWio",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKRead"
+        ],
+        "focus": "确认 Tomcat03 是否存在持续的磁盘读取 I/O 高负载，以验证高磁盘 I/O 是否为根因。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat02",
+        "start": "02:00:00",
+        "end": "02:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "检查 Tomcat02 内存使用率是否有异常升高，排除内存问题导致的性能下降。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:IG01",
+        "start": "02:00:00",
+        "end": "02:30:00",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "分析 IG01 到 Tomcat 系列的调用链，确认 02:05 之后是否有大量请求积压或延迟，以验证 Mysql01 故障是否传播至上游。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17270,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 58,
+        "available_facts": 257
+      }
+    }
+  ],
+  "labels_used": false
+}

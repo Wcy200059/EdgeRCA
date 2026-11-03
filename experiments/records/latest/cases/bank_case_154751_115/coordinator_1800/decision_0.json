@@ -1,0 +1,102 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "apache01",
+        "reason": "high CPU usage",
+        "time": "01:20:00.000",
+        "time_evidence_id": "e243",
+        "support_ids": [
+          "e243",
+          "e246"
+        ],
+        "counter_ids": [],
+        "explanation": "apache01 在 01:20:00 出现 CPU 利用率触发（e243），且磁盘 I/O 在 01:20:00 突然激增（e246），时间吻合。但缺乏业务失败或下游依赖（如 Tomcat/Mysql）的明确超时/失败证据，无法确认为根因。需补查调用链及下游影响。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "apache01",
+        "reason": "high disk I/O read usage",
+        "time": "01:20:00.000",
+        "time_evidence_id": "e246",
+        "support_ids": [
+          "e246"
+        ],
+        "counter_ids": [],
+        "explanation": "e246 显示 apache01 磁盘 sdb 在 01:20:00 触发高 I/O。但该现象可能是结果而非原因（如处理突发请求）。需确认是否有上游流量激增或下游阻塞导致此 I/O 峰值，且需验证是否影响业务。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 目录显示有资源类观测，但当前未加载具体指标详情（如磁盘 I/O 或 CPU）。无法确认是否存在高负载。需请求获取 Mysql01 的磁盘 I/O 或 CPU 指标以核实。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "01:00:00",
+        "end": "01:30:00",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK"
+        ],
+        "focus": "获取 Mysql01 的 CPU 使用率和磁盘 I/O 指标列表及数值，确认是否存在资源瓶颈。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:apache01",
+        "start": "01:00:00",
+        "end": "01:30:00",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "获取 apache01 的调用链详情，确认 01:20:00 的 CPU 和磁盘激增是否由特定长调用或下游超时引起，以及是否影响下游服务。",
+        "basis_ids": [
+          "e243",
+          "e246"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "01:00:00",
+        "end": "01:30:00",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "获取 Tomcat01 的 CPU 和内存指标，确认在 apache01 异常时段（01:20:00）是否有资源压力或响应延迟。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17618,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 41,
+        "available_facts": 270
+      }
+    }
+  ],
+  "labels_used": false
+}

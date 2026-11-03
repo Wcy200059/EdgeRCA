@@ -1,0 +1,82 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat01",
+        "reason": "high JVM CPU load",
+        "time": "17:22:02.000",
+        "time_evidence_id": "e290",
+        "support_ids": [
+          "e290",
+          "e278",
+          "e279",
+          "e280",
+          "e281",
+          "e282",
+          "e283",
+          "e284",
+          "e285",
+          "e286",
+          "e287",
+          "e288"
+        ],
+        "counter_ids": [],
+        "explanation": "17:22:02 apache02 触发 5xx 规则，随后 apache01 大量 502 错误爆发 (e278-e288)，时间完全吻合。业务流指向 Tomcat01。需确认 Tomcat01 在高负载时段 JVM CPU 是否飙升。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Apache 错误爆发时间 (17:22) 与 Tomcat02 的 CPU 观测 (e224) 时间窗口不完全重叠且缺乏直接父子调用证据。需补查 Tomcat02 在 17:22 的具体 JVM CPU 值以排除或确认。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "17:22:00.000",
+        "end": "17:26:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-Operating System_7778_JVM_JVM_CPULoad"
+        ],
+        "focus": "核实 Tomcat01 在 17:22 错误爆发时段 JVM CPU 负载是否飙升，确认是否为根因。",
+        "basis_ids": [
+          "e278",
+          "e279",
+          "e280",
+          "e281",
+          "e282",
+          "e283",
+          "e284",
+          "e285",
+          "e286",
+          "e287",
+          "e288"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17670,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 41,
+        "available_facts": 325
+      }
+    }
+  ],
+  "labels_used": false
+}

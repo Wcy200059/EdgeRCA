@@ -1,0 +1,104 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat01",
+        "reason": "high CPU usage",
+        "time": "16:52:00.000",
+        "time_evidence_id": "e194",
+        "support_ids": [
+          "e194",
+          "e300"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat01 在 16:52:00 出现 CPU 使用率 99.94% 的极端峰值（e194），且后续采样（e300）维持高位（中位数 99.59%）。该现象符合根因定义，且时间明确。需确认是否导致业务失败，但现有资源证据已足够支撑其为根因候选。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "MG01",
+        "reason": "high memory usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "候选 MG01 内存高负载（e11），但当前证据仅显示数值波动，缺乏明确的触发阈值或持续时间证据。需获取具体内存使用率数值及变化趋势，确认是否构成故障。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "16:50:00.000",
+        "end": "16:55:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "核实 16:52:00 CPU 峰值期间内存是否同步飙升，确认是否为资源耗尽（CPU+Memory）导致的业务中断。",
+        "basis_ids": [
+          "e194",
+          "e300"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "16:50:00.000",
+        "end": "16:55:00.000",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "检查 16:52:00 故障窗口内的日志，寻找应用层错误、连接拒绝或超时记录，以验证高 CPU 是否直接导致业务失败。",
+        "basis_ids": [
+          "e194",
+          "e300"
+        ]
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "16:50:00.000",
+        "end": "16:55:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Mysql-MySQL_3306_Connections"
+        ],
+        "focus": "检查 Tomcat01 高 CPU 期间 Mysql01 连接数是否激增，排除数据库连接池耗尽作为根因的可能性。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "h3: time 16:47:00.000 requires e252 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 2,
+          "item": {
+            "id": "h3",
+            "assessment": "not_supported",
+            "component": "Tomcat03",
+            "reason": "high JVM CPU load",
+            "time": "16:47:00.000",
+            "time_evidence_id": "e252",
+            "support_ids": [],
+            "counter_ids": [
+              "e252"
+            ],
+            "explanation": "Tomcat03 线程繁忙线程数在 16:47:00 升至 43（e252），随后回落。该时间点早于 Tomcat01 的 CPU 崩溃（16:52），且无证据表明该线程激增导致了后续系统级故障。更可能是短暂波动或下游影响，而非根因。"
+          },
+          "error": "h3: time 16:47:00.000 requires e252 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

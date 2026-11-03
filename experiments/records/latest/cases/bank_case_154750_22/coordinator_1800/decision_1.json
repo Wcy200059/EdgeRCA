@@ -1,0 +1,108 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [
+          "e219",
+          "e220",
+          "e221",
+          "e227",
+          "e228",
+          "e229"
+        ],
+        "counter_ids": [],
+        "explanation": "Apache层在19:18:24-19:18:28出现连续502错误，指向Tomcat01。但Tomcat01高JVM CPU的时序证据缺失（e162仅显示SysTime，非JVM CPU）。需补查Tomcat01在19:18左右的JVM CPU指标及日志，确认是否因CPU过载导致无法处理请求。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "19:18:00",
+        "end": "19:20:00",
+        "tools": [
+          "get_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "JVM-Operating System_7778_JVM_JVM_CPULoad",
+          "JVM-Operating System_7778_JVM_JVM_HeapMemoryUsedMB"
+        ],
+        "focus": "确认19:18:24 Apache报错时段，Tomcat01是否存在JVM CPU飙升或堆内存耗尽，以验证高CPU/OOM导致502错误的假设。",
+        "basis_ids": [
+          "e219",
+          "e220",
+          "e221",
+          "e227",
+          "e228",
+          "e229"
+        ]
+      },
+      {
+        "node_id": "device:dockerB2",
+        "start": "19:24:00",
+        "end": "19:25:00",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "检查19:24:06长调用发生时，dockerB2是否有Full GC日志或OOM错误记录，确认长调用是否由内存溢出引起。",
+        "basis_ids": [
+          "e254"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat02",
+        "start": "19:18:00",
+        "end": "19:20:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUSysTime"
+        ],
+        "focus": "对比Tomcat02在Apache报错时段的CPU SysTime变化，判断Tomcat01是否为唯一瓶颈，排除其他Tomcat节点并发故障的可能性。",
+        "basis_ids": [
+          "e220",
+          "e221",
+          "e227",
+          "e228",
+          "e229"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "component must use a public candidate or null",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "unresolved",
+            "component": "dockerB2",
+            "reason": "JVM Out of Memory (OOM) Heap",
+            "time": null,
+            "time_evidence_id": null,
+            "support_ids": [
+              "e254"
+            ],
+            "counter_ids": [],
+            "explanation": "dockerB2在19:24:06出现单次5198ms长调用（e254），且该节点有OOM候选背景。但长调用不等于OOM，且无OOM日志或内存指标佐证。需补查dockerB2在19:24前后的GC日志及内存指标，确认是否发生OOM导致下游Tomcat/MG服务超时。"
+          },
+          "error": "component must use a public candidate or null"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

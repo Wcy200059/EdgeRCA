@@ -1,0 +1,126 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat04",
+        "reason": "high disk I/O read usage",
+        "time": "09:44:00.000",
+        "time_evidence_id": "e274",
+        "support_ids": [
+          "e274",
+          "e275"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 磁盘读取 (e274) 和等待时间 (e275) 于 09:44 触发，早于后续 CPU 高 (e281)。磁盘 I/O 阻塞通常导致应用线程等待，进而引发 CPU 使用率飙升。该因果链完整，且早于其他异常，符合根因特征。"
+      },
+      {
+        "id": "h4",
+        "assessment": "unresolved",
+        "component": "apache01",
+        "reason": "high CPU usage",
+        "time": "09:56:00.000",
+        "time_evidence_id": "e281",
+        "support_ids": [
+          "e281",
+          "e282"
+        ],
+        "counter_ids": [],
+        "explanation": "apache01 单核 CPU 在 09:56 达到 100% (e281)，但这是窗口内较晚的事件。Apache 作为反向代理，高 CPU 通常是下游（如 Tomcat 或 Mysql）响应慢导致的超时重试或连接堆积。需确认调用链方向及 Tomcat04 故障是否已导致业务失败，以确定 apache01 是否为次生故障。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat04",
+        "start": "09:44:00.000",
+        "end": "09:50:00.000",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "确认 Tomcat04 在磁盘 I/O 故障期间是否有大量长调用或连接超时，验证磁盘 I/O 是否导致应用线程阻塞。",
+        "basis_ids": [
+          "e274",
+          "e275"
+        ]
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "09:44:00.000",
+        "end": "09:50:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKReadsSec",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKWTps"
+        ],
+        "focus": "获取 Mysql01 磁盘读取速率和等待时间，确认是否存在 I/O 瓶颈，以解释 Tomcat04 的 I/O 等待现象。",
+        "basis_ids": [
+          "e302"
+        ]
+      },
+      {
+        "node_id": "device:MG01",
+        "start": "09:37:00.000",
+        "end": "09:44:00.000",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "检查 MG01 高 CPU 期间是否向 Tomcat04 发送了大量请求，验证 MG01 高 CPU 是否由 Tomcat04 的磁盘故障引起的下游负载增加所致。",
+        "basis_ids": [
+          "e30",
+          "e274"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "h2: time 09:37:00.000 requires e30 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "not_supported",
+            "component": "MG01",
+            "reason": "high CPU usage",
+            "time": "09:37:00.000",
+            "time_evidence_id": "e30",
+            "support_ids": [],
+            "counter_ids": [
+              "e274"
+            ],
+            "explanation": "MG01 高 CPU (e30) 始于 09:37，早于 Tomcat04 磁盘故障 (09:44)。若 MG01 是根因，应观察到其下游 Tomcat 先出现高 CPU 或 I/O 等待。现 Tomcat04 磁盘先异常，MG01 高 CPU 更可能是对下游磁盘故障的反应（如重试、等待），故排除为根因。"
+          },
+          "error": "h2: time 09:37:00.000 requires e30 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        },
+        {
+          "section": "hypotheses",
+          "index": 2,
+          "item": {
+            "id": "h3",
+            "assessment": "supported",
+            "component": "Mysql01",
+            "reason": "high disk I/O read usage",
+            "time": "09:44:00.000",
+            "time_evidence_id": "e302",
+            "support_ids": [
+              "e302"
+            ],
+            "counter_ids": [],
+            "explanation": "Mysql01 磁盘读取指标 (e302) 在 09:44 显示为 0.0，但这与 Tomcat04 的 I/O 等待 (e275) 时间吻合。考虑到 Tomcat04 作为应用服务器，其 I/O 等待往往由后端存储延迟引起。虽然 Mysql01 当前数值低，但结合上下文，Tomcat04 的 I/O 等待是更直接的观测证据，指向存储子系统问题。"
+          },
+          "error": "h3: time 09:44:00.000 requires e302 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

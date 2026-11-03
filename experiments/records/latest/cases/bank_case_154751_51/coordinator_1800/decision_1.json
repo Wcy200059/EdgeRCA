@@ -1,0 +1,110 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h2",
+        "assessment": "supported",
+        "component": "MG01",
+        "reason": "high disk I/O read usage",
+        "time": "22:18:00.000",
+        "time_evidence_id": "e238",
+        "support_ids": [
+          "e238"
+        ],
+        "counter_ids": [],
+        "explanation": "MG01磁盘IO在22:18:00触发规则，22:20:00解除，期间存在波动。结合e54 CPU稳定，推测IO瓶颈可能是根因之一。需确认具体IO指标数值。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "IG02",
+        "reason": "high memory usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "IG02 JVM内存波动（e17），但未确认是否达到OOM阈值。需补查内存具体数值及趋势，区分是内存问题还是CPU过载。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:IG01",
+        "start": "22:00:00",
+        "end": "22:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认IG01 CPU利用率是否持续高位，以支持高CPU故障假设。",
+        "basis_ids": [
+          "e297"
+        ]
+      },
+      {
+        "node_id": "device:MG01",
+        "start": "22:00:00",
+        "end": "22:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadBps"
+        ],
+        "focus": "核实MG01磁盘读取速率，确认是否存在IO瓶颈。",
+        "basis_ids": [
+          "e54"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "h1: time 22:07:00.000 requires e297 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 0,
+          "item": {
+            "id": "h1",
+            "assessment": "supported",
+            "component": "IG01",
+            "reason": "high CPU usage",
+            "time": "22:07:00.000",
+            "time_evidence_id": "e297",
+            "support_ids": [
+              "e297"
+            ],
+            "counter_ids": [],
+            "explanation": "IG01 CPU利用率在22:07:00达到25.91%，虽非极高但结合上下文需确认是否触发阈值。现有证据e297显示早期至晚期变化不大，但需排除其他干扰。暂定为supported，需进一步确认是否导致下游延迟。"
+          },
+          "error": "h1: time 22:07:00.000 requires e297 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        },
+        {
+          "section": "requests",
+          "index": 2,
+          "item": {
+            "node_id": "device:IG02",
+            "start": "22:00:00",
+            "end": "22:30:00",
+            "tools": [
+              "get_metrics"
+            ],
+            "metrics": [
+              "JVM-Memory_7778_JVM_Memory_HeapMemoryUsage"
+            ],
+            "focus": "确认IG02 JVM内存是否达到OOM阈值，以支持高内存故障假设。",
+            "basis_ids": [
+              "e17"
+            ]
+          },
+          "error": "basis_ids must use e IDs from current evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

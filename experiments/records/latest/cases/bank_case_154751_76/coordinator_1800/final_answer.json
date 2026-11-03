@@ -1,0 +1,29 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Tomcat01",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "11:29:03.833",
+        "evidence_ids": [
+          "e309",
+          "e182",
+          "e277"
+        ],
+        "explanation": "e309/e310 显示 apache02 在 11:29:04/09 返回 502。e182 显示 Tomcat01 在 11:29:03 出现 50279ms 超长调用。e277 确认 IG01 到 Tomcat01 的父子关系。时间顺序吻合（长调用先于错误），且慢调用直接导致上游超时，符合 OOM 特征。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615087800000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1",
+  "field_repairs": [],
+  "warnings": []
+}

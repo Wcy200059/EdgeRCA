@@ -1,0 +1,78 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "apache02",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "16:29:07.000",
+        "time_evidence_id": "e228",
+        "support_ids": [
+          "e228"
+        ],
+        "counter_ids": [],
+        "explanation": "e228 证实 apache02 在 16:29:07 返回 502 错误。虽 e306 显示内存指标无值，但 e228 的明确服务失败是故障现象。需结合后续补查确认是否为 OOM 导致，但作为故障组件证据已成立。"
+      },
+      {
+        "id": "h2",
+        "assessment": "supported",
+        "component": "Tomcat04",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "16:13:42.000",
+        "time_evidence_id": "e208",
+        "support_ids": [
+          "e208"
+        ],
+        "counter_ids": [],
+        "explanation": "e208 证实 Tomcat04 在 16:13:42 返回 500 错误。e27 显示上游高延迟，但 500 错误通常指向应用内部故障（如 OOM）而非单纯网络延迟。e307 曾缺失堆内存指标，需补查确认 OOM 假设。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:apache02",
+        "start": "16:29:00",
+        "end": "16:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认 apache02 在 16:29 故障时刻的内存使用率是否达到 OOM 阈值，以验证 h1 根因。",
+        "basis_ids": [
+          "e228"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "16:13:00",
+        "end": "16:14:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Tomcat-MEMORY_7441-MEMORY_JVMUsedMemory"
+        ],
+        "focus": "确认 Tomcat04 在 16:13 故障时刻的 JVM 堆内存是否耗尽，以验证 h2 根因。",
+        "basis_ids": [
+          "e208"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17684,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 48,
+        "available_facts": 308
+      }
+    }
+  ],
+  "labels_used": false
+}

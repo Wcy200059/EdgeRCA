@@ -1,0 +1,77 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "apache01",
+        "reason": "high CPU usage",
+        "time": "15:16:00",
+        "time_evidence_id": "e233",
+        "support_ids": [
+          "e233"
+        ],
+        "counter_ids": [],
+        "explanation": "apache01 在 15:16:00 单核 CPU 飙升至 100% (e233)，早于其他组件异常。虽缺 JVM 证据，但 OS 层资源耗尽是强根因信号，且早于 Tomcat 线程激增。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql02",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql02 有 Aborted Clients 异常 (e87)，可能由磁盘 I/O 阻塞引起。当前无磁盘指标证据，且缺上游调用链证明。需补查磁盘 I/O 及网络延迟。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:apache01",
+        "start": "15:15:00",
+        "end": "15:17:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认 apache01 CPU 飙升期间内存是否同步耗尽，排除单纯应用逻辑导致的高 CPU 可能性。",
+        "basis_ids": [
+          "e233"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "basis_ids must use e IDs from current evidence",
+      "rejected_sections": [
+        {
+          "section": "requests",
+          "index": 1,
+          "item": {
+            "node_id": "device:Mysql02",
+            "start": "15:10:00",
+            "end": "15:30:00",
+            "tools": [
+              "get_metrics"
+            ],
+            "metrics": [
+              "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdc_DSKTps"
+            ],
+            "focus": "验证 Mysql02 是否存在高磁盘 I/O 导致连接中断，以确认磁盘故障假设。",
+            "basis_ids": [
+              "e87"
+            ]
+          },
+          "error": "basis_ids must use e IDs from current evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

@@ -1,0 +1,88 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "apache01",
+        "reason": "high CPU usage",
+        "time": "15:16:00",
+        "time_evidence_id": "e233",
+        "support_ids": [
+          "e233"
+        ],
+        "counter_ids": [],
+        "explanation": "apache01 在 15:16:00 单核 CPU 飙升至 100% (e233)，早于其他组件异常。虽缺 JVM 证据，但 OS 层资源耗尽是强根因信号，且早于 Tomcat 线程激增。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql02",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql02 有 Aborted Clients 异常 (e87)，可能由磁盘 I/O 阻塞引起。当前无磁盘指标证据，且缺上游调用链证明。需补查磁盘 I/O 及网络延迟。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql02",
+        "start": "15:00:00",
+        "end": "15:30:00",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "DISK"
+        ],
+        "focus": "获取 Mysql02 磁盘 I/O 相关指标名称，以验证是否存在高磁盘读写导致连接中断。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:apache01",
+        "start": "15:15:00",
+        "end": "15:20:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-Memory_7778_JVM_Memory_HeapMemoryUsage"
+        ],
+        "focus": "确认 apache01 CPU 飙升期间 JVM 堆内存状态，排除应用层 OOM 导致系统负载过高的可能性。",
+        "basis_ids": [
+          "e233"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "h3: time 15:27:00 requires e231 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 2,
+          "item": {
+            "id": "h3",
+            "assessment": "not_supported",
+            "component": "Tomcat04",
+            "reason": "high CPU usage",
+            "time": "15:27:00",
+            "time_evidence_id": "e231",
+            "support_ids": [],
+            "counter_ids": [
+              "e231"
+            ],
+            "explanation": "Tomcat04 线程数激增 (e231) 发生在 15:27:00，晚于 apache01 的 15:16:00 CPU 崩溃。若为根因，无法解释为何 apache01 先崩溃且未导致更早的 Tomcat 阻塞。此为下游症状。"
+          },
+          "error": "h3: time 15:27:00 requires e231 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

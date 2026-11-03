@@ -1,0 +1,60 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": "18:05:12.000",
+        "time_evidence_id": "e370",
+        "support_ids": [
+          "e370",
+          "e374",
+          "e375",
+          "e386"
+        ],
+        "counter_ids": [],
+        "explanation": "Mysql01 日志显示多起慢查询（Query_time>0.4s），最早发生于 18:05:12。这些长尾查询通常导致磁盘 I/O 阻塞，引发下游延迟。尽管 CPU 指标看似平稳，但 I/O 等待可能未直接反映在 CPU 使用率上，而是表现为应用层超时。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "IG 到 Tomcat01 的调用 P95 较高，且 Tomcat01 有未加载的日志事实。需补查 Tomcat01 日志确认是否存在 OOM 错误及 Full GC 记录，以验证内存故障假设。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "18:00:00",
+        "end": "18:30:00",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "确认 Tomcat01 在 18:00-18:30 期间是否有 JVM OOM 错误、Full GC 频繁触发或堆内存耗尽的日志记录。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17706,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 38,
+        "available_facts": 378
+      }
+    }
+  ],
+  "labels_used": false
+}

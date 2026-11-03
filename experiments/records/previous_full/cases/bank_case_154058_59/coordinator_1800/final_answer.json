@@ -1,0 +1,29 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "IG02",
+        "reason": "high CPU usage",
+        "time": "15:33:00.000",
+        "evidence_ids": [
+          "e107",
+          "e77",
+          "e78",
+          "e79",
+          "e80"
+        ],
+        "explanation": "e107 显示 IG02 在 15:33:00.000 出现 CPU 峰值 (27.99%)。e77-e80 证实该时段 IG02 向所有 Tomcat 发起大量调用且延迟极高 (P95>3000ms, Max>11000ms)。资源高导致下游延迟符合因果链，IG01 无 CPU 证据排除其为根因。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615276800000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1"
+}

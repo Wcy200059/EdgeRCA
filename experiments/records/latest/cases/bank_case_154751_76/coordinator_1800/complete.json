@@ -1,0 +1,172 @@
+{
+  "case_id": "545a4f60379633d6",
+  "cutoff_ms": 1615087800000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 308
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 311
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 313
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 314
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Mysql02",
+      "start": "11:29:00.000",
+      "end": "11:29:10.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "Mysql-MySQL_3306_IO_Read"
+      ],
+      "focus": "获取 Mysql02 在 11:29 错误发生时刻的磁盘读取 I/O 指标数值，验证是否存在高 I/O 负载导致数据库响应变慢。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Mysql02",
+      "start": "11:29:00.000",
+      "end": "11:29:10.000",
+      "tools": [
+        "get_logs"
+      ],
+      "metrics": [],
+      "focus": "检查 Mysql02 在 11:29 左右的日志，确认是否存在大量慢查询或死锁等数据库内部错误，验证是否为高延迟根因。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Tomcat01",
+      "start": "11:29:00.000",
+      "end": "11:29:10.000",
+      "tools": [
+        "get_logs"
+      ],
+      "metrics": [],
+      "focus": "检查 Tomcat01 日志中 11:29 时刻是否有 OOM Killer 记录、Full GC 暂停或线程阻塞，验证内存溢出假设。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Tomcat01",
+      "start": "11:00:00.000",
+      "end": "11:30:00.000",
+      "tools": [
+        "get_logs"
+      ],
+      "metrics": [],
+      "focus": "检查 Tomcat01 日志中 11:29 时刻是否有 OOM Killer 记录、Full GC 暂停或线程阻塞，验证内存溢出假设。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Tomcat01",
+      "start": "11:00:00.000",
+      "end": "11:30:00.000",
+      "tools": [
+        "list_metrics",
+        "get_logs"
+      ],
+      "metrics": [
+        "JVM-Memory_7779_JVM_Memory_HeapMemoryUsage",
+        "JVM-Thread_7779_JVM_Threads_Started"
+      ],
+      "focus": "查询 Tomcat01 的 JVM 堆内存使用率及线程数，验证是否存在内存溢出（OOM）或线程阻塞，解释为何出现长调用及是否导致 502 错误。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Mysql02",
+      "start": "11:00:00.000",
+      "end": "11:30:00.000",
+      "tools": [
+        "list_metrics",
+        "get_metrics"
+      ],
+      "metrics": [
+        "Mysql-MySQL_3306_IO_Read",
+        "Mysql-MySQL_3306_Slow_Queries"
+      ],
+      "focus": "确认 Mysql02 的磁盘读取 I/O 是否处于高位，以及是否存在大量慢查询，验证其是否为导致上游服务延迟的根因。",
+      "basis_ids": []
+    }
+  ],
+  "peak_gpu_gib": 21.167176723480225,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e266",
+      "e267",
+      "e268",
+      "e269",
+      "e270",
+      "e271",
+      "e272",
+      "e273",
+      "e274",
+      "e275",
+      "e276",
+      "e277",
+      "e278",
+      "e279",
+      "e280",
+      "e281",
+      "e282",
+      "e283",
+      "e284",
+      "e285",
+      "e286",
+      "e287",
+      "e288",
+      "e289",
+      "e290",
+      "e291",
+      "e292",
+      "e293",
+      "e294",
+      "e295",
+      "e296",
+      "e297",
+      "e298",
+      "e299",
+      "e300",
+      "e301",
+      "e302",
+      "e303",
+      "e304",
+      "e305",
+      "e306",
+      "e307",
+      "e308"
+    ],
+    "notes": "filter invalid; retained all global evidence",
+    "attempts": [
+      {
+        "valid": false,
+        "error": "ids must be unique IDs from global evidence"
+      },
+      {
+        "valid": false,
+        "error": "ids must be unique IDs from global evidence"
+      }
+    ],
+    "fallback": true,
+    "available": 43
+  }
+}

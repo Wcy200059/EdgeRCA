@@ -1,0 +1,114 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": "03:40:00.000",
+        "time_evidence_id": "e4",
+        "support_ids": [
+          "e4"
+        ],
+        "counter_ids": [],
+        "explanation": "IG01 在 03:40 出现 CPU 峰值 (99.78%)，随后回落。但缺乏该时段下游 Tomcat 或上游 MG 的同步高负载证据，无法确认是根因还是受压节点。需补查 MG 及 Tomcat 的 CPU 指标以验证因果链。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "IG02",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "IG02 存在 CPU 波动观测，但具体峰值时间及幅度未在当前证据中明确展示，且无下游 Tomcat04 的同步高负载佐证。需获取 IG02 详细 CPU 曲线及 Tomcat04 资源状态以确认。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Tomcat04",
+        "reason": "high CPU usage",
+        "time": "03:39:55.379",
+        "time_evidence_id": "e191",
+        "support_ids": [
+          "e191"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 在 03:39:55 出现长达近 2 秒的长调用 (1889ms)，伴随 P95 升高。这可能是业务失败表现，但缺乏 CPU/内存资源耗尽的直接证据。需确认该长调用是否由资源瓶颈导致。"
+      },
+      {
+        "id": "h4",
+        "assessment": "unresolved",
+        "component": "MG01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "MG01 有磁盘 I/O 相关观测记录，但未在当前证据中展示具体数值变化或触发规则。需补查磁盘读写指标以确认是否存在 I/O 瓶颈导致下游延迟。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:IG01",
+        "start": "03:30:00.000",
+        "end": "03:45:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认 IG01 在 03:40 峰值前后的 CPU 使用率变化趋势，判断是否为持续性高负载。",
+        "basis_ids": [
+          "e4"
+        ]
+      },
+      {
+        "node_id": "device:MG01",
+        "start": "03:30:00.000",
+        "end": "04:00:00.000",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "DISK"
+        ],
+        "focus": "列出 MG01 所有磁盘相关指标名称，以便后续查询具体的读写 I/O 使用情况。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "03:35:00.000",
+        "end": "03:45:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "JVM-Memory_HeapMemoryUsage"
+        ],
+        "focus": "验证 Tomcat04 在 03:39:55 长调用发生时的 CPU 和内存状态，确认是否因资源不足导致慢调用。",
+        "basis_ids": [
+          "e191"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17427,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 52,
+        "available_facts": 251
+      }
+    }
+  ],
+  "labels_used": false
+}

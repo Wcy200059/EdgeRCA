@@ -1,0 +1,92 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat04",
+        "reason": "high memory usage",
+        "time": "14:32:00",
+        "time_evidence_id": "e246",
+        "support_ids": [
+          "e246",
+          "e272"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 内存占比在 14:32:00 瞬间飙升至 98% 并持续高位 (e246)。同时该节点存在大量 GC 暂停 (e272)，符合内存耗尽导致频繁回收的特征。虽无直接 OOM 报错，但资源耗尽是业务中断的直接原因，且早于网络流量激增。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Tomcat04",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat04 磁盘读写存在波动，但缺乏明确的时间点与内存高企的因果关联。需确认磁盘 I/O 激增是否由内存压力导致的缓存失效引起，或是独立故障。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat04",
+        "start": "14:30:00",
+        "end": "15:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-Heap_Usage_HeapUsedPercent"
+        ],
+        "focus": "获取 Tomcat04 JVM 堆内存使用率的具体数值，确认 14:32 后是否持续接近 100%，直接验证 OOM 前兆。",
+        "basis_ids": [
+          "e272"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "14:30:00",
+        "end": "15:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_DISK_DISK-sda_DSKReadTps"
+        ],
+        "focus": "获取 Tomcat04 磁盘读取速率的具体数值，确认 14:32 内存高企后是否有同步激增，以验证是否为内存故障导致的缓存失效。",
+        "basis_ids": [
+          "e275"
+        ]
+      },
+      {
+        "node_id": "device:MG02",
+        "start": "14:30:00",
+        "end": "15:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_NETWORK_NETWORK_TCP-RetransSegs"
+        ],
+        "focus": "检查 MG02 的 TCP 重传段数，确认网络流量激增是否伴随重传率上升，以区分是正常拥塞还是网络链路故障。",
+        "basis_ids": [
+          "e248"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17524,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 36,
+        "available_facts": 276
+      }
+    }
+  ],
+  "labels_used": false
+}

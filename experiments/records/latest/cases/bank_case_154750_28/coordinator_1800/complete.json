@@ -1,0 +1,140 @@
+{
+  "case_id": "4681a367777a0754",
+  "cutoff_ms": 1615361400000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 288
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 290
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 292
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 293
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Mysql01",
+      "start": "15:00:00",
+      "end": "15:30:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "Mysql-MySQL_3306_DiskSpaceUsed"
+      ],
+      "focus": "检查 Mysql01 磁盘空间使用率，排除磁盘空间耗尽导致的故障可能性。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:dockerB2",
+      "start": "15:00:00",
+      "end": "15:30:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc",
+        "OSLinux-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "结合 e256 的长调用记录，检查 dockerB2 的内存和 CPU 使用情况，确认是否存在资源耗尽导致的调用超时，辅助判断第二起故障根因。",
+      "basis_ids": [
+        "e256"
+      ]
+    },
+    {
+      "node_id": "device:dockerB1",
+      "start": "15:00:00",
+      "end": "15:30:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc",
+        "OSLinux-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "结合 e256 的长调用记录，检查 dockerB1 的内存和 CPU 使用情况，确认是否存在资源耗尽导致的调用超时。",
+      "basis_ids": [
+        "e256"
+      ]
+    },
+    {
+      "node_id": "device:IG01",
+      "start": "15:00:00",
+      "end": "15:30:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "进一步确认 IG01 在 15:09 CPU 峰值后是否持续高负载，以及该时段是否有业务失败或连接超时现象。",
+      "basis_ids": [
+        "e300"
+      ]
+    }
+  ],
+  "peak_gpu_gib": 20.954330921173096,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e268",
+      "e269",
+      "e270",
+      "e271",
+      "e272",
+      "e273",
+      "e274",
+      "e275",
+      "e276",
+      "e277",
+      "e278",
+      "e279",
+      "e280",
+      "e281",
+      "e282",
+      "e283",
+      "e284",
+      "e285",
+      "e286",
+      "e287",
+      "e288",
+      "e289",
+      "e290",
+      "e291",
+      "e292",
+      "e293",
+      "e294",
+      "e295",
+      "e296",
+      "e297",
+      "e298",
+      "e299"
+    ],
+    "notes": "保留所有实际父子ID匹配证据（e268-e299）。这些证据覆盖了候选组件（IG, MG, Tomcat, docker）间的调用关系，包含调用次数、P95/最大值及时间区间不满足包含关系的数量。此类数据能区分资源故障与传播链，且数值异常（如大量时间不匹配或高延迟）可能指向根因时段。拒绝e257-e267因仅含业务文本统计，无组件关联或异常指标。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 43
+  }
+}

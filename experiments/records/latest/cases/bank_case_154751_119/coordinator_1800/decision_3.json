@@ -1,0 +1,86 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "apache01",
+        "reason": "high memory usage",
+        "time": "14:22:00.000",
+        "time_evidence_id": "e442",
+        "support_ids": [
+          "e407",
+          "e408",
+          "e410",
+          "e411",
+          "e412",
+          "e413",
+          "e442"
+        ],
+        "counter_ids": [],
+        "explanation": "Apache01 在 14:22 出现多起 502 错误（e407, e408, e410-e413），请求者含 IG01/IG02。e442 显示 Apache01 内存占比在 14:22 达 77% 且稳定高位。高内存导致服务拒绝或 OOM，引发故障。MG02 连接数 e76 在 14:21 骤降佐证时间点。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:apache01",
+        "start": "14:21:00",
+        "end": "14:25:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "获取 Apache01 在 14:22 错误爆发时的内存使用率具体数值及趋势，确认是否达到 OOM 阈值。",
+        "basis_ids": [
+          "e442"
+        ]
+      },
+      {
+        "node_id": "device:apache02",
+        "start": "14:21:00",
+        "end": "14:25:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "获取 Apache02 在 14:22 错误爆发时的内存使用率具体数值及趋势，对比 Apache01 确认是否为集群级内存问题。",
+        "basis_ids": [
+          "e443"
+        ]
+      },
+      {
+        "node_id": "device:MG02",
+        "start": "14:20:00",
+        "end": "14:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_NETWORK_NETWORK_TotalTcpConnNum"
+        ],
+        "focus": "详细查看 MG02 连接数在 14:21 触发下降及 14:28 恢复的具体数值变化，确认其与 Apache 故障的时间关联。",
+        "basis_ids": [
+          "e76"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17722,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 36,
+        "available_facts": 444
+      }
+    }
+  ],
+  "labels_used": false
+}

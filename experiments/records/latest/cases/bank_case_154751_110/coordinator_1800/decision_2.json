@@ -1,0 +1,63 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": "20:55:00.000",
+        "time_evidence_id": "e120",
+        "support_ids": [
+          "e120"
+        ],
+        "counter_ids": [],
+        "explanation": "Mysql01磁盘sdc在20:55:00突发至50.4%（基准1.6%），且处于触发状态。此时段内其他组件未见明显资源耗尽或网络中断，符合根因特征。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat04",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat04线程繁忙数在20:35后上升，但缺乏具体CPU指标数值支持。需补查CPU使用率以确认是否达到故障阈值及与磁盘突发的时间关联。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat04",
+        "start": "20:30:00",
+        "end": "21:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认Tomcat04在20:30-21:00期间的CPU使用率是否显著升高，以验证'high CPU usage'假设及与Mysql01磁盘突发的时序关系。",
+        "basis_ids": [
+          "e299",
+          "e300",
+          "e301"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17604,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 37,
+        "available_facts": 301
+      }
+    }
+  ],
+  "labels_used": false
+}

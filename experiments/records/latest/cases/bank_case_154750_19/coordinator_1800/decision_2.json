@@ -1,0 +1,89 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat01",
+        "reason": "high JVM CPU load",
+        "time": "14:13:00.000",
+        "time_evidence_id": "e303",
+        "support_ids": [
+          "e303"
+        ],
+        "counter_ids": [],
+        "explanation": "证据 e303 显示 Tomcat01 的 OS CPU 在 14:13:00.000 达到 100%，且早晚期变化剧烈。结合 e301 中 JVM 指标缺失但 OS CPU 满载，推断 JVM 线程阻塞或高负载导致系统 CPU 耗尽，引发下游延迟。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "MG01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "证据 e54 仅显示 MG01 存在长调用，缺乏磁盘 I/O 指标支持。需补查磁盘指标以确认是否为磁盘瓶颈导致下游 Tomcat 延迟。"
+      },
+      {
+        "id": "h3",
+        "assessment": "supported",
+        "component": "Redis01",
+        "reason": "high memory usage",
+        "time": "14:25:00.000",
+        "time_evidence_id": "e157",
+        "support_ids": [
+          "e157"
+        ],
+        "counter_ids": [],
+        "explanation": "证据 e157 显示 Redis01 命令处理速率在 14:25:00.000 达到峰值 5225.15，较早期显著上升。高负载可能导致内存压力或阻塞，进而影响上游 Tomcat 性能。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:MG01",
+        "start": "14:00:00.000",
+        "end": "14:30:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKPercentBusy",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadSec"
+        ],
+        "focus": "确认 MG01 磁盘读取使用率是否在故障时段飙升，以验证高磁盘 I/O 导致下游延迟的假设。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "14:00:00.000",
+        "end": "14:30:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Tomcat-MEMORY_7441-MEMORY_JVMMemoryUsedPercent",
+          "JVM-CPU_CPU-0_SingleCpuUtil"
+        ],
+        "focus": "获取 Tomcat01 JVM 内存占比和 CPU 使用率的具体数值，确认是否为 JVM 内部资源耗尽导致 OS CPU 满载。",
+        "basis_ids": [
+          "e301"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17700,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 46,
+        "available_facts": 293
+      }
+    }
+  ],
+  "labels_used": false
+}

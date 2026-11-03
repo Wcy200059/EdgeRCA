@@ -1,0 +1,26 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "apache02",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "16:24:06.000",
+        "evidence_ids": [
+          "e57",
+          "e40"
+        ],
+        "explanation": "e57 记录 apache02 在 16:24:06 返回 502 错误，直接关联业务失败。e40 显示该节点 CPU 在故障前显著升高（中位数从 27% 升至 62%），符合 OOM 导致频繁 GC 进而引发服务不可用的特征。因果链完整且时间最早。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615278600000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1"
+}

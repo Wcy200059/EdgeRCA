@@ -1,0 +1,87 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "MG01",
+        "reason": "high CPU usage",
+        "time": "15:11:00.000",
+        "time_evidence_id": "e24",
+        "support_ids": [
+          "e24"
+        ],
+        "counter_ids": [],
+        "explanation": "MG01 在 15:11:00 出现 CPU 使用率峰值 99.64%。该时间点早于部分下游 Tomcat 的长调用高峰（如 IG01->Tomcat01 最大 10636ms 发生在 15:07 后，但 MG01 自身 CPU 先飙升至 15:11 后回落，需确认 15:11 是否对应业务高峰或缓存失效）。考虑到 MG01 作为中间件连接大量 docker 节点，高 CPU 可能导致后续请求延迟。暂无直接反证。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "MG02",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "MG02 作为下游汇聚节点，存在长调用（16340ms），但缺乏直接的磁盘 I/O 高负载证据。需补查磁盘指标以确认是否为 I/O 瓶颈导致处理延迟，进而影响上游 Tomcat。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:MG01",
+        "start": "15:10:00",
+        "end": "15:16:00",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "核实 15:10:00 至 15:16:00 期间是否有 GC 暂停、错误日志或系统负载骤增记录，以确认高 CPU 是否为根因。",
+        "basis_ids": [
+          "e24"
+        ]
+      },
+      {
+        "node_id": "device:MG02",
+        "start": "15:07:20",
+        "end": "15:07:36",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "DISK"
+        ],
+        "focus": "获取 MG02 在 15:07:20 至 15:07:36 期间的磁盘指标目录，确认是否存在磁盘 I/O 相关指标以便进一步查询。",
+        "basis_ids": [
+          "e51"
+        ]
+      },
+      {
+        "node_id": "device:MG02",
+        "start": "15:07:20",
+        "end": "15:07:36",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "获取 15:07:20 至 15:07:36 期间调用详情，验证最大耗时 16340ms 的具体调用链，确认是否受 MG01/MG02 影响。",
+        "basis_ids": [
+          "e51"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17655,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 52,
+        "available_facts": 250
+      }
+    }
+  ],
+  "labels_used": false
+}

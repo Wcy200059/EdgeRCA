@@ -1,0 +1,67 @@
+{
+  "reply": {
+    "hypotheses": [],
+    "requests": [
+      {
+        "node_id": "device:Tomcat02",
+        "start": "18:30:00.000",
+        "end": "18:40:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Tomcat-MEMORY_7441-MEMORY_JVMUsedMemoryPercent"
+        ],
+        "focus": "核实 Tomcat02 在 18:30-18:40 期间 JVM 堆内存使用率是否出现持续上升或接近 100% 的情况，以证实 OOM 假设。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "use unique e IDs from current evidence; node overviews are not evidence",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 0,
+          "item": {
+            "id": "h1",
+            "assessment": "unresolved",
+            "component": "Tomcat02",
+            "reason": "JVM Out of Memory (OOM) Heap",
+            "time": "18:35:14.000",
+            "time_evidence_id": "e2",
+            "support_ids": [
+              "e2",
+              "e3"
+            ],
+            "counter_ids": [],
+            "explanation": "Tomcat02 日志在 18:35:14 和 18:35:23 明确记录 'oom_text' 报错，且 CPU 指标显示早段（18:30-18:35）中位数 53.58% 高于后段 26.99%，符合内存耗尽导致 CPU 响应变慢的特征。但缺乏 JVM 堆内存具体数值（HeapUsedPercent）证实堆溢出，且无下游服务失败证据链闭环。需补查 JVM 内存指标。"
+          },
+          "error": "use unique e IDs from current evidence; node overviews are not evidence"
+        },
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "unresolved",
+            "component": "Tomcat02",
+            "reason": "high CPU usage",
+            "time": "18:31:00.000",
+            "time_evidence_id": "e4",
+            "support_ids": [
+              "e4"
+            ],
+            "counter_ids": [],
+            "explanation": "Tomcat02 CPU 使用率在 18:31:00 达到峰值 70.09%，显著高于时段中位数。但该峰值发生在 OOM 日志（18:35）之前，可能是 OOM 的前兆或并发压力导致，而非直接根因。缺乏 CPU 飙升导致线程阻塞或下游超时的具体调用链证据。需确认 CPU 高是否与内存泄漏相关。"
+          },
+          "error": "use unique e IDs from current evidence; node overviews are not evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

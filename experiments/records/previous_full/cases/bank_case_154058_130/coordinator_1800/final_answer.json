@@ -1,0 +1,41 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Tomcat04",
+        "reason": "high CPU usage",
+        "time": "19:13:00",
+        "evidence_ids": [
+          "e40",
+          "e41"
+        ],
+        "explanation": "Tomcat04在19:13:00 CPU飙升至100% (e40) 且空闲归零 (e41)，时间早于apache01的502爆发，符合根因特征。虽无直接调用失败证据，但资源耗尽是合理推断。"
+      },
+      {
+        "component": "apache01",
+        "reason": "high CPU usage",
+        "time": "19:15:04",
+        "evidence_ids": [
+          "e43",
+          "e44",
+          "e45"
+        ],
+        "explanation": "apache01在19:15:04触发http_5xx规则 (e43) 并伴随大量502错误 (e44-e45)。虽Tomcat资源高，但apache01作为入口出现规则触发和错误，且候选列表仅支持此组件的高负载/配置问题导致资源耗尽。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "reason must be a public candidate or null"
+    },
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1616671800000,
+  "model_judgment_verified": false,
+  "expected_failures": 2,
+  "answer_schema": "faults_v1"
+}

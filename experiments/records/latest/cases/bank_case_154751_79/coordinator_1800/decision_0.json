@@ -1,0 +1,93 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "apache01",
+        "reason": "high memory usage",
+        "time": "09:53:36.000",
+        "time_evidence_id": "e267",
+        "support_ids": [
+          "e267",
+          "e268",
+          "e269",
+          "e270",
+          "e271",
+          "e280",
+          "e281",
+          "e282",
+          "e283",
+          "e284",
+          "e285",
+          "e286",
+          "e287",
+          "e288"
+        ],
+        "counter_ids": [],
+        "explanation": "多个组件（ServiceTest 系列）在 09:53:36-09:53:42 集中返回 502 错误，且 apache01/apache02 日志显示大量明确报错。结合 candidate_slate 中 apache01 的 http_access 错误观测，符合高内存导致服务不可用或崩溃的特征。时间标记与错误爆发起始点一致。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "候选假设 Tomcat01 高 CPU 负载可能导致下游 502，但当前证据仅显示调用延迟（e45, e205），未见 Tomcat01 自身 CPU 或负载指标异常。需要补查 Tomcat01 资源指标以确认是否因 CPU 过载导致无法响应请求。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:apache01",
+        "start": "09:53:30.000",
+        "end": "09:53:45.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认 apache01 在 502 错误爆发期间是否存在 CPU 飙升或内存不足，以验证高资源占用是否为根因。",
+        "basis_ids": [
+          "e267",
+          "e268"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "09:53:30.000",
+        "end": "09:53:45.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "JVM-Memory_7778_JVM_Memory_HeapMemoryUsage"
+        ],
+        "focus": "检查 Tomcat01 在 502 错误发生时的 CPU 使用率和 JVM 堆内存使用情况，排除其自身资源耗尽导致服务不可用。",
+        "basis_ids": [
+          "e45",
+          "e205"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17687,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 69,
+        "available_facts": 353
+      }
+    }
+  ],
+  "labels_used": false
+}

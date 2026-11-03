@@ -1,0 +1,106 @@
+{
+  "case_id": "0da4f21fca9499e6",
+  "cutoff_ms": 1616635800000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 272
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 274
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 275
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 276
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Tomcat03",
+      "start": "09:00:00",
+      "end": "09:30:00",
+      "tools": [
+        "get_logs"
+      ],
+      "metrics": [],
+      "focus": "检查 Tomcat03 在 09:00-09:30 期间是否有报错日志或线程阻塞记录，验证高 CPU 是否导致业务失败。",
+      "basis_ids": [
+        "e276"
+      ]
+    },
+    {
+      "node_id": "device:Mysql02",
+      "start": "09:00:00",
+      "end": "09:30:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKRead"
+      ],
+      "focus": "确认 Mysql02 磁盘读指标是否正常，排除集群级磁盘故障，验证故障是否为 Mysql01 单点问题。",
+      "basis_ids": [
+        "e274"
+      ]
+    },
+    {
+      "node_id": "device:Mysql02",
+      "start": "09:00:00",
+      "end": "09:30:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil",
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKRead"
+      ],
+      "focus": "检查 Mysql02 的 CPU 和磁盘读指标，确认故障是否仅影响 Mysql01 还是集群整体，排除单点故障或网络问题。",
+      "basis_ids": []
+    }
+  ],
+  "peak_gpu_gib": 21.062149047851562,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e262",
+      "e263",
+      "e264",
+      "e265",
+      "e266",
+      "e267",
+      "e268",
+      "e269",
+      "e270",
+      "e271",
+      "e272"
+    ],
+    "notes": "filter invalid; retained all global evidence",
+    "attempts": [
+      {
+        "valid": false,
+        "error": "ids must be unique IDs from global evidence"
+      },
+      {
+        "valid": false,
+        "error": "ids must be unique IDs from global evidence"
+      }
+    ],
+    "fallback": true,
+    "available": 11
+  }
+}

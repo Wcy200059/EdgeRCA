@@ -1,0 +1,41 @@
+{
+  "query_file": "/mnt/beegfs/home/wangchunyun25/Documents/OpenRCA/dataset/Bank/query.csv",
+  "row": 60,
+  "instruction": "There was a single failure in the specified time range of March 9, 2021, from 17:30 to 18:00. The exact time of the root cause occurrence and the reason for the failure are currently unknown. Please determine the root cause occurrence datetime and the underlying reason for this failure.",
+  "task_index": "task_4",
+  "scoring_points": "The only root cause occurrence time is within 1 minutes (i.e., <=1min) of 2021-03-09 17:39:00\nThe only predicted root cause reason is high disk space usage\n",
+  "prediction": [
+    {
+      "root cause occurrence datetime": "2021-03-09 17:50:00",
+      "root cause component": "Mysql01",
+      "root cause reason": "high disk I/O read usage"
+    }
+  ],
+  "prediction_sha256": "da4214310f71fb20c80c5def78901eb00e3a96449fc785660d0ce35944bbe5af",
+  "final_reply_valid": true,
+  "score": 0.0,
+  "fully_correct": false,
+  "any_field_correct": false,
+  "passed": [],
+  "failed": [
+    "high disk space usage",
+    "2021-03-09 17:39:00"
+  ],
+  "checkpoints": [
+    {
+      "seconds": 1800,
+      "nodes": 18,
+      "central_queries": 3
+    }
+  ],
+  "delivered_rows": 800084,
+  "device_nodes": 18,
+  "model_calls": 55,
+  "model_generation_seconds": 421.5910733307246,
+  "hit_output_limit_calls": 0,
+  "inference_labels_used": false,
+  "scorer": "/mnt/beegfs/home/wangchunyun25/Documents/OpenRCA/main/evaluate.py",
+  "time_tolerance_seconds": 300,
+  "scoring_rule": "components/reasons exact; occurrence time <= 300s",
+  "scope": "单道已有Bank样例的加速回放验收，不代表335题准确率或实时部署性能。"
+}

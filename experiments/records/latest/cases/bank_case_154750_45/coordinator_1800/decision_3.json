@@ -1,0 +1,99 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": "01:10:00.000",
+        "time_evidence_id": "e223",
+        "support_ids": [
+          "e223"
+        ],
+        "counter_ids": [],
+        "explanation": "e223 显示 Mysql01 磁盘 Bps 在 01:10:00 出现 1.0 的峰值，早于其他组件异常。该时间点对应故障窗口起始，符合根因时间优先原则。无证据显示其他组件先异常。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "候选 Tomcat01 高 CPU 缺乏直接数值证据。现有连接观测仅显示延迟，未确认 CPU 状态。需补查 Tomcat01 CPU 指标以确认是否因高负载导致下游延迟或自身故障。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "01:00:00",
+        "end": "01:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认 Tomcat01 在 01:10:00 前后是否存在 CPU 使用率飙升，以验证是否为根因或受 Mysql01 影响。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "01:00:00",
+        "end": "01:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKPercentBusy"
+        ],
+        "focus": "确认 Mysql01 磁盘忙碌率在 01:10:00 峰值后是否持续高位，以验证高 I/O 是否导致服务不可用。",
+        "basis_ids": [
+          "e223"
+        ]
+      },
+      {
+        "node_id": "device:Mysql02",
+        "start": "01:00:00",
+        "end": "01:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKPercentBusy"
+        ],
+        "focus": "确认 Mysql02 磁盘忙碌率是否有类似 Mysql01 的异常峰值，以排除单点故障或集群级磁盘问题。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "not_supported requires supporting or opposing evidence",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 2,
+          "item": {
+            "id": "h3",
+            "assessment": "not_supported",
+            "component": "IG01",
+            "reason": "high CPU usage",
+            "time": null,
+            "time_evidence_id": null,
+            "support_ids": [],
+            "counter_ids": [],
+            "explanation": "e13 仅显示 IG01 到 Tomcat01 的调用连接和延迟，未提供 IG01 自身的 CPU 使用率数据。延迟可能由下游 (Tomcat/Mysql) 引起，而非 IG01 自身高 CPU。缺乏直接证据。"
+          },
+          "error": "not_supported requires supporting or opposing evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

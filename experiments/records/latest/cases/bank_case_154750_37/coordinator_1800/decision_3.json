@@ -1,0 +1,60 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat04",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "23:30:00.000",
+        "time_evidence_id": "e371",
+        "support_ids": [
+          "e371"
+        ],
+        "counter_ids": [],
+        "explanation": "e371 显示 Tomcat04 内存占用 (MEMUsedMemPerc) 全程维持在 98% 极高水位。结合 e271 中记录的 Allocation Failure 导致的 GC，高内存水位直接导致堆内存耗尽，引发 OOM。这是最直接的根因。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql02",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql02 存在高磁盘 I/O 假设，但 e376 (sdc_DSKRead) 显示在 23:57 出现 6941.87 的峰值，需确认该峰值是否在 23:30-00:00 窗口内持续存在并导致阻塞。需补查 sdc_DSKRead 和 sdb_DSKRead 的具体数值。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql02",
+        "start": "23:30:00.000",
+        "end": "00:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdc_DSKRead",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKRead"
+        ],
+        "focus": "确认 Mysql02 在 23:30-00:00 期间 sdc 和 sdb 磁盘读 I/O 是否存在持续高负载或突发峰值，验证是否阻塞应用层。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17715,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 35,
+        "available_facts": 366
+      }
+    }
+  ],
+  "labels_used": false
+}

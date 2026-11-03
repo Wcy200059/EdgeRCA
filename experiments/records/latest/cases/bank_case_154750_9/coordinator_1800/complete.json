@@ -1,0 +1,123 @@
+{
+  "case_id": "c82b351867c3403b",
+  "cutoff_ms": 1615050000000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 205
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 208
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 209
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 211
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Mysql01",
+      "start": "00:30:00",
+      "end": "01:00:00",
+      "tools": [
+        "get_logs"
+      ],
+      "metrics": [],
+      "focus": "检查 Mysql01 日志中是否存在 OutOfMemoryError 或长时间的 GC 暂停记录，以佐证内存压力导致的性能下降。",
+      "basis_ids": [
+        "e236"
+      ]
+    },
+    {
+      "node_id": "device:Tomcat04",
+      "start": "00:30:00",
+      "end": "01:00:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "JVM-Memory_7778_JVM_Memory_HeapMemoryUsed",
+        "OSLinux-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "获取 Tomcat04 的 JVM 堆内存占用和系统 CPU 使用率，确认是否存在高负载或 OOM 风险，排除其自身资源耗尽导致慢调用的可能性。",
+      "basis_ids": [
+        "e147"
+      ]
+    },
+    {
+      "node_id": "device:dockerB2",
+      "start": "00:30:00",
+      "end": "01:00:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+      ],
+      "focus": "检查 dockerB2 内存占比，确认其作为上游节点是否因内存不足导致调用超时，排除上游资源瓶颈的可能性。",
+      "basis_ids": [
+        "e185"
+      ]
+    },
+    {
+      "node_id": "device:Tomcat04",
+      "start": "00:30:00",
+      "end": "01:00:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "获取 Tomcat04 系统 CPU 使用率，排除其自身资源耗尽导致慢调用的可能性，确认是否为下游瓶颈。",
+      "basis_ids": [
+        "e147"
+      ]
+    }
+  ],
+  "peak_gpu_gib": 21.118062496185303,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e201",
+      "e202",
+      "e203",
+      "e204",
+      "e205",
+      "e206",
+      "e207",
+      "e208",
+      "e217",
+      "e218",
+      "e219",
+      "e220",
+      "e221",
+      "e222",
+      "e223",
+      "e224"
+    ],
+    "notes": "保留所有涉及候选组件（IG, MG, Tomcat, docker）之间父子调用的观测。这些证据展示了服务间的调用关系、P95/最大值延迟及时间区间不匹配情况，有助于构建传播链、区分资源瓶颈位置及定位异常调用源头。其他业务统计类证据（e190-e200）未提供组件关联或时序异常，故拒绝。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 43
+  }
+}

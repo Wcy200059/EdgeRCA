@@ -1,0 +1,76 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e121 显示 IG01 到 Tomcat01 调用 P95=403ms，存在延迟。但 Tomcat01 自身资源状态未知，且缺乏 JVM 指标直接证据，需补查确认是否为应用层 CPU 过高。"
+      },
+      {
+        "id": "h3",
+        "assessment": "not_supported",
+        "component": "apache02",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [
+          "e182",
+          "e183"
+        ],
+        "explanation": "e182 和 e183 显示 apache02 磁盘指标在窗口内已清除规则（rules_cleared），且波动后回归基线，不足以支撑持续的高 I/O 作为根因。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "01:30:00",
+        "end": "02:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "核实 Tomcat01 节点在故障窗口内的 OS CPU 使用率和内存占比，确认是否存在资源瓶颈导致处理 Tomcat 请求延迟。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "h1: time 01:52:00 requires e235 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 0,
+          "item": {
+            "id": "h1",
+            "assessment": "supported",
+            "component": "IG01",
+            "reason": "high CPU usage",
+            "time": "01:52:00",
+            "time_evidence_id": "e235",
+            "support_ids": [
+              "e235",
+              "e236"
+            ],
+            "counter_ids": [],
+            "explanation": "e235 显示 IG01 在 01:52:00 触发 CPU 使用率上升事件，且 e236 显示内存占用持续高位（81%）。结合 e203-e206，IG01 到 Tomcat 的调用 P95 均在 200ms+ 且存在长尾，符合资源耗尽导致下游延迟的因果链。"
+          },
+          "error": "h1: time 01:52:00 requires e235 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

@@ -1,0 +1,27 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Tomcat01",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "09:17:24.000",
+        "evidence_ids": [
+          "e173"
+        ],
+        "explanation": "Tomcat01 在 09:17:24 返回 500 错误 (e173)，时间最早。虽然 Heap 指标缺失 (e299)，但下游 apache01/apache02 在随后出现 502 错误，符合 OOM 导致服务不可用并扩散的时序逻辑，是目前唯一有明确错误日志指向的根因候选。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615253400000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1",
+  "field_repairs": [],
+  "warnings": []
+}

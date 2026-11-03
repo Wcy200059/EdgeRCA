@@ -1,0 +1,115 @@
+{
+  "case_id": "e8b8bf353e8ab713",
+  "cutoff_ms": 1614983400000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 275
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 278
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 280
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 281
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Tomcat04",
+      "start": "06:00:00.000",
+      "end": "06:30:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "JVM-Operating System_7778_JVM_JVM_CPULoad"
+      ],
+      "focus": "直接获取 Tomcat04 JVM CPU 负载数值，确认 e221 的低空闲值是否由高 JVM 负载导致，支持 h3。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Tomcat02",
+      "start": "06:00:00.000",
+      "end": "06:30:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPULoad"
+      ],
+      "focus": "获取 Tomcat02 CPU 负载全时段数值，确认 e298 的峰值是否持续或孤立，评估其对业务的影响。",
+      "basis_ids": [
+        "e298"
+      ]
+    },
+    {
+      "node_id": "device:apache02",
+      "start": "06:00:00.000",
+      "end": "06:30:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKRead"
+      ],
+      "focus": "验证 apache02 磁盘读流量异常（e237）的具体数值和持续时间，确认是否为根因或仅是下游影响。",
+      "basis_ids": [
+        "e237"
+      ]
+    }
+  ],
+  "peak_gpu_gib": 21.137521266937256,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e263",
+      "e264",
+      "e265",
+      "e266",
+      "e267",
+      "e268",
+      "e269",
+      "e270",
+      "e271",
+      "e272",
+      "e273",
+      "e274",
+      "e275",
+      "e276",
+      "e277",
+      "e278",
+      "e287",
+      "e288",
+      "e289",
+      "e290",
+      "e291",
+      "e292",
+      "e293",
+      "e294"
+    ],
+    "notes": "保留所有涉及候选组件（IG, MG, Tomcat, docker）的实际父子调用匹配证据。这些边能揭示服务间的调用链、延迟传播路径及时间区间异常（不满足包含关系），是区分资源故障与传播链的关键。e252-e262为业务统计，无组件关联，故拒绝。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 43
+  }
+}

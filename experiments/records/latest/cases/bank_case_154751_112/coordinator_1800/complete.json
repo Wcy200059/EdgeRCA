@@ -1,0 +1,144 @@
+{
+  "case_id": "f982740b52dfe86a",
+  "cutoff_ms": 1615060800000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 249
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 253
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 255
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 259
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:MG02",
+      "start": "03:30:00",
+      "end": "04:00:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_DISK_ens160_DISKReadBytesPerSec"
+      ],
+      "focus": "确认 MG02 在 03:52 网络异常期间是否存在磁盘读取速率飙升，以验证或排除磁盘 I/O 作为根因。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Tomcat01",
+      "start": "03:30:00",
+      "end": "04:00:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "JVM-Memory_7779_JVM_Memory_HeapMemoryUsage"
+      ],
+      "focus": "确认 Tomcat01 在请求激增期间 JVM 堆内存使用率是否持续上升直至接近最大值，验证内存耗尽风险。",
+      "basis_ids": [
+        "e267",
+        "e268"
+      ]
+    },
+    {
+      "node_id": "device:MG02",
+      "start": "03:50:00.000",
+      "end": "03:59:59.000",
+      "tools": [
+        "get_metrics",
+        "get_logs"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_DISK_ens160_DISKReadBytesPerSec",
+        "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+      ],
+      "focus": "验证 MG02 在 03:52 网络异常前是否出现磁盘读取飙升或内存占用激增，确认是否为磁盘 I/O 或内存压力引发的级联延迟。",
+      "basis_ids": [
+        "e66",
+        "e215"
+      ]
+    },
+    {
+      "node_id": "device:MG02",
+      "start": "03:40:00",
+      "end": "04:00:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil",
+        "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+      ],
+      "focus": "验证 MG02 在 dockerB1 报告高延迟期间（03:42 起）CPU 和内存是否已饱和，以确认网络延迟的根因是否为节点资源耗尽。",
+      "basis_ids": [
+        "e66",
+        "e215"
+      ]
+    }
+  ],
+  "peak_gpu_gib": 21.166918754577637,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e229",
+      "e230",
+      "e231",
+      "e232",
+      "e233",
+      "e234",
+      "e235",
+      "e236",
+      "e237",
+      "e238",
+      "e239",
+      "e240",
+      "e241",
+      "e242",
+      "e243",
+      "e244",
+      "e245",
+      "e246",
+      "e247",
+      "e248",
+      "e249",
+      "e250",
+      "e251",
+      "e252",
+      "e253",
+      "e254",
+      "e255",
+      "e256",
+      "e257",
+      "e258",
+      "e259",
+      "e260"
+    ],
+    "notes": "筛选所有涉及候选组件（IG, MG, Tomcat, docker）间实际父子调用匹配的观测。这些证据直接反映服务调用链的延迟（P95/Max）及时间区间不匹配情况，有助于区分是资源故障还是传播链问题，且均位于故障时段内。业务统计类观测（e218-e228）因缺乏组件关联和异常特征被拒绝。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 43
+  }
+}

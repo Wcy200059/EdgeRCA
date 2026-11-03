@@ -1,0 +1,25 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": "17:50:00.000",
+        "evidence_ids": [
+          "e52"
+        ],
+        "explanation": "e52 显示 Mysql01 磁盘读取在 17:50:00 从 0 突增至 12.0 并触发规则，随后 17:52 清除。虽 e23 显示 CPU 晚段下降，但磁盘异常是明确触发点，且早段 CPU 偏高暗示资源争用。其他节点无明确磁盘异常，慢调用多为下游表现。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615284000000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1"
+}

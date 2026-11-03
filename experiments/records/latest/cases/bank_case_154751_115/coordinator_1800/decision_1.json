@@ -1,0 +1,76 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "apache01",
+        "reason": "high disk I/O read usage",
+        "time": "01:20:00.000",
+        "time_evidence_id": "e246",
+        "support_ids": [
+          "e246",
+          "e247"
+        ],
+        "counter_ids": [],
+        "explanation": "e246 显示 apache01 磁盘 sdb 在 01:20:00 触发高 I/O 并持续至 01:26:00。e247 显示 sdb 在 01:20:00 触发。e243 显示 CPU 在 01:20:00 激增。资源峰值时间高度一致，且磁盘 I/O 常是根因而非结果（如处理突发请求或扫描）。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 目录显示有资源类观测，但当前未加载具体指标详情（如磁盘 I/O 或 CPU）。无法确认是否存在高负载。需请求获取 Mysql01 的磁盘 I/O 或 CPU 指标以核实。"
+      },
+      {
+        "id": "h3",
+        "assessment": "not_supported",
+        "component": "apache01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [
+          "e246",
+          "e247"
+        ],
+        "explanation": "虽然 e243 显示 CPU 在 01:20:00 激增，但 e246 和 e247 同时显示磁盘 I/O 在相同时间触发且持续更久。通常高 I/O 会导致 CPU 等待（SysTime 或整体 Util 上升），因此 I/O 更可能是根因，CPU 高是伴随现象而非独立根因。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "01:00:00",
+        "end": "01:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKBps",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKBps",
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认 Mysql01 在 01:20:00 前后是否存在磁盘 I/O 激增或 CPU 高负载，以验证其是否为 apache01 故障的下游受害者或独立根因。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17411,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 39,
+        "available_facts": 272
+      }
+    }
+  ],
+  "labels_used": false
+}

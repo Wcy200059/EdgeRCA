@@ -1,0 +1,95 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Mysql02",
+        "reason": "high disk I/O read usage",
+        "time": "19:23:00.000",
+        "time_evidence_id": "e252",
+        "support_ids": [
+          "e252",
+          "e306"
+        ],
+        "counter_ids": [],
+        "explanation": "Apache02 网络包输出在 19:23 激增（e252），随后 Tomcat 层出现高 CPU 负载。Mysql02 磁盘读取量在 19:23 后显著升高（e306 确认该时段存在数据）。若 Mysql02 因 IO 阻塞导致业务失败，将引发上游 Tomcat 资源争抢及网络波动。需确认 Mysql02 磁盘 IO 数值是否超标。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "MG01 报告 JVM CPU 高（e12），但 Tomcat01 本地尚未加载具体 JVM 负载数值（e303 缺失）。MG01 可能非 Tomcat01 实例。需补查 Tomcat01 本地 JVM CPU 负载以确认是否为根因，排除代理误差。"
+      },
+      {
+        "id": "h3",
+        "assessment": "not_supported",
+        "component": "apache02",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [
+          "e252",
+          "e281"
+        ],
+        "explanation": "Apache02 CPU 有波动（e281），但触发时间在 19:27，晚于多数业务异常迹象（e252 在 19:23）。且无父子调用证据表明其导致下游失败。网络激增先于 CPU 变化，不支持 Apache02 为根因。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql02",
+        "start": "19:20:00.000",
+        "end": "19:25:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Mysql-MySQL_3306_DiskReadBytes",
+          "Mysql-MySQL_3306_DiskReads"
+        ],
+        "focus": "确认 Mysql02 磁盘读取量是否在 19:23 网络激增后出现显著飙升，以验证是否为磁盘 IO 瓶颈根因。",
+        "basis_ids": [
+          "e252",
+          "e306"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "basis_ids must use e IDs from current evidence",
+      "rejected_sections": [
+        {
+          "section": "requests",
+          "index": 1,
+          "item": {
+            "node_id": "device:Tomcat01",
+            "start": "19:00:00.000",
+            "end": "19:30:00.000",
+            "tools": [
+              "get_metrics"
+            ],
+            "metrics": [
+              "JVM-Operating System_JVM_CPULoad"
+            ],
+            "focus": "获取 Tomcat01 本地 JVM CPU 负载，确认是否如 MG01 报告般存在高负载，排除代理误差。",
+            "basis_ids": [
+              "e12",
+              "e303"
+            ]
+          },
+          "error": "basis_ids must use e IDs from current evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

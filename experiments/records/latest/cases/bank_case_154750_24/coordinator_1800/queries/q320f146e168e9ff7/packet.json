@@ -1,0 +1,86 @@
+{
+  "case_id": "9beb1dccb021e5ab",
+  "node_id": "device:dockerB1",
+  "request_id": "q320f146e168e9ff7",
+  "window_start_ms": 1615294800000,
+  "cutoff_ms": 1615296600000,
+  "query_end_ms": 1615296600000,
+  "scope": {
+    "start": "21:00:00.000",
+    "end": "21:30:00.000"
+  },
+  "requested_scope": {
+    "reference": {
+      "start_ms": 1615294800000,
+      "end_ms": 1615294800000,
+      "seconds": 0.0,
+      "bounds": "[start,end)"
+    },
+    "current": {
+      "start_ms": 1615294800000,
+      "end_ms": 1615296600000,
+      "seconds": 1800.0,
+      "bounds": "[start,end)"
+    },
+    "rows_considered": 44495,
+    "prefix_rows": 44495,
+    "counts_by_modality": {
+      "trace": 44480,
+      "metric": 15
+    },
+    "must_report_ids": [],
+    "raw_archive_preserved": true
+  },
+  "request": {
+    "node_id": "device:dockerB1",
+    "start": "21:00:00",
+    "end": "21:30:00",
+    "tools": [
+      "get_metrics"
+    ],
+    "metrics": [
+      "OSLinux-OSLinux_DISK_DISK_ReadIOPS",
+      "OSLinux-OSLinux_DISK_DISK_ReadBytes"
+    ],
+    "focus": "确认dockerB1在21:16至21:17期间磁盘读IOPS或吞吐量是否显著升高，以验证e253规则触发是否由磁盘I/O过载引起，排除网络延迟可能性。",
+    "basis_ids": [
+      "e253",
+      "e255"
+    ]
+  },
+  "tools_executed": [
+    "get_metrics"
+  ],
+  "facts": [
+    {
+      "id": "f1",
+      "kind": "missing",
+      "modality": "metric"
+    }
+  ],
+  "catalog": {
+    "f1": {
+      "missing_requested_names": [
+        "OSLinux-OSLinux_DISK_DISK_ReadBytes",
+        "OSLinux-OSLinux_DISK_DISK_ReadIOPS"
+      ]
+    }
+  },
+  "available_metric_names": [
+    "Container-DOCKER_CONTAINER_9e8c309d0aab--bcou-trace-st-uat-statefulset-0--bcou--UATWKR04_CpuPercent",
+    "Container-DOCKER_CONTAINER_9e8c309d0aab--bcou-trace-st-uat-statefulset-0--bcou--UATWKR04_MemLimit",
+    "Container-DOCKER_CONTAINER_9e8c309d0aab--bcou-trace-st-uat-statefulset-0--bcou--UATWKR04_MemPercent",
+    "Container-DOCKER_CONTAINER_9e8c309d0aab--bcou-trace-st-uat-statefulset-0--bcou--UATWKR04_MemUsage",
+    "Container-DOCKER_CONTAINER_9e8c309d0aab--bcou-trace-st-uat-statefulset-0--bcou--UATWKR04_NetworkTxBytes"
+  ],
+  "missing_metrics": [
+    "OSLinux-OSLinux_DISK_DISK_ReadBytes",
+    "OSLinux-OSLinux_DISK_DISK_ReadIOPS"
+  ],
+  "limitations": [
+    "只检查请求节点、指定范围与最多前5分钟对照；参考段不保证正常。",
+    "请求之外的指标尚未检查；原始记录和工具完整结果保留。",
+    "没有相应字段或记录不能证明设备正常；慢调用不是网络RTT。"
+  ],
+  "labels_used": false
+}

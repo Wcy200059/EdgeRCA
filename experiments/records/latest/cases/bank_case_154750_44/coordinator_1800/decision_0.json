@@ -1,0 +1,72 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat04",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat04 磁盘指标缺失，但网络带宽与流量在 21:25 突增，疑似数据读取导致。需补查磁盘 I/O 读数确认是否超标。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat04",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat04 CPU 指标缺失，但线程繁忙与网络突增同时发生。需补查 CPU 使用率确认是否因高负载导致。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Tomcat04",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat04 JVM CPU 指标缺失。需补查 JVM 线程与 CPU 负载，确认是否因应用层高负载引发系统级异常。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat04",
+        "start": "21:00:00",
+        "end": "21:30:00",
+        "tools": [
+          "list_metrics",
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_DISK_DISK-sda_DSKReadBps",
+          "JVM-CPU_CPU_CPU_Time",
+          "JVM-Memory_HeapMemoryUsed"
+        ],
+        "focus": "获取 Tomcat04 的 CPU、磁盘读取带宽及 JVM 内存/负载指标，验证是否因资源耗尽导致业务故障。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17417,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 46,
+        "available_facts": 270
+      }
+    }
+  ],
+  "labels_used": false
+}

@@ -1,0 +1,77 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat04",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "15:58:48.000",
+        "time_evidence_id": "e270",
+        "support_ids": [
+          "e270",
+          "e271"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 在 15:58:48 发生 Allocation Failure，随后在 15:56:04 出现 GCLocker Initiated GC。高频率 GC 与 Allocation Failure 是 OOM 的典型前兆，且该节点有明确日志支持。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat04",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat04 的高 GC 频率可能导致 CPU 飙升。但当前证据中 Tomcat04 的 JVM CPU 指标未加载，无法确认是否因 GC 导致 CPU 高，还是其他原因。需补查 JVM CPU 指标。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat04",
+        "start": "15:30:00.000",
+        "end": "16:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-CPU_7779_JVM_CPU_Time"
+        ],
+        "focus": "确认 Tomcat04 在故障窗口内的 JVM CPU 时间负载，以验证高 GC 是否导致 CPU 飙升，或是否存在其他 CPU 密集型问题。",
+        "basis_ids": [
+          "e270",
+          "e271"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "h3: time 15:59:00.000 requires e242 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 2,
+          "item": {
+            "id": "h3",
+            "assessment": "not_supported",
+            "component": "apache01",
+            "reason": "high CPU usage",
+            "time": "15:59:00.000",
+            "time_evidence_id": "e242",
+            "support_ids": [],
+            "counter_ids": [
+              "e242"
+            ],
+            "explanation": "apache01 的 CPU 利用率在 15:59 达到 100%（TCP-CLOSE-WAIT 触发），但这属于网络状态指标，非 CPU 使用率。此前 15:38 的 CPU 高负载已回落，且无证据表明其导致下游 Tomcat 故障。"
+          },
+          "error": "h3: time 15:59:00.000 requires e242 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

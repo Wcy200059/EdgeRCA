@@ -1,0 +1,84 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 有大量未加载事实，且 trace 缺失。需补查磁盘 I/O 指标及调用链，确认是否存在高读 I/O 导致下游（如 Tomcat）延迟。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "15:00:00",
+        "end": "15:30:00",
+        "tools": [
+          "list_metrics",
+          "get_metrics"
+        ],
+        "metrics": [
+          "Mysql-MySQL_3306_Disk_Reads",
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认 Mysql01 是否存在高磁盘读 I/O 或高 CPU 使用率，以解释可能的下游延迟。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:dockerA2",
+        "start": "15:00:00",
+        "end": "15:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "获取 dockerA2 的 CPU 使用率，确认 15:03 长调用期间是否伴随 CPU 升高。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:dockerB1",
+        "start": "15:00:00",
+        "end": "15:30:00",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "检查 dockerB1 的调用链，确认其长调用是否与 dockerA2 或 Mysql01 相关，排除独立故障。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "component must use a public candidate or null",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "unresolved",
+            "component": "dockerA2",
+            "reason": "high CPU usage",
+            "time": null,
+            "time_evidence_id": null,
+            "support_ids": [],
+            "counter_ids": [],
+            "explanation": "dockerA2 在 15:03 有长调用，但 CPU 指标未加载。需确认该节点 CPU 是否飙升，以及长调用是否源于本地计算或等待下游。"
+          },
+          "error": "component must use a public candidate or null"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

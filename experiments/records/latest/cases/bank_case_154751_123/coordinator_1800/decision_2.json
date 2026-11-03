@@ -1,0 +1,102 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat03",
+        "reason": "high CPU usage",
+        "time": "00:08:00.000",
+        "time_evidence_id": "e215",
+        "support_ids": [
+          "e215"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat03 在 00:08:00 观测到 CPU 使用率高达 99.96% (e215)，且该时段早于其他节点显著异常。虽无直接业务失败日志，但极端 CPU 占用本身即构成资源耗尽型故障，符合'high CPU usage'定义。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat03",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Apache01 磁盘 IO 在 00:21 触发 (e248)，与 Tomcat03 高 CPU 时间 (00:08) 不匹配。Tomcat03 本地磁盘 IO 数据未加载，需补查确认其是否存在 IO 瓶颈导致 CPU 飙升。"
+      },
+      {
+        "id": "h3",
+        "assessment": "not_supported",
+        "component": "Tomcat01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [
+          "e199"
+        ],
+        "explanation": "Tomcat01 观测到 CPU 空闲下降 (e199)，但 e199 明确标注为'只描述原始数值，未确认累计/瞬时含义'，且无具体 CPU 使用率数值支持。相比之下 Tomcat03 有明确 99%+ 峰值，故不支持 Tomcat01 为根因。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat03",
+        "start": "00:00:00",
+        "end": "00:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKBps"
+        ],
+        "focus": "检查 Tomcat03 磁盘读写流量在 00:08 高 CPU 时段是否异常，以验证磁盘 IO 是否为高 CPU 的根因。",
+        "basis_ids": [
+          "e215"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "00:00:00",
+        "end": "00:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "获取 Tomcat01 具体 CPU 使用率数值，验证 e199 中的空闲下降是否代表高负载故障。",
+        "basis_ids": [
+          "e199"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat03",
+        "start": "00:00:00",
+        "end": "00:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKBps"
+        ],
+        "focus": "检查 Tomcat03 另一块磁盘 sdb 的读写流量，排除多盘 IO 问题。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17386,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 36,
+        "available_facts": 274
+      }
+    }
+  ],
+  "labels_used": false
+}

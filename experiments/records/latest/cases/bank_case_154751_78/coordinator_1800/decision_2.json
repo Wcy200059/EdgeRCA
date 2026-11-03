@@ -1,0 +1,103 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat01",
+        "reason": "high CPU usage",
+        "time": "17:56:00.000",
+        "time_evidence_id": "e153",
+        "support_ids": [
+          "e153"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat01 CPU 在 17:56 激增至 99.98%（e153），处于极端高位。该节点是 IG02 的直接下游，其 CPU 饱和足以解释上游长调用延迟。时间戳明确，证据充分。"
+      },
+      {
+        "id": "h4",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "network latency",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "IG01 观测到长调用，但无法区分是网络问题还是下游 Tomcat CPU 高负载导致。需补查 IG01 网络指标（RTT/丢包）或确认 Tomcat 负载完全解释延迟。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:IG01",
+        "start": "17:30:00",
+        "end": "18:00:00",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_NETWORK"
+        ],
+        "focus": "列出 IG01 所有网络相关指标名称，以便后续查询 RTT、丢包或带宽指标，以区分网络故障与下游处理慢。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat03",
+        "start": "17:55:00",
+        "end": "18:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "获取 Tomcat03 CPU 具体数值，验证是否存在与 Tomcat01/02 同步的高负载现象，排除单点故障。",
+        "basis_ids": [
+          "e204"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "17:55:00",
+        "end": "18:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "获取 Tomcat04 CPU 具体数值，验证是否存在与 Tomcat01/02 同步的高负载现象，排除单点故障。",
+        "basis_ids": [
+          "e220"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "use unique e IDs from current evidence; node overviews are not evidence",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h3",
+            "assessment": "supported",
+            "component": "Tomcat02",
+            "reason": "high CPU usage",
+            "time": "17:56:00.000",
+            "time_evidence_id": "e166",
+            "support_ids": [
+              "e166"
+            ],
+            "counter_ids": [],
+            "explanation": "Tomcat02 在 17:53 触发规则，17:56 达到 99.5% 高负载（e166）。作为 IG01 的直接下游，其 CPU 饱和解释了长调用（e183）及业务延迟。时间戳明确，证据充分。"
+          },
+          "error": "use unique e IDs from current evidence; node overviews are not evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

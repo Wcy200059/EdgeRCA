@@ -1,0 +1,98 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 有海量未加载观测（199 条），目录显示有日志（159 条）和指标（40 条）。现有证据 e85 仅显示 trace 缺失，无法确认磁盘 I/O 或日志内容。需补查日志确认 I/O 错误或慢查询，指标确认 I/O 使用率。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Redis01",
+        "reason": "high memory usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Redis01 观测 e461 显示连接数稳定，但 e462 显示内存指标缺失。现有证据不足以确认内存高占用导致故障。需补查内存指标（如 Memory Used）及日志确认 OOM 或连接数异常。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat02 本地保留 26 条未处理观测，目录显示有指标和日志。e180 显示个别长调用，但非持续高 CPU。需补查 CPU 使用率指标及日志确认是否因 CPU 满载导致线程阻塞或请求超时。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "14:00:00.000",
+        "end": "14:30:00.000",
+        "tools": [
+          "get_logs",
+          "get_metrics"
+        ],
+        "metrics": [
+          "Mysql-MySQL_3306_Disk I/O Read",
+          "Mysql-MySQL_3306_Threads Running"
+        ],
+        "focus": "确认 Mysql01 是否存在磁盘 I/O 读负载过高或慢查询日志，以及线程阻塞情况，以验证高磁盘 I/O 导致故障的假设。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Redis01",
+        "start": "14:00:00.000",
+        "end": "14:30:00.000",
+        "tools": [
+          "get_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "redis-Redis_6379_Redis  (used_memory_human)"
+        ],
+        "focus": "确认 Redis01 内存使用量是否异常升高及客户端连接数是否激增，以验证高内存使用或连接数过多导致故障的假设。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat02",
+        "start": "14:00:00.000",
+        "end": "14:30:00.000",
+        "tools": [
+          "get_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUUtil"
+        ],
+        "focus": "确认 Tomcat02 CPU 使用率是否持续高位，以及是否有线程创建异常或 GC 频繁，以验证高 CPU 负载导致故障的假设。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17721,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 29,
+        "available_facts": 456
+      }
+    }
+  ],
+  "labels_used": false
+}

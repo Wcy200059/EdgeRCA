@@ -1,0 +1,91 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat04",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat04 CPU系统时间（e189）和Busy线程（e188）确有上升，但需确认是否为OOM的下游症状或独立根因。当前证据不足以区分是内存泄漏导致的CPU飙升，还是独立的高CPU负载引发内存不足。需进一步确认内存泄漏趋势。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat04",
+        "start": "12:30:00.000",
+        "end": "12:35:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "核实Tomcat04在12:30-12:35期间内存使用率的具体数值和变化趋势，确认是否存在持续上升的内存泄漏或瞬时峰值，以区分是独立的高内存使用还是OOM的伴随现象。",
+        "basis_ids": [
+          "e190",
+          "e188"
+        ]
+      },
+      {
+        "node_id": "device:apache01",
+        "start": "12:30:00.000",
+        "end": "12:35:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "检查apache01的内存使用情况，确认其是否在Tomcat04发生OOM之前出现异常，以排除上游流量激增导致下游Tomcat内存耗尽的可能性。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "12:30:00.000",
+        "end": "12:35:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Mysql-MySQL_3306_Innodb buffer pool pages dirty"
+        ],
+        "focus": "检查Mysql01的脏页数量，确认数据库层是否存在写入压力或内存压力，排除数据库层问题向上游传播导致Tomcat内存耗尽的可能性。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "h1: time 12:30:00.000 requires e190 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 0,
+          "item": {
+            "id": "h1",
+            "assessment": "supported",
+            "component": "Tomcat04",
+            "reason": "JVM Out of Memory (OOM) Heap",
+            "time": "12:30:00.000",
+            "time_evidence_id": "e190",
+            "support_ids": [
+              "e190",
+              "e188",
+              "e189"
+            ],
+            "counter_ids": [],
+            "explanation": "Tomcat04在12:30:00发生Allocation Failure GC（e190），随后出现多次GC暂停。CPU系统时间（e189）和Busy线程数（e188）在12:35后持续升高，表明内存压力导致大量对象分配和GC。其他节点未见同等严重性OOM证据。"
+          },
+          "error": "h1: time 12:30:00.000 requires e190 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

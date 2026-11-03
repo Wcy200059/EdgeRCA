@@ -1,0 +1,78 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "apache01",
+        "reason": "high CPU usage",
+        "time": "06:57:00.000",
+        "time_evidence_id": "e236",
+        "support_ids": [
+          "e236",
+          "e264"
+        ],
+        "counter_ids": [],
+        "explanation": "e236 显示 apache01 CPU 空闲值在 06:57:00 骤降至 0.0，表明 CPU 满载。e264 进一步确认该节点 CPU-2 指标在 06:56:00 出现异常高值（77.1822），与空闲值下降时间吻合，确认为高 CPU 使用导致故障。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "apache02",
+        "reason": "high CPU usage",
+        "time": "06:57:00.000",
+        "time_evidence_id": "e246",
+        "support_ids": [
+          "e246"
+        ],
+        "counter_ids": [],
+        "explanation": "e246 显示 apache02 CPU-2 在 06:57:00 触发规则（值达 2.0266），表明 CPU 使用率极高。但尚缺具体进程及调用链证据，需确认是否为同一根因扩散或独立事件，且需排除网络重试导致的 CPU 升高。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:apache01",
+        "start": "06:55:00",
+        "end": "06:59:00",
+        "tools": [
+          "get_calls",
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "获取 apache01 在 06:55-06:59 期间的长调用样本及父子连接，确认 CPU 满载是否由特定下游调用或内部逻辑引起；同时检查是否有错误日志佐证业务失败。",
+        "basis_ids": [
+          "e236",
+          "e264"
+        ]
+      },
+      {
+        "node_id": "device:apache02",
+        "start": "06:55:00",
+        "end": "06:59:00",
+        "tools": [
+          "get_calls",
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "获取 apache02 在 06:55-06:59 期间的长调用样本及父子连接，确认 CPU 飙升的具体原因；同时检查日志以区分是应用负载还是网络重试导致的 CPU 升高。",
+        "basis_ids": [
+          "e246"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17378,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 28,
+        "available_facts": 256
+      }
+    }
+  ],
+  "labels_used": false
+}

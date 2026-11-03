@@ -1,0 +1,29 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Tomcat04",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "23:26:00",
+        "evidence_ids": [
+          "e210",
+          "e236",
+          "e239"
+        ],
+        "explanation": "Tomcat04 在 23:26 触发 JVM 内存使用率规则（e210），且 23:00-23:26 间发生 6 次 GC（e236），最后一次为 Allocation Failure（e239）。这符合 OOM 特征。虽然 HTTP 状态码正常，但 OOM 可能导致内部崩溃或超时。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1616513400000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1",
+  "field_repairs": [],
+  "warnings": []
+}

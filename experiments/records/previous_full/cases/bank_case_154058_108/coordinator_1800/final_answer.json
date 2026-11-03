@@ -1,0 +1,36 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Tomcat04",
+        "reason": "high CPU usage",
+        "time": "19:13:00",
+        "evidence_ids": [
+          "e40",
+          "e41"
+        ],
+        "explanation": "Tomcat04 在 19:13:00 触发 CPU 飙升 (e40,e41)，时间早于后续故障。作为上游节点，其资源耗尽导致下游 Tomcat01 过载，是级联故障的起始根因。"
+      },
+      {
+        "component": "Tomcat01",
+        "reason": "high CPU usage",
+        "time": "19:15:00",
+        "evidence_ids": [
+          "e37",
+          "e38"
+        ],
+        "explanation": "Tomcat01 在 19:15:00 触发 CPU 空闲度骤降 (e37,e38)，直接导致请求处理超时。该故障发生在上游 Tomcat04 之后，且早于 apache01 的 502 错误，是业务失败的直接原因。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1616671800000,
+  "model_judgment_verified": false,
+  "expected_failures": 2,
+  "answer_schema": "faults_v1"
+}

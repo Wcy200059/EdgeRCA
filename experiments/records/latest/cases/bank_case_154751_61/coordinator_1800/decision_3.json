@@ -1,0 +1,61 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat04",
+        "reason": "high CPU usage",
+        "time": "02:59:08.184",
+        "time_evidence_id": "e8",
+        "support_ids": [
+          "e8",
+          "e233"
+        ],
+        "counter_ids": [],
+        "explanation": "e8 显示 IG01 在 02:59:08 出现 4009ms 长调用。e233 证实 Tomcat04 在该时段 CPU 利用率极高（median 90%，max 46.54%）。虽无直接父子链，但 Tomcat04 是唯一展示极端 CPU 负载的 Tomcat 实例，最可能因资源耗尽导致上游调用超时。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e236 显示 Mysql01 的磁盘读取指标缺失，无法确认是否存在 IO 瓶颈。e237 仅有一条普通 SQL 日志，无错误。需补查具体磁盘 IO 指标数值及慢查询日志，以验证或排除磁盘 IO 饱和假设。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "02:30:00",
+        "end": "03:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKRead",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKWrite"
+        ],
+        "focus": "获取 Mysql01 磁盘读取/写入吞吐量具体数值，确认是否存在 IO 饱和导致业务延迟。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17741,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 39,
+        "available_facts": 228
+      }
+    }
+  ],
+  "labels_used": false
+}

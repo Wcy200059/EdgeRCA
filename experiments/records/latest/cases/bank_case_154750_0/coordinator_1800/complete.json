@@ -1,0 +1,108 @@
+{
+  "case_id": "bfe95b242906317f",
+  "cutoff_ms": 1614841200000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 278
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 281
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 283
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 286
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Mysql02",
+      "start": "14:30:00",
+      "end": "15:00:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadBytes"
+      ],
+      "focus": "核实 Mysql02 磁盘读取字节数是否存在异常增长，以确认高磁盘 I/O 是否为根因。",
+      "basis_ids": [
+        "e296"
+      ]
+    },
+    {
+      "node_id": "device:Tomcat03",
+      "start": "14:30:00",
+      "end": "15:00:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "获取 Tomcat03 的 OS CPU 使用率具体数值，确认是否存在高 CPU 使用导致服务延迟。",
+      "basis_ids": []
+    }
+  ],
+  "peak_gpu_gib": 21.12264394760132,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e258",
+      "e259",
+      "e260",
+      "e261",
+      "e262",
+      "e263",
+      "e264",
+      "e265",
+      "e266",
+      "e267",
+      "e268",
+      "e269",
+      "e270",
+      "e271",
+      "e272",
+      "e273",
+      "e274",
+      "e275",
+      "e276",
+      "e277",
+      "e278",
+      "e279",
+      "e280",
+      "e281",
+      "e282",
+      "e283",
+      "e284",
+      "e285",
+      "e286",
+      "e287",
+      "e288",
+      "e289"
+    ],
+    "notes": "保留所有涉及候选组件（IG, MG, Tomcat, docker）的实际父子调用匹配证据。这些边包含调用次数、P95/最大延迟及时间区间不满足包含关系的异常统计，是构建传播链、定位根因组件及区分资源故障的关键依据。e247-e257为背景业务观测，与故障传播链无关，予以拒绝。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 43
+  }
+}

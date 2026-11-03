@@ -1,0 +1,49 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat04",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "17:59:24.000",
+        "time_evidence_id": "e196",
+        "support_ids": [
+          "e196",
+          "e295"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 在 17:59:24 明确记录 HTTP 500 错误（e196）。紧接着在 17:55:42-17:59:05 期间发生 4 次因 Allocation Failure 导致的 GC（e295），且 P95 调用延迟极高。资源耗尽（OOM）导致服务崩溃符合单故障特征，时间线吻合。"
+      },
+      {
+        "id": "h2",
+        "assessment": "not_supported",
+        "component": "Tomcat02",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [
+          "e196",
+          "e295"
+        ],
+        "explanation": "Tomcat02 虽有 CPU 上升趋势，但缺乏明确的业务失败或下游超时直接归因于该节点的强证据。相比之下，Tomcat04 有确凿的 500 错误和 OOM 日志。Tomcat02 的 CPU 高可能是 Tomcat04 故障后的级联效应或无关波动，无法解释唯一的业务失败。"
+      }
+    ],
+    "requests": []
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17732,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 65,
+        "available_facts": 297
+      }
+    }
+  ],
+  "labels_used": false
+}

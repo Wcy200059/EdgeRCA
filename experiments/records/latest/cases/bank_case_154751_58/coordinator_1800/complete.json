@@ -1,0 +1,84 @@
+{
+  "case_id": "eebf4e6ceaa5c17c",
+  "cutoff_ms": 1615239000000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 234
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 237
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 238
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 261
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:IG02",
+      "start": "05:00:00",
+      "end": "05:30:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_NETWORK_ens160_NETPacketsLost",
+        "OSLinux-OSLinux_NETWORK_ens160_NETBandwidthUtil"
+      ],
+      "focus": "检查IG02是否存在网络丢包或带宽饱和，以排除网络延迟作为根因的可能性。",
+      "basis_ids": [
+        "e20"
+      ]
+    }
+  ],
+  "peak_gpu_gib": 21.152705669403076,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e226",
+      "e227",
+      "e228",
+      "e229",
+      "e230",
+      "e231",
+      "e240",
+      "e241",
+      "e242",
+      "e243",
+      "e244",
+      "e245",
+      "e246",
+      "e247",
+      "e248",
+      "e249",
+      "e250",
+      "e251",
+      "e252",
+      "e253"
+    ],
+    "notes": "保留所有涉及候选组件（IG, MG, Tomcat, docker）的父子调用匹配证据。这些证据揭示了组件间的调用链、延迟（P95/Max）及时间包含关系异常，有助于区分资源故障与传播链，且直接关联故障时段内的业务流。其他业务统计（e215-e225）因未关联具体组件调用细节，对定位根因组件价值较低，故拒绝。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 39
+  }
+}

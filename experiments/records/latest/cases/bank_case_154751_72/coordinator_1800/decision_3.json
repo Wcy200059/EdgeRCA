@@ -1,0 +1,105 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat04",
+        "reason": "high CPU usage",
+        "time": "20:48:00.000",
+        "time_evidence_id": "e180",
+        "support_ids": [
+          "e180",
+          "e18"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 在 20:48:00 观测到 CPU 使用率峰值 98.78% (e180)，早于部分慢调用。结合 IG01 到 Tomcat01 的延迟波动 (e18)，该节点高负载极可能是导致下游延迟或业务失败的根因，符合资源高→下游延迟的机制。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 有日志和指标记录但未加载具体数值，无法确认是否存在高磁盘 I/O 或是否引发了上游 Tomcat 的 CPU 飙升。需补查磁盘指标以验证或排除此假设。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "IG02",
+        "reason": "network latency",
+        "time": "20:38:05.785",
+        "time_evidence_id": "e35",
+        "support_ids": [
+          "e35",
+          "e229"
+        ],
+        "counter_ids": [],
+        "explanation": "IG02 在 20:38 观测到长达 6299ms 的慢调用 (e35)，且 dockerB1 同期有类似长调用 (e229)。需确认该长调用是否由网络丢包引起，还是上游资源耗尽导致，以区分网络故障与资源故障。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "20:30:00",
+        "end": "20:50:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKAvgServ",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKAvgServ",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdc_DSKAvgServ",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKTps",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKTps",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdc_DSKTps"
+        ],
+        "focus": "核实 Mysql01 在 20:30-20:50 期间是否存在高磁盘 I/O 读取活动，以验证或排除其作为高 CPU 负载根因的可能性。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:IG02",
+        "start": "20:37:00",
+        "end": "20:39:00",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "确认 IG02 在 20:38 长调用时的具体下游目标，判断是网络问题还是调用下游资源耗尽导致。",
+        "basis_ids": [
+          "e35"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "20:45:00",
+        "end": "20:50:00",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "检查 Tomcat04 在 CPU 高负载期间（20:45-20:50）是否有大量慢调用发出，或其上游调用是否因此变慢。",
+        "basis_ids": [
+          "e180"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17710,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 34,
+        "available_facts": 310
+      }
+    }
+  ],
+  "labels_used": false
+}

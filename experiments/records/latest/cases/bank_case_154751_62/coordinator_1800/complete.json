@@ -1,0 +1,110 @@
+{
+  "case_id": "1a5b66c46e0b9db8",
+  "cutoff_ms": 1615320000000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 285
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 286
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 287
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 288
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Tomcat04",
+      "start": "03:30:00",
+      "end": "04:00:00",
+      "tools": [
+        "get_metrics",
+        "get_logs"
+      ],
+      "metrics": [
+        "JVM-Memory_7778_JVM_Memory_HeapMemoryUsed",
+        "OSLinux-CPU_CPU_CPUSysTime",
+        "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKBps"
+      ],
+      "focus": "确认 Tomcat04 在 03:41:00 前后是否存在 JVM 内存溢出、CPU 持续高负载或磁盘 I/O 阻塞，以验证其是否为导致下游延迟的根因。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:apache02",
+      "start": "03:30:00",
+      "end": "04:00:00",
+      "tools": [
+        "get_logs"
+      ],
+      "metrics": [],
+      "focus": "检索 apache02 在 03:41:00 至 03:57:00 磁盘 I/O 异常期间的系统日志，确认是否有 IO 等待错误或应用线程阻塞记录，以佐证磁盘故障导致业务失败。",
+      "basis_ids": [
+        "e244",
+        "e245"
+      ]
+    }
+  ],
+  "peak_gpu_gib": 21.14968490600586,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e265",
+      "e266",
+      "e267",
+      "e268",
+      "e269",
+      "e270",
+      "e271",
+      "e272",
+      "e273",
+      "e274",
+      "e275",
+      "e276",
+      "e277",
+      "e278",
+      "e279",
+      "e280",
+      "e281",
+      "e282",
+      "e283",
+      "e284",
+      "e285",
+      "e286",
+      "e287",
+      "e288",
+      "e289",
+      "e290",
+      "e291",
+      "e292",
+      "e293",
+      "e294",
+      "e295",
+      "e296"
+    ],
+    "notes": "筛选所有涉及候选组件（IG, MG, Tomcat, docker）间实际父子调用匹配的观测。这些证据直接反映了服务调用链的延迟传播情况（如P95/最大值及时间区间不匹配），有助于区分是上游资源故障还是下游处理瓶颈，符合保留涉及可疑组件调用边和区分传播链的要求。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 43
+  }
+}

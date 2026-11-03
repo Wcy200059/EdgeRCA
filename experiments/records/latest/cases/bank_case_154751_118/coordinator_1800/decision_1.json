@@ -1,0 +1,57 @@
+{
+  "reply": null,
+  "attempts": [
+    {
+      "valid": false,
+      "error": "h1: time 12:30:00.000 requires e190 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 0,
+          "item": {
+            "id": "h1",
+            "assessment": "supported",
+            "component": "Tomcat04",
+            "reason": "JVM Out of Memory (OOM) Heap",
+            "time": "12:30:00.000",
+            "time_evidence_id": "e190",
+            "support_ids": [
+              "e190",
+              "e219"
+            ],
+            "counter_ids": [],
+            "explanation": "Tomcat04在12:30:03即触发GC（e190），且e219显示内存占用率全程维持在98%的高位，符合OOM特征。其他节点如apache02内存虽高但稳定，无GC事件。Tomcat04的OOM最符合单故障描述。"
+          },
+          "error": "h1: time 12:30:00.000 requires e190 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        },
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "not_supported",
+            "component": "apache01",
+            "reason": "high CPU usage",
+            "time": "12:30:00.000",
+            "time_evidence_id": "e193",
+            "support_ids": [],
+            "counter_ids": [
+              "e193",
+              "e192",
+              "e194",
+              "e195",
+              "e196"
+            ],
+            "explanation": "apache01 CPU确曾在12:30-12:52间飙升（e193），但该峰值发生在Tomcat04的OOM事件（12:30:03）之后。若CPU高是根因，应早于或同步于下游故障，时间顺序不支持其作为12:30故障的根因。"
+          },
+          "error": "h2: time 12:30:00.000 requires e193 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        }
+      ]
+    },
+    {
+      "valid": false,
+      "error": "Expecting ',' delimiter: line 23 column 97 (char 791)"
+    }
+  ],
+  "labels_used": false
+}

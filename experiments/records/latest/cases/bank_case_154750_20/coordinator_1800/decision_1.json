@@ -1,0 +1,66 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat01",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "15:25:26.000",
+        "time_evidence_id": "e336",
+        "support_ids": [
+          "e242",
+          "e257",
+          "e258",
+          "e259",
+          "e260",
+          "e261",
+          "e262",
+          "e263",
+          "e264",
+          "e336"
+        ],
+        "counter_ids": [],
+        "explanation": "Apache 节点在 15:25:07 至 15:29 集中上报大量 502 错误，指向上游服务不可用。Tomcat01 在同一时段（15:25:26 开始）出现 Allocation Failure 导致的 GC 暂停，符合 OOM 特征。时间高度重合，且 Tomcat01 有明确资源耗尽迹象，而其他 Tomcat 节点暂无同等严重日志支持。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Apache 节点在 15:25:34 开始报告针对 Tomcat02 路径的 502 错误，表明 Tomcat02 可能也发生了故障。但当前缺乏 Tomcat02 自身的 OOM 日志或资源指标证据（仅有一页未加载的 CPU 指标）。需补查 Tomcat02 日志以确认是否发生 OOM 或 Full GC，区分是单机故障还是集群级问题。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat02",
+        "start": "15:25:00.000",
+        "end": "15:30:00.000",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "获取 Tomcat02 在 15:25 至 15:30 期间的日志，确认是否存在与 Tomcat01 类似的 OOM 错误、Full GC 暂停或堆内存耗尽的明确记录，以验证内存故障假设并区分单机与集群故障。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17780,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 52,
+        "available_facts": 337
+      }
+    }
+  ],
+  "labels_used": false
+}

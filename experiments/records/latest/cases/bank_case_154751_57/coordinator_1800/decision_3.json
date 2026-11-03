@@ -1,0 +1,100 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Mysql02",
+        "reason": "high disk I/O read usage",
+        "time": "01:03:00.000",
+        "time_evidence_id": "e68",
+        "support_ids": [
+          "e68"
+        ],
+        "counter_ids": [],
+        "explanation": "Mysql02 磁盘指标 e68 在 01:03:00 出现极值 0.918，且早晚期趋势显著。结合其 45 个观测量远高于其他节点，强烈暗示磁盘 I/O 瓶颈。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql02",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql02 有 45 个观测，但当前仅加载 1 条 CPU 指标。缺乏 JVM 内存、GC 暂停或 OOM 相关的日志/指标证据。必须检查 JVM 内存和 GC 日志以排除或证实此假设。"
+      },
+      {
+        "id": "h3",
+        "assessment": "not_supported",
+        "component": "IG01",
+        "reason": "network latency",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [
+          "e226",
+          "e227",
+          "e228"
+        ],
+        "explanation": "IG01 虽有单条 15807ms 长调用 (e7)，但父子连接观测 (e226-e228) 显示 P95 仅为 122-142ms，大部分调用正常。长调用可能为偶发或下游阻塞，尚不足以证明网络链路本身存在持续性高延迟故障。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql02",
+        "start": "01:00:00",
+        "end": "01:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUReadIOPS",
+          "OSLinux-CPU_CPU_CPUWriteIOPS"
+        ],
+        "focus": "获取 Mysql02 磁盘读写 IOPS 的具体数值，直接证实是否为高读 I/O 负载导致瓶颈，并确认写负载情况。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql02",
+        "start": "01:00:00",
+        "end": "01:30:00",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "检查 Mysql02 日志中是否存在 Full GC 暂停或 OOM 错误，进一步验证内存溢出假设。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql02",
+        "start": "01:00:00",
+        "end": "01:30:00",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "Memory",
+          "Heap"
+        ],
+        "focus": "获取 Mysql02 所有内存及堆相关指标名称，以便后续查询堆内存使用情况，区分是磁盘还是内存问题。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17699,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 43,
+        "available_facts": 250
+      }
+    }
+  ],
+  "labels_used": false
+}

@@ -1,0 +1,111 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat04",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "23:03:41",
+        "time_evidence_id": "e260",
+        "support_ids": [
+          "e260",
+          "e233"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 在 23:03:41 首次触发 GC (e260)，原因为 Allocation Failure，随后在 23:26:54 再次发生 (e233)。Allocation Failure 是 Heap 耗尽的直接前兆，符合 OOM 故障特征。时间最早且机制明确。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat04",
+        "start": "23:00:00",
+        "end": "23:30:00",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "查找 Tomcat04 在 23:03:41 及之后是否有明确的 JVM OOM Error 日志或 Heap Dump 触发记录，确认 Allocation Failure 的具体报错信息。",
+        "basis_ids": [
+          "e260",
+          "e233"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "23:00:00",
+        "end": "23:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Tomcat-MEMORY_7441-MEMORY_JVMMemoryUsedPercent"
+        ],
+        "focus": "获取 Tomcat04 堆内存使用百分比的完整数值序列，确认 23:03 后是否存在持续上升或接近 100% 的趋势，以量化内存耗尽过程。",
+        "basis_ids": [
+          "e264"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "23:00:00",
+        "end": "23:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "检查 Tomcat04 的 OS CPU 使用率，确认是否存在因频繁 GC 导致的 CPU 飙升，排除外部资源争用导致的 OOM。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "h2: time 23:12:00 requires e170 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "not_supported",
+            "component": "Redis02",
+            "reason": "high CPU usage",
+            "time": "23:12:00",
+            "time_evidence_id": "e170",
+            "support_ids": [],
+            "counter_ids": [
+              "e260",
+              "e233"
+            ],
+            "explanation": "Redis02 虽在 23:12 后 CPU 高 (e170)，但 Tomcat04 早在 23:03 就因 Allocation Failure 触发 GC。若 Redis 是根因，Tomcat 不应提前出现如此严重的内存分配失败。Redis 高 CPU 可能是结果而非原因。"
+          },
+          "error": "h2: time 23:12:00 requires e170 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        },
+        {
+          "section": "hypotheses",
+          "index": 2,
+          "item": {
+            "id": "h3",
+            "assessment": "supported",
+            "component": "Tomcat04",
+            "reason": "high memory usage",
+            "time": "23:03:41",
+            "time_evidence_id": "e260",
+            "support_ids": [
+              "e264"
+            ],
+            "counter_ids": [],
+            "explanation": "e264 显示 Tomcat04 的 JVM 堆内存使用百分比在 23:00 时为 45%，随后在 23:25 降至 34%。虽然数值下降，但结合 Allocation Failure 的 GC 事件，表明系统在内存压力下频繁触发清理，符合高内存使用导致的 OOM 特征。"
+          },
+          "error": "h3: time 23:03:41 requires e260 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

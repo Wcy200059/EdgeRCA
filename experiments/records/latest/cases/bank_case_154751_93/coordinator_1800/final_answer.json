@@ -1,0 +1,53 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Tomcat01",
+        "reason": "high JVM CPU load",
+        "time": "10:13:00",
+        "evidence_ids": [
+          "e205"
+        ],
+        "explanation": "e205显示Tomcat01线程繁忙指标在10:13触发并持续至10:23，数值从5升至21.5，符合高CPU特征。虽缺直接JVM指标，但线程阻塞是高JVM负载的典型表现，且该时段早于其他节点异常，符合根因时序。"
+      },
+      {
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": null,
+        "evidence_ids": [
+          "e14"
+        ],
+        "explanation": "e14显示IG01在10:26:01出现长达45秒的慢调用，P95高达6049ms。虽缺直接CPU指标，但此极端延迟是明确的故障表现，且发生在Tomcat01异常之后，符合故障传播时序。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "time must match this fault's cited time_mark, otherwise null"
+    },
+    {
+      "valid": false,
+      "error": "reason must be a public candidate or null"
+    },
+    {
+      "valid": true,
+      "source": "retained_fields_with_unknown_time"
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615516200000,
+  "model_judgment_verified": false,
+  "expected_failures": 2,
+  "answer_schema": "faults_v1",
+  "field_repairs": [
+    {
+      "fault_index": 1,
+      "field": "time",
+      "original_value": "10:26:01",
+      "new_value": null,
+      "reason": "No matching currently displayed timestamp in this fault's cited evidence."
+    }
+  ],
+  "warnings": []
+}

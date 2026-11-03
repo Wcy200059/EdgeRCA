@@ -1,0 +1,26 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Redis02",
+        "reason": "high CPU usage",
+        "time": "01:52:00",
+        "evidence_ids": [
+          "e23",
+          "e24"
+        ],
+        "explanation": "Redis02 在 01:52 触发 CPU 使用率异常 (e23)，且 CPU 负载 (e24) 在 01:38 后显著上升并持续至 01:56。该资源耗尽发生在业务窗口内，符合根因特征。Tomcat02 虽有 GC 和慢调用，但缺乏明确 OOM 日志，证据强度不及 Redis02。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615053600000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1"
+}

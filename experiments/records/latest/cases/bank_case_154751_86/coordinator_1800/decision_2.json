@@ -1,0 +1,96 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Mysql02",
+        "reason": "high disk I/O read usage",
+        "time": "08:38:00.000",
+        "time_evidence_id": "e130",
+        "support_ids": [
+          "e130"
+        ],
+        "counter_ids": [],
+        "explanation": "Mysql02 在 08:38:00 触发 OS CPU 使用率上升（e130），且该节点有大量未加载的磁盘/IO 相关事实。虽然当前仅见 CPU 变化，但结合 Bank 场景下 Mysql 高 CPU 常伴随磁盘 IO 瓶颈，且无其他更直接的根因证据，故保留此假设并指向磁盘 IO 作为潜在机制。需补查磁盘指标确认。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 同样存在大量未加载事实（90 条），可能包含磁盘 IO 异常。但目前无具体指标或日志证据支持。需定向补查 Mysql01 的磁盘 IO 指标以区分是否也是根因之一。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Tomcat04",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat04 观测到极长调用（e233），且节点有大量未加载事实。长调用可能是高 JVM CPU 的结果，也可能是下游阻塞。需补查 Tomcat04 的 JVM CPU 指标及调用堆栈，确认是否为计算密集型故障。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "08:30:00.000",
+        "end": "09:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Mysql-MySQL_3306_BytesRead"
+        ],
+        "focus": "检查 Mysql01 是否存在磁盘读取流量激增，以判断是否为集群级磁盘故障或单点问题。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "08:30:00.000",
+        "end": "09:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-Operating System_7778_JVM_JVM_CPULoad"
+        ],
+        "focus": "验证 Tomcat04 的长调用（e233）是否由 JVM CPU 过载引起，而非网络或下游延迟。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql02",
+        "start": "08:30:00.000",
+        "end": "09:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Mysql-MySQL_3306_BytesRead"
+        ],
+        "focus": "确认 Mysql02 在 08:38 前后是否存在磁盘读取流量激增，以验证高磁盘 IO 假设。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17688,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 48,
+        "available_facts": 307
+      }
+    }
+  ],
+  "labels_used": false
+}

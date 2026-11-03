@@ -1,0 +1,72 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat01 有来自 IG01/IG02 的长调用（P95>300ms），但缺乏 Tomcat01 自身 CPU 或内存指标的直接观测证据。现有连接数据不能证明是 Tomcat01 内部资源耗尽导致延迟。需补查 Tomcat01 的 CPU/内存指标以确认根因。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 有长调用记录，但当前证据中 Mysql01 的磁盘 I/O 指标查询结果为 missing。虽然 Mysql02 有磁盘指标波动，但无法直接归因于 Mysql01。需定向补查 Mysql01 的磁盘 I/O 指标以验证该假设。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "07:00:00",
+        "end": "07:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认 Tomcat01 在 07:00-07:30 期间是否存在 CPU 或内存高负载，以验证其是否为长调用的根因。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "07:00:00",
+        "end": "07:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUWio",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKRead"
+        ],
+        "focus": "获取 Mysql01 的磁盘读取 I/O 指标，验证其是否存在高磁盘 I/O 导致的延迟，排除 Mysql02 波动的影响。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17461,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 58,
+        "available_facts": 243
+      }
+    }
+  ],
+  "labels_used": false
+}

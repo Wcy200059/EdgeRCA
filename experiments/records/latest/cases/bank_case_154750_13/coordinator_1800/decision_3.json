@@ -1,0 +1,100 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat01",
+        "reason": "high CPU usage",
+        "time": "18:55:00.000",
+        "time_evidence_id": "e253",
+        "support_ids": [
+          "e204",
+          "e253"
+        ],
+        "counter_ids": [],
+        "explanation": "e204 显示 dockerB1 存在长调用，指向 Tomcat01 处理延迟。e253 证实 Tomcat01 CPU-0 核在 18:55 达到 100% 峰值，且早中期（18:45）仅为 1.5%，符合资源耗尽导致下游延迟的因果链。e250 内存稳定不支持内存故障。"
+      },
+      {
+        "id": "h2",
+        "assessment": "not_supported",
+        "component": "Tomcat01",
+        "reason": "high memory usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [
+          "e137",
+          "e250"
+        ],
+        "explanation": "e137 显示 Tomcat01 JVM 剩余内存呈上升趋势，e250 显示内存占比稳定在 98% 无突变。缺乏内存耗尽证据，且长调用更可能由 CPU 瓶颈引起。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 是 Tomcat01 下游，磁盘 I/O 饱和可导致上游延迟。但 e66 显示该节点无已到达的磁盘观测记录，无法确认是否存在 I/O 故障或具体时间。需定向补查磁盘指标。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "18:30:00",
+        "end": "19:00:00",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "DISK"
+        ],
+        "focus": "列出 Mysql01 节点可用的磁盘相关指标名称，以便后续查询 I/O 使用情况，验证是否因磁盘瓶颈导致上游延迟。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "18:30:00",
+        "end": "19:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKBps"
+        ],
+        "focus": "确认 Mysql01 在 18:30-19:00 期间磁盘读写带宽是否出现显著峰值，验证 h3 磁盘 I/O 故障假设。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql02",
+        "start": "18:30:00",
+        "end": "19:00:00",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "DISK"
+        ],
+        "focus": "列出 Mysql02 节点可用的磁盘相关指标名称，以便后续查询 I/O 使用情况，排除双数据库同时故障的可能性。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17721,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 34,
+        "available_facts": 245
+      }
+    }
+  ],
+  "labels_used": false
+}

@@ -1,0 +1,46 @@
+{
+  "query_file": "/mnt/beegfs/home/wangchunyun25/Documents/OpenRCA/dataset/Bank/query.csv",
+  "row": 50,
+  "instruction": "Two failures were reported within the time range of March 4, 2021, from 22:00 to 22:30. The exact time of the root cause occurrence is currently unknown, complicating the diagnosis process. Your task is to identify the root cause occurrence datetime to proceed with the investigation.",
+  "task_index": "task_1",
+  "scoring_points": "The 1-th root cause occurrence time is within 1 minutes (i.e., <=1min) of 2021-03-04 22:00:00\nThe 2-th root cause occurrence time is within 1 minutes (i.e., <=1min) of 2021-03-04 22:25:00\n",
+  "prediction": [
+    {
+      "root cause occurrence datetime": "2021-03-04 22:07:00",
+      "root cause component": "IG01",
+      "root cause reason": "high CPU usage"
+    },
+    {
+      "root cause occurrence datetime": "",
+      "root cause component": "Mysql01",
+      "root cause reason": "high disk I/O read usage"
+    }
+  ],
+  "prediction_sha256": "c1b8e041d9ba821525e54f7229b5abd03228a8cb1c71b3cde53d3235fc0dcdf8",
+  "final_reply_valid": true,
+  "score": 0.0,
+  "fully_correct": false,
+  "any_field_correct": false,
+  "passed": [],
+  "failed": [
+    "2021-03-04 22:00:00",
+    "2021-03-04 22:25:00"
+  ],
+  "checkpoints": [
+    {
+      "seconds": 1800,
+      "nodes": 18,
+      "central_queries": 3
+    }
+  ],
+  "delivered_rows": 178126,
+  "device_nodes": 18,
+  "model_calls": 58,
+  "model_generation_seconds": 370.605358308414,
+  "hit_output_limit_calls": 0,
+  "inference_labels_used": false,
+  "scorer": "/mnt/beegfs/home/wangchunyun25/Documents/OpenRCA/main/evaluate.py",
+  "time_tolerance_seconds": 300,
+  "scoring_rule": "components/reasons exact; occurrence time <= 300s",
+  "scope": "单道已有Bank样例的加速回放验收，不代表335题准确率或实时部署性能。"
+}

@@ -1,0 +1,80 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat04",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "15:58:48.000",
+        "time_evidence_id": "e270",
+        "support_ids": [
+          "e270",
+          "e271"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 在 15:58:48 发生 Allocation Failure，随后在 15:56:04 出现 GCLocker Initiated GC。高频率 GC 与 Allocation Failure 是 OOM 的典型前兆，且该节点有明确日志支持。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat04",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat04 的高 GC 频率可能导致 CPU 飙升。但当前证据中 Tomcat04 的 JVM CPU 指标未加载，无法确认是否因 GC 导致 CPU 高，还是其他原因。需补查 JVM CPU 指标。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat04",
+        "start": "15:30:00.000",
+        "end": "16:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-CPU_7779_JVM_CPU_Time",
+          "Tomcat-MEMORY_7441-MEMORY_JVMMemoryUsedPercent"
+        ],
+        "focus": "确认 Tomcat04 在故障窗口内的 JVM CPU 负载及 Heap 内存使用率峰值，以验证 OOM 是否由内存泄漏或 GC 风暴引起。",
+        "basis_ids": [
+          "e263",
+          "e269",
+          "e270",
+          "e271"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "h3: time 15:38:00.000 requires e7 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 2,
+          "item": {
+            "id": "h3",
+            "assessment": "not_supported",
+            "component": "apache01",
+            "reason": "high CPU usage",
+            "time": "15:38:00.000",
+            "time_evidence_id": "e7",
+            "support_ids": [],
+            "counter_ids": [
+              "e7"
+            ],
+            "explanation": "apache01 的 CPU 利用率在 15:38 和 15:42 达到 100%，但随后回落。故障窗口为 15:30-16:00，且题目要求单故障。apache01 的 CPU 高可能是瞬时波动，未直接关联到业务失败或其他组件的连锁反应。"
+          },
+          "error": "h3: time 15:38:00.000 requires e7 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

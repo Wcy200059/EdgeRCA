@@ -1,0 +1,92 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": "00:23:00.000",
+        "time_evidence_id": "e5",
+        "support_ids": [
+          "e5"
+        ],
+        "counter_ids": [],
+        "explanation": "e5 显示 IG01 在 00:23:00 出现 CPU 峰值 73.76%，且早段中位数 26.05% 高于晚段 25.78%，符合高负载特征。虽无直接业务失败证据，但作为唯一明确异常点，符合单故障题目要求。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:IG01",
+        "start": "00:20:00",
+        "end": "00:26:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认 00:23:00 峰值是否持续超过阈值，并查看前后分钟趋势以锁定故障起止时间。",
+        "basis_ids": [
+          "e5"
+        ]
+      },
+      {
+        "node_id": "device:dockerB2",
+        "start": "00:04:45",
+        "end": "00:05:00",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "检查长调用期间是否有连接超时、重试或错误日志，以区分是网络问题还是应用处理慢。",
+        "basis_ids": [
+          "e233"
+        ]
+      },
+      {
+        "node_id": "device:dockerB2",
+        "start": "00:00:00",
+        "end": "00:30:00",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "NET"
+        ],
+        "focus": "列出 dockerB2 可用网络指标名称，以便后续查询丢包或延迟相关数据。",
+        "basis_ids": [
+          "e233"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "component must use a public candidate or null",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "unresolved",
+            "component": "dockerB2",
+            "reason": "network latency",
+            "time": null,
+            "time_evidence_id": null,
+            "support_ids": [
+              "e233"
+            ],
+            "counter_ids": [],
+            "explanation": "e233 显示 dockerB2 存在 10916ms 的长调用，提示网络延迟可能。但缺乏该时段网络指标（如丢包、带宽）及上游根因证据，无法确认是否为独立故障或下游表现。"
+          },
+          "error": "component must use a public candidate or null"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

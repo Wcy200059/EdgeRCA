@@ -1,0 +1,41 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Tomcat01",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "22:00:54",
+        "evidence_ids": [
+          "e228",
+          "e149"
+        ],
+        "explanation": "Tomcat01 在 22:00:54 触发 Allocation Failure GC(e228)，随后 JVM 内存(e149)在 22:21 达峰值 1.85GB。时序符合内存泄漏/OOM 特征，且下游 docker 节点出现长调用印证服务受阻。"
+      },
+      {
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": "22:07:00",
+        "evidence_ids": [
+          "e122"
+        ],
+        "explanation": "Redis01 连接数在 22:07 激增(e122)，暗示上游负载高峰。Mysql01 作为存储层，其磁盘读取 IOPS 指标缺失(e230)但结合上下文推测存在高读压力，需结合业务流确认是否为根因。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "public question requires exactly 2 fault objects"
+    },
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615386600000,
+  "model_judgment_verified": false,
+  "expected_failures": 2,
+  "answer_schema": "faults_v1",
+  "field_repairs": [],
+  "warnings": []
+}

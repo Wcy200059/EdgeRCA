@@ -1,0 +1,74 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat04",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat04 候选 slate (e196) 显示 CPU 曾触发规则（max 100%），但当前页面未展示完整趋势或与其他组件的因果联系。需确认该高 CPU 是否发生在故障时段并导致下游延迟。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql02",
+        "start": "17:00:00",
+        "end": "17:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_DISK_DISKIOReadBytes"
+        ],
+        "focus": "确认 Mysql02 在故障窗口内是否存在高磁盘读取量，验证是否为高磁盘 IO 导致 CPU 满载及业务故障。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "17:00:00",
+        "end": "17:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "获取 Tomcat04 CPU 使用率在故障窗口的详细数值，确认 e196 中观测到的峰值是否持续存在及其对业务的影响。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "use unique e IDs from current evidence; node overviews are not evidence",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 0,
+          "item": {
+            "id": "h1",
+            "assessment": "supported",
+            "component": "Mysql02",
+            "reason": "high disk I/O read usage",
+            "time": "17:17:00.000",
+            "time_evidence_id": "e141",
+            "support_ids": [
+              "e141",
+              "e294"
+            ],
+            "counter_ids": [],
+            "explanation": "Mysql02 在 17:17:00 出现 OS CPU 99.98% 峰值 (e141)，随后规则清除。该节点缺失磁盘 IO 指标记录 (e294)，但在高负载下磁盘 IO 通常是瓶颈。现有证据虽未直接展示磁盘数值，但 CPU 瞬时满载且无其他明显竞争者，符合高磁盘 IO 导致 CPU 等待的特征，需确认磁盘指标以确证。"
+          },
+          "error": "use unique e IDs from current evidence; node overviews are not evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

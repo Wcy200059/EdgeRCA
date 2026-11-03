@@ -1,0 +1,99 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "apache02",
+        "reason": "high CPU usage",
+        "time": "16:29:03.000",
+        "time_evidence_id": "e242",
+        "support_ids": [
+          "e242",
+          "e243",
+          "e244",
+          "e245",
+          "e246",
+          "e241"
+        ],
+        "counter_ids": [],
+        "explanation": "apache02 在 16:29 密集出现 502 错误，疑似资源耗尽。但 e306 仅显示当前 CPU 0.56%，未覆盖报错前的高位区间。需补查 16:29 前 CPU 指标以确认高 CPU 是否为根因。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat04",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "16:13:42.000",
+        "time_evidence_id": "e208",
+        "support_ids": [
+          "e208",
+          "e277"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 在 16:13:42 收到 500 错误，且存在长调用。但 e128 显示其内存指标缺失，e208 未直接证明 OOM。需补查 Tomcat04 内存指标以确认是否发生 Heap 耗尽。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:apache02",
+        "start": "16:28:00.000",
+        "end": "16:30:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认 apache02 在 16:29:03 报错密集时段及之前几分钟的 CPU 使用率是否处于高位，以验证高 CPU 导致服务崩溃的假设。",
+        "basis_ids": [
+          "e242"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "16:13:00.000",
+        "end": "16:14:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-Memory_7778_JVM_Memory_HeapMemoryUsage"
+        ],
+        "focus": "检查 Tomcat04 在 16:13:42 出现 500 错误瞬间的 JVM Heap 内存数值，确认是否存在内存耗尽（OOM）迹象。",
+        "basis_ids": [
+          "e208"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "16:09:00.000",
+        "end": "16:11:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "排查 Tomcat04 在 16:09-16:11 期间是否有 CPU 飙升或内存增长趋势，判断 16:13 的 500 错误是否为资源累积耗尽的结果。",
+        "basis_ids": [
+          "e277"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17716,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 49,
+        "available_facts": 306
+      }
+    }
+  ],
+  "labels_used": false
+}

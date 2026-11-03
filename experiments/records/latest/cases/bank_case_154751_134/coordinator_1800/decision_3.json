@@ -1,0 +1,93 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat02",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "02:30:03.000",
+        "time_evidence_id": "e273",
+        "support_ids": [
+          "e273",
+          "e275",
+          "e192",
+          "e272"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat02 在窗口起始即发生 Allocation Failure (e273, e272)，伴随大量 unspecified GC (e275) 和 CMS Final Remark (e272)。GC 频繁且原因多样，表明堆内存耗尽。虽无明确 OOM 错误日志，但行为特征高度一致。需补查日志确认显式错误。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "候选 Tomcat02 本地有 CPU 指标 (e140)，但缺乏具体数值趋势（如飙升）证据，也未见 CPU 与 GC 的时序关联。高 CPU 可能导致频繁 GC，但当前证据不足以区分是 CPU 过载还是内存不足。需补查 CPU 指标确认。"
+      },
+      {
+        "id": "h3",
+        "assessment": "not_supported",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [
+          "e83",
+          "e110"
+        ],
+        "explanation": "Mysql01 和 Mysql02 的 trace 数据在本窗口内完全缺失 (e83, e110)，无法观测到磁盘 I/O 行为或延迟。虽然上游 Tomcat 有延迟，但缺乏数据库侧的直接证据支持磁盘 I/O 是根因。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat02",
+        "start": "02:30:00.000",
+        "end": "03:00:00.000",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "查找 'Out of Memory', 'Java heap space', 'Allocation Failure' 等明确错误日志，以证实 OOM 假设。",
+        "basis_ids": [
+          "e273",
+          "e275"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "basis_ids must use e IDs from current evidence",
+      "rejected_sections": [
+        {
+          "section": "requests",
+          "index": 1,
+          "item": {
+            "node_id": "device:Tomcat02",
+            "start": "02:30:00.000",
+            "end": "03:00:00.000",
+            "tools": [
+              "get_metrics"
+            ],
+            "metrics": [
+              "OSLinux-CPU_CPU_CPUCpuUtil"
+            ],
+            "focus": "获取 Tomcat02 的 CPU 使用率数值及变化趋势，判断是否存在高负载导致频繁 GC 的情况。",
+            "basis_ids": [
+              "e140"
+            ]
+          },
+          "error": "basis_ids must use e IDs from current evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

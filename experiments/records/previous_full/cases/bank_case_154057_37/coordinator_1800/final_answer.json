@@ -1,0 +1,28 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Tomcat03",
+        "reason": "high JVM CPU load",
+        "time": "23:55:00",
+        "evidence_ids": [
+          "e32",
+          "e33",
+          "e34",
+          "e55"
+        ],
+        "explanation": "Tomcat03 在 23:55:00 CPU 飙升至 100% (e32)，随后在 23:56:00 产生最大耗时 7402ms 的长调用 (e33, e34)。调用链证据 e55 确认 IG01 到 Tomcat03 的最大耗时为 7402ms，与长调用峰值一致，证实 Tomcat03 是瓶颈。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615564800000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1"
+}

@@ -1,0 +1,79 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "apache02",
+        "reason": "high memory usage",
+        "time": "11:11:00",
+        "time_evidence_id": "e186",
+        "support_ids": [
+          "e186",
+          "e150",
+          "e151",
+          "e152",
+          "e153",
+          "e154",
+          "e155",
+          "e156",
+          "e157",
+          "e158",
+          "e159",
+          "e160"
+        ],
+        "counter_ids": [],
+        "explanation": "e186显示apache02内存使用率在11:11达到95%峰值并持续高位，早于CPU高负载规则触发（11:21）。同期e150-160显示大量502错误集中在11:08-11:12，与内存耗尽导致无法处理新请求的时间窗口高度吻合。内存耗尽是更早期的根因，CPU升高可能是后果。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "apache02",
+        "reason": "high CPU usage",
+        "time": "11:21:00",
+        "time_evidence_id": "e143",
+        "support_ids": [
+          "e143"
+        ],
+        "counter_ids": [
+          "e186",
+          "e150"
+        ],
+        "explanation": "e143显示apache02 CPU在11:21触发高负载，晚于502错误开始时间（11:08）和内存峰值（11:11）。若内存耗尽是根因，CPU升高可能是内存压力下的副作用或恢复尝试，而非初始故障点。需确认CPU升高是否独立于内存问题，或是否掩盖了其他原因。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:apache02",
+        "start": "11:00:00",
+        "end": "11:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUUserTime",
+          "OSLinux-CPU_CPU_CPUSysTime",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "获取apache02在11:00-11:30期间CPU用户/系统时间和内存使用率的详细数值，确认11:11内存峰值后CPU变化趋势，以及502错误期间资源是否持续紧张。",
+        "basis_ids": [
+          "e186"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17499,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 32,
+        "available_facts": 186
+      }
+    }
+  ],
+  "labels_used": false
+}

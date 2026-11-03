@@ -1,0 +1,99 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "上一轮假设 Tomcat01 高 JVM CPU 负载。当前证据 e301 显示该节点 JVM CPU 和内存指标缺失，仅知 OS CPU 曾达 100%。无法确认是否为 JVM 线程导致，需补查具体 JVM 指标。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "MG01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "上一轮假设 MG01 磁盘 I/O 瓶颈。现有证据 e54 仅显示长调用，无磁盘指标。需确认磁盘使用率是否飙升导致下游延迟。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Redis01",
+        "reason": "high memory usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "上一轮假设 Redis01 高内存。证据 e157 显示命令处理速率上升，但无内存占比数据。需补查内存使用率以确认是否因内存压力导致服务变慢。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "14:00:00.000",
+        "end": "14:30:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Tomcat-MEMORY_7441-MEMORY_JVMMemoryUsedPercent",
+          "OSLinux-CPU_CPU-0_SingleCpuUtil"
+        ],
+        "focus": "获取 Tomcat01 在 14:00-14:30 期间的 JVM 内存使用百分比及 OS CPU 使用率具体数值，以区分是 JVM 内部负载还是系统整体 CPU 瓶颈。",
+        "basis_ids": [
+          "e301"
+        ]
+      },
+      {
+        "node_id": "device:MG01",
+        "start": "14:00:00.000",
+        "end": "14:30:00.000",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "DISK"
+        ],
+        "focus": "列出 MG01 节点所有包含 DISK 字段的指标名称，以便后续查询磁盘 I/O 使用情况，验证高磁盘读 I/O 假设。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Redis01",
+        "start": "14:00:00.000",
+        "end": "14:30:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认 Redis01 在 14:00-14:30 期间的内存使用占比是否显著升高，以验证高内存使用导致服务变慢的假设。",
+        "basis_ids": [
+          "e157"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17556,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 52,
+        "available_facts": 291
+      }
+    }
+  ],
+  "labels_used": false
+}

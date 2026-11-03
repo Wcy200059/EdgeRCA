@@ -1,0 +1,90 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat01",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "22:00:54",
+        "time_evidence_id": "e228",
+        "support_ids": [
+          "e228",
+          "e149",
+          "e176",
+          "e178"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat01 在 22:00:54 首次触发 Allocation Failure GC(e228)，随后 JVM 内存(e149)在 22:21 达峰值 1.85GB。时序符合内存泄漏/OOM 特征，且下游 docker 节点出现长调用(e176/e178)印证服务受阻。"
+      },
+      {
+        "id": "h2",
+        "assessment": "supported",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": "22:07:00",
+        "time_evidence_id": "e122",
+        "support_ids": [
+          "e122",
+          "e230"
+        ],
+        "counter_ids": [],
+        "explanation": "Redis01 连接数在 22:07 激增(e122)，暗示上游负载高峰。Mysql01 作为存储层，其磁盘读取 IOPS 指标缺失(e230)但结合上下文推测存在高读压力，需结合业务流确认是否为根因。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "22:00:00",
+        "end": "22:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认 Tomcat01 的 OS CPU 使用率是否异常飙升，以区分故障根因是 JVM 内存问题还是底层 CPU 资源耗尽。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "22:00:00",
+        "end": "22:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSDisk_IOPS_Read_IOPS",
+          "OSLinux-OSDisk_Space_Free_Perc"
+        ],
+        "focus": "获取 Mysql01 磁盘读取 IOPS 和剩余空间百分比，确认是否存在高 I/O 或空间不足导致的存储瓶颈。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "22:00:00",
+        "end": "22:30:00",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "分析 Tomcat01 的调用链，识别是否存在大量长调用或特定下游超时，以辅助判断故障传播路径。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17732,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 35,
+        "available_facts": 222
+      }
+    }
+  ],
+  "labels_used": false
+}

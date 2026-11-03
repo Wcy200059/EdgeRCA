@@ -1,0 +1,29 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Tomcat03",
+        "reason": "high CPU usage",
+        "time": "17:22:03",
+        "evidence_ids": [
+          "e28",
+          "e29",
+          "e30",
+          "e33",
+          "e76"
+        ],
+        "explanation": "apache 层在 17:22:03 触发 5xx 规则 (e28) 并伴随大量 502 错误 (e29-e33)。Tomcat03 在 17:22:03 时段 CPU 处于高位 (e76)，且早于其他 Tomcat 节点。推断 Tomcat03 高 CPU 导致下游超时，引发 apache 层错误。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1616664600000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1"
+}

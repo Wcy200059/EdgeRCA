@@ -1,0 +1,107 @@
+{
+  "case_id": "07184936a23ac69f",
+  "cutoff_ms": 1614963600000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 236
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 238
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 240
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 242
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Tomcat02",
+      "start": "00:30:00",
+      "end": "01:00:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "JVM-Operating System_7778_JVM_JVM_CPULoad"
+      ],
+      "focus": "获取 Tomcat02 在 00:30-01:00 期间 JVM CPU 具体数值，验证其是否为长调用的发起者或受害者。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Tomcat02",
+      "start": "00:30:00.000",
+      "end": "01:00:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "JVM-Operating System_7778_JVM_JVM_CPULoad",
+        "OSLinux-CPU_CPU_CPULoad"
+      ],
+      "focus": "获取 Tomcat02 在故障窗口内的 CPU 具体数值，验证其是否为长调用的发起者或受害者。",
+      "basis_ids": []
+    }
+  ],
+  "peak_gpu_gib": 21.165522575378418,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e216",
+      "e217",
+      "e218",
+      "e219",
+      "e220",
+      "e221",
+      "e222",
+      "e223",
+      "e224",
+      "e225",
+      "e226",
+      "e227",
+      "e228",
+      "e229",
+      "e230",
+      "e231",
+      "e232",
+      "e233",
+      "e234",
+      "e235",
+      "e236",
+      "e237",
+      "e238",
+      "e239",
+      "e240",
+      "e241",
+      "e242",
+      "e243",
+      "e244",
+      "e245",
+      "e246",
+      "e247"
+    ],
+    "notes": "保留所有涉及候选组件（IG, MG, Tomcat, docker）间实际父子调用匹配的观测。这些证据展示了调用链结构、P95/最大值延迟及时间区间不匹配情况，有助于区分资源故障、传播链和正常背景，且均在故障时段内。e205-e215为背景业务统计，与具体故障组件调用无关，故拒绝。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 43
+  }
+}

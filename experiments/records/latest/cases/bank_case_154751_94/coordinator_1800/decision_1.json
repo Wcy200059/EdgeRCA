@@ -1,0 +1,93 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat04",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "02:46:29.000",
+        "time_evidence_id": "e308",
+        "support_ids": [
+          "e308",
+          "e307"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 在 02:46:29 发生一次因 Allocation Failure 触发的 GC（e308），且明确缺失 JVM Heap 使用率指标（e307）。Allocation Failure 通常由堆内存耗尽引发，符合 OOM 特征。时间精确匹配。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "02:30:00",
+        "end": "03:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKRead",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKBps"
+        ],
+        "focus": "确认 Mysql01 在 02:30-03:00 期间是否存在持续的磁盘读取吞吐量激增或 I/O 等待，以排除或确认高磁盘 I/O 作为潜在根因。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "02:30:00",
+        "end": "03:00:00",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "检索 Tomcat04 在 02:46:29 GC 发生前后的日志，确认是否存在明确的 OOM 错误（如 OutOfMemoryError）或堆内存耗尽的堆栈信息，以确证 h1 假设。",
+        "basis_ids": [
+          "e308"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "h2: time 02:47:00.000 requires e285 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "not_supported",
+            "component": "apache01",
+            "reason": "high disk I/O read usage",
+            "time": "02:47:00.000",
+            "time_evidence_id": "e285",
+            "support_ids": [],
+            "counter_ids": [
+              "e286"
+            ],
+            "explanation": "e285 显示磁盘活动触发，但 e286（DiskRead）在 02:51 后规则清除，且 e285 的触发区间包含 02:52-02:54 等无明确读写增强的时段。仅凭 DiskBps 峰值不足以认定持续高读 I/O 为根因，缺乏 DiskRead 持续高位的直接证据支持。"
+          },
+          "error": "h2: time 02:47:00.000 requires e285 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        },
+        {
+          "section": "hypotheses",
+          "index": 2,
+          "item": {
+            "id": "h3",
+            "assessment": "not_supported",
+            "component": "Mysql01",
+            "reason": "high disk I/O read usage",
+            "time": null,
+            "time_evidence_id": null,
+            "support_ids": [],
+            "counter_ids": [],
+            "explanation": "Mysql01 暂无已加载的磁盘 I/O 观测事实。虽有目录显示有相关指标，但未查询到具体数值或触发状态。在缺乏任何观测支持的情况下，不能假设其存在高 I/O 故障。"
+          },
+          "error": "not_supported requires supporting or opposing evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

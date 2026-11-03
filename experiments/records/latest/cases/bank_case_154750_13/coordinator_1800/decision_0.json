@@ -1,0 +1,60 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e115 显示 Tomcat01 存在长调用（P95 826ms, max 6215ms），疑似 CPU 高负载导致。但缺乏 CPU 使用率具体数值证据，且无明确时间标记。需补查 CPU 指标以确认是否超过阈值及具体时间。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high memory usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e137 显示 Tomcat01 JVM 剩余内存从 18:49 到 18:59 呈上升趋势（2.38G -> 2.89G），这与内存耗尽故障相反。e137 不能支持高内存故障假设。需寻找其他内存下降证据或排除此干扰。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "18:30:00.000",
+        "end": "19:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPU-0_SingleCpuUtil",
+          "OSLinux-CPU_CPU_CPU-1_SingleCpuUtil",
+          "OSLinux-CPU_CPU_CPU-2_SingleCpuUtil",
+          "OSLinux-CPU_CPU_CPU-3_SingleCpuUtil"
+        ],
+        "focus": "核实 Tomcat01 在 18:30-19:00 期间各核心 CPU 使用率是否出现显著升高，以验证 h1 高 CPU 负载假设。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17684,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 60,
+        "available_facts": 236
+      }
+    }
+  ],
+  "labels_used": false
+}

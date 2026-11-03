@@ -1,0 +1,96 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 有 93 条事实但未加载具体指标。公开候选含磁盘 I/O 故障，需确认是否有高磁盘读。当前证据 e119 显示 Mysql01 无已到达记录，无法直接判断。需补查磁盘指标以区分是 CPU 还是磁盘问题。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 是核心组件，CPU 高耗也是常见根因。e119 缺失具体数据。需对比 CPU 和磁盘指标，确认哪个先触发或更显著。目前无法排除任一原因。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Tomcat03",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat03 报告 16 条事实，e234 显示线程繁忙有波动但未确认趋势。其他 Tomcat 节点事实少或无细节。需确认 Tomcat03 是否因 CPU 高导致下游（如 Mysql）延迟，或反之。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "09:00:00",
+        "end": "09:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKRead"
+        ],
+        "focus": "确认 Mysql01 在 09:00-09:30 期间是否存在 CPU 使用率飙升或磁盘读取量激增，以验证高 CPU 或高磁盘 I/O 作为根因的可能性。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat03",
+        "start": "09:00:00",
+        "end": "09:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "获取 Tomcat03 的 CPU 使用率具体数值和趋势，判断其是否存在持续的高负载，并观察是否与业务失败时间点对齐。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql02",
+        "start": "09:00:00",
+        "end": "09:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKRead"
+        ],
+        "focus": "检查 Mysql02 的 CPU 和磁盘读指标，确认故障是否仅影响 Mysql01 还是集群整体，排除单点故障或网络问题。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17634,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 39,
+        "available_facts": 272
+      }
+    }
+  ],
+  "labels_used": false
+}

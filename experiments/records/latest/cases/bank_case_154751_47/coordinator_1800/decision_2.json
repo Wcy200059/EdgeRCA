@@ -1,0 +1,85 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e15显示IG01在21:04有长调用，但缺乏其自身CPU高负载的直接观测（e1仅显示JVM内存数值，未确认异常）。需补查IG01的CPU使用率以确认是否早于Tomcat03出现资源瓶颈。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "MG01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e269显示Tomcat03调用MG01时出现5020ms长调用，但MG01自身CPU状态未知（e285仅显示稳定在26%左右，可能非根因或采样不足）。需确认MG01是否存在瞬时高负载导致处理延迟。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:IG01",
+        "start": "21:00:00",
+        "end": "21:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认IG01在21:00-21:30期间CPU使用率是否出现异常峰值，以验证其是否为早于Tomcat03的根因。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:MG01",
+        "start": "21:00:00",
+        "end": "21:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认MG01在21:00-21:30期间CPU使用率是否出现异常峰值，以验证其是否为导致Tomcat03长调用的根因。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "h1: time 21:18:00.000 requires e282 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 0,
+          "item": {
+            "id": "h1",
+            "assessment": "supported",
+            "component": "Tomcat03",
+            "reason": "high CPU usage",
+            "time": "21:18:00.000",
+            "time_evidence_id": "e282",
+            "support_ids": [
+              "e282",
+              "e281"
+            ],
+            "counter_ids": [],
+            "explanation": "证据e282显示Tomcat03在21:18-21:27期间CPU使用率显著升高（峰值26.12%，早段25.86%），且e281确认该节点有OS CPU指标。结合e251中该节点最大长调用5026ms（21:20-21:27），高CPU负载足以解释下游MG01的长延迟。此前h1关于JVM CPU的假设因缺乏JVM指标支持而调整为OS CPU高负载。"
+          },
+          "error": "h1: time 21:18:00.000 requires e282 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

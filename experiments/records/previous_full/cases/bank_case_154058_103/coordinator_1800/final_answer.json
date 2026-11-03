@@ -1,0 +1,37 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Mysql02",
+        "reason": "high disk I/O read usage",
+        "time": "00:02:00.000",
+        "evidence_ids": [
+          "e21",
+          "e65"
+        ],
+        "explanation": "e21 显示 00:02:00 磁盘 I/O 出现显著峰值 (0.0->6.0)，早于晚段活动，符合故障起始特征。e65 确认该时间点为极值时刻。虽有瞬时性，但作为独立故障点证据充分。"
+      },
+      {
+        "component": "Tomcat04",
+        "reason": "high memory usage",
+        "time": "00:02:00.000",
+        "evidence_ids": [
+          "e39",
+          "e66",
+          "e68"
+        ],
+        "explanation": "e39 和 e68 均显示 00:02:00 内存占用触发高水位 (98%)。e66 日志证实此时伴随 GC 停顿 (Allocation Failure)。内存高与 GC 停顿构成完整因果链，确认为根因。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1616603400000,
+  "model_judgment_verified": false,
+  "expected_failures": 2,
+  "answer_schema": "faults_v1"
+}

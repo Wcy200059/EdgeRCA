@@ -1,0 +1,123 @@
+{
+  "case_id": "5401424ce2011378",
+  "cutoff_ms": 1616587200000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 275
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 279
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 281
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 285
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Tomcat04",
+      "start": "19:30:00.000",
+      "end": "20:00:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "获取 Tomcat04 的 OS 级 CPU 使用率数值，确认高 CPU 使用是否与线程阻塞（e276）及 GC 活动（e249）直接相关。",
+      "basis_ids": [
+        "e276",
+        "e249"
+      ]
+    },
+    {
+      "node_id": "device:apache01",
+      "start": "19:30:00.000",
+      "end": "20:00:00.000",
+      "tools": [
+        "get_calls"
+      ],
+      "metrics": [],
+      "focus": "检查 apache01 在 19:48 高 CPU 时段是否有大量来自上游的慢调用或失败请求，以确认其是否为根因还是被影响节点。",
+      "basis_ids": [
+        "e251"
+      ]
+    },
+    {
+      "node_id": "device:Mysql01",
+      "start": "19:30:00.000",
+      "end": "20:00:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil",
+        "OSLinux-CPU_CPU_CPUCpuRead"
+      ],
+      "focus": "确认 Mysql01 是否存在 CPU 飙升或磁盘读取负载过高，以验证其是否为导致下游 Tomcat 高负载的根因。",
+      "basis_ids": [
+        "e283"
+      ]
+    },
+    {
+      "node_id": "device:apache01",
+      "start": "19:40:00.000",
+      "end": "20:00:00.000",
+      "tools": [
+        "get_calls"
+      ],
+      "metrics": [],
+      "focus": "检查 apache01 在 19:48 高 CPU 时段是否有大量来自上游的慢调用或失败请求，以确认是否为根因。",
+      "basis_ids": [
+        "e251",
+        "e252"
+      ]
+    }
+  ],
+  "peak_gpu_gib": 21.13276481628418,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e265",
+      "e266",
+      "e267",
+      "e268",
+      "e269",
+      "e270",
+      "e271",
+      "e272",
+      "e273",
+      "e274",
+      "e275"
+    ],
+    "notes": "filter invalid; retained all global evidence",
+    "attempts": [
+      {
+        "valid": false,
+        "error": "ids must be unique IDs from global evidence"
+      },
+      {
+        "valid": false,
+        "error": "ids must be unique IDs from global evidence"
+      }
+    ],
+    "fallback": true,
+    "available": 11
+  }
+}

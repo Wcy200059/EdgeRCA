@@ -1,0 +1,78 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": "15:50:00.000",
+        "time_evidence_id": "e276",
+        "support_ids": [
+          "e276"
+        ],
+        "counter_ids": [],
+        "explanation": "e276 显示 Mysql01 磁盘繁忙百分比在 15:50:00 达到 46.8%，显著高于其他时段（0%），且该时间点与慢调用窗口重合。虽无直接读吞吐指标，但高磁盘繁忙是 I/O 瓶颈的直接表现，支持磁盘 I/O 导致下游 Tomcat 延迟的假设。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "network latency",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e30 显示 IG01 存在长调用（P95>3s），但 note 提示时间区间可能不匹配。e22 同样显示父子连接但无明确网络丢包或 RTT 指标。需确认网络具体延迟数值及是否发生在故障窗口内，以区分是网络问题还是下游处理慢。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "15:30:00.000",
+        "end": "16:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadsSec"
+        ],
+        "focus": "获取 Mysql01 每秒读取量具体数值，确认 15:50 附近是否存在持续的高读 I/O 负载，以验证磁盘 I/O 瓶颈假设。",
+        "basis_ids": [
+          "e276"
+        ]
+      },
+      {
+        "node_id": "device:IG01",
+        "start": "15:30:00.000",
+        "end": "16:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-NETWORK_NETWORK-NET_RXBytes",
+          "OSLinux-NETWORK_NETWORK-NET_TXBytes"
+        ],
+        "focus": "检查 IG01 网卡收发字节数趋势，确认是否存在网络拥塞或丢包导致的延迟，以区分是网络故障还是下游处理慢。",
+        "basis_ids": [
+          "e30",
+          "e22"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17668,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 56,
+        "available_facts": 267
+      }
+    }
+  ],
+  "labels_used": false
+}

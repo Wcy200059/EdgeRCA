@@ -1,0 +1,25 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Mysql02",
+        "reason": "high disk I/O read usage",
+        "time": "15:36:00",
+        "evidence_ids": [
+          "e18"
+        ],
+        "explanation": "e18 显示 Mysql02 的 Binlog Cache Use 在 15:36:00 首次触发并持续至 15:58:00，期间数值极高（max 336006000），暗示严重的磁盘 IO 压力。虽然 OS 层 CPU 在 15:47 飙升 (e19)，但 Binlog Cache 异常是更早期的持续性根因信号，直接指向磁盘 IO 瓶颈。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1616659200000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1"
+}

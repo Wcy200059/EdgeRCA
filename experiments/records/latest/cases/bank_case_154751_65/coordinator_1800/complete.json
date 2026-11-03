@@ -1,0 +1,133 @@
+{
+  "case_id": "392354d886e2f9f6",
+  "cutoff_ms": 1615386600000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 215
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 218
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 220
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 222
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Tomcat01",
+      "start": "22:00:00",
+      "end": "22:30:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "确认 Tomcat01 的 OS CPU 使用率是否异常飙升，以区分故障根因是 JVM 内存问题还是底层 CPU 资源耗尽。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Mysql01",
+      "start": "22:00:00",
+      "end": "22:30:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSDisk_IOPS_Read_IOPS",
+        "OSLinux-OSDisk_Space_Free_Perc"
+      ],
+      "focus": "获取 Mysql01 磁盘读取 IOPS 和剩余空间百分比，确认是否存在高 I/O 或空间不足导致的存储瓶颈。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Tomcat01",
+      "start": "22:00:00",
+      "end": "22:30:00",
+      "tools": [
+        "get_calls"
+      ],
+      "metrics": [],
+      "focus": "分析 Tomcat01 的调用链，识别是否存在大量长调用或特定下游超时，以辅助判断故障传播路径。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Mysql01",
+      "start": "22:00:00",
+      "end": "22:30:00",
+      "tools": [
+        "list_metrics",
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSDisk_IOPS_Read_IOPS",
+        "OSLinux-OSDisk_Space_Free_Perc"
+      ],
+      "focus": "获取 Mysql01 磁盘读取 IOPS 和剩余空间百分比，确认是否存在高 I/O 或空间不足导致的存储瓶颈。",
+      "basis_ids": []
+    }
+  ],
+  "peak_gpu_gib": 20.987416744232178,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e195",
+      "e196",
+      "e197",
+      "e198",
+      "e199",
+      "e200",
+      "e201",
+      "e202",
+      "e203",
+      "e204",
+      "e205",
+      "e206",
+      "e207",
+      "e208",
+      "e209",
+      "e210",
+      "e211",
+      "e212",
+      "e213",
+      "e214",
+      "e215",
+      "e216",
+      "e217",
+      "e218",
+      "e219",
+      "e220",
+      "e221",
+      "e222",
+      "e223",
+      "e224",
+      "e225",
+      "e226"
+    ],
+    "notes": "保留所有涉及候选组件（IG, MG, Tomcat, docker）间实际父子调用匹配的观测。这些证据直接反映了服务调用链的延迟（P95/Max）及时间区间不匹配情况，是区分资源故障与传播链、定位根因发生时段的关键依据。e184-e194 仅含业务文本统计，无调用或资源关联，予以拒绝。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 43
+  }
+}

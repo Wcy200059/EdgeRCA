@@ -1,0 +1,90 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat01",
+        "reason": "high CPU usage",
+        "time": "07:21:31.559",
+        "time_evidence_id": "e53",
+        "support_ids": [
+          "e53",
+          "e19",
+          "e35"
+        ],
+        "counter_ids": [],
+        "explanation": "e53 显示 MG01 到 dockerA1 的长调用（P95=94ms, Max=1175ms）发生在 07:21:31-33，且 Tomcat01 接收来自 IG01/IG02 的长调用（e19, e35）。Tomcat01 内存稳定在 90%（e255），排除了内存不足导致的延迟。长调用集中在该时段，指向 Tomcat01 处理负载过高。"
+      },
+      {
+        "id": "h2",
+        "assessment": "not_supported",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [
+          "e259"
+        ],
+        "explanation": "e259 显示 Mysql01 的磁盘读取指标（OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKRead）在 07:01 至 07:30 期间始终为 0.0。虽然 CPU 等待有波动（e258），但磁盘读取无活动，不支持高磁盘 I/O 导致故障的假设。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Mysql02",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql02 在节点状态中 CPU 指标数值较高（cpu_only_metrics: 164），但缺乏具体的 CPU 使用率指标值（如 CPUUtil）来确认是否过载。当前证据不足以区分是 CPU 高负载还是其他原因，需补查具体 CPU 指标。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql02",
+        "start": "07:00:00",
+        "end": "07:30:00",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "CPU"
+        ],
+        "focus": "查找 Mysql02 可用的 CPU 使用率具体指标名称，以便后续查询数值确认是否高负载。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "basis_ids must use e IDs from current evidence",
+      "rejected_sections": [
+        {
+          "section": "requests",
+          "index": 1,
+          "item": {
+            "node_id": "device:Tomcat01",
+            "start": "07:00:00",
+            "end": "07:30:00",
+            "tools": [
+              "get_metrics"
+            ],
+            "metrics": [
+              "OSLinux-CPU_CPU-0_SingleCpuUtil"
+            ],
+            "focus": "查询 Tomcat01 在 07:00-07:30 期间的 CPU 使用率具体数值，验证其是否因处理长调用而过载。",
+            "basis_ids": [
+              "e256"
+            ]
+          },
+          "error": "basis_ids must use e IDs from current evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

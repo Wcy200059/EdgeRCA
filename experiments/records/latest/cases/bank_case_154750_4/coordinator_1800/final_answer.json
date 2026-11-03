@@ -1,0 +1,47 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Tomcat02",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "evidence_ids": [
+          "e22",
+          "e126",
+          "e140",
+          "e221"
+        ],
+        "explanation": "e22 显示 IG02 有 14781ms 长调用，e221 确认该长调用源自 IG02 指向 Tomcat02。e126 显示 Tomcat02 本地有 2206ms 长调用，时间一致。e140 确认 IG01 到 Tomcat02 连接存在高延迟。证据链指向 Tomcat02 处理请求时 CPU 高负载导致长调用，进而引发下游超时。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "time must match this fault's cited time_mark, otherwise null"
+    },
+    {
+      "valid": false,
+      "error": "time must match this fault's cited time_mark, otherwise null"
+    },
+    {
+      "valid": true,
+      "source": "retained_fields_with_unknown_time"
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1614963600000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1",
+  "field_repairs": [
+    {
+      "fault_index": 0,
+      "field": "time",
+      "original_value": "00:36:29.031",
+      "new_value": null,
+      "reason": "No matching currently displayed timestamp in this fault's cited evidence."
+    }
+  ],
+  "warnings": []
+}

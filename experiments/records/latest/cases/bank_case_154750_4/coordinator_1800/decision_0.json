@@ -1,0 +1,97 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "IG01 有 CPU 指标波动但未达 OOM 阈值；存在长调用 (e14)，但缺乏明确的父子因果链证明其是根因。需确认 IG01 是否因 CPU 高导致下游 Tomcat 超时，或仅为并发量大的表现。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat02 有 CPU 指标 (e127) 且收到来自 IG01/IG02 的长调用 (e221)。需核实 CPU 高是否由长调用引起，还是独立故障导致长调用。目前证据不足以区分因果方向。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "MG01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "MG01 有 CPU 波动 (e23)，但无磁盘 I/O 或网络指标证据。虽然它是下游瓶颈候选，但缺乏直接的高 I/O 观测支持。需补查磁盘指标以排除或证实。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:IG01",
+        "start": "00:30:00.000",
+        "end": "01:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-Operating System_7778_JVM_JVM_CPULoad",
+          "OSLinux-CPU_CPU_CPULoad"
+        ],
+        "focus": "确认 IG01 在 00:30-01:00 期间 JVM CPU 和 OS CPU 的具体数值及趋势，判断是否存在持续高负载。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat02",
+        "start": "00:30:00.000",
+        "end": "01:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-Operating System_7778_JVM_JVM_CPULoad",
+          "OSLinux-CPU_CPU_CPULoad"
+        ],
+        "focus": "确认 Tomcat02 的 JVM 和 OS CPU 负载情况，验证其是否为长调用的发起者或受害者。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:MG01",
+        "start": "00:30:00.000",
+        "end": "01:00:00.000",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "DISK",
+          "IO"
+        ],
+        "focus": "列出 MG01 可用的磁盘和 I/O 相关指标名称，以便后续查询是否存在高磁盘 I/O 导致的延迟。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17700,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 58,
+        "available_facts": 236
+      }
+    }
+  ],
+  "labels_used": false
+}

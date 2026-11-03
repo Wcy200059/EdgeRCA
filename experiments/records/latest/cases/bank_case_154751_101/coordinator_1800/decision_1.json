@@ -1,0 +1,66 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat04",
+        "reason": "high JVM CPU load",
+        "time": "19:37:00.000",
+        "time_evidence_id": "e246",
+        "support_ids": [
+          "e246",
+          "e249",
+          "e276"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 线程繁忙计数在 19:37 首次触发（e246），随后 GC 暂停频发（e249）。虽然本地 JVM CPU 指标缺失（e277），但线程阻塞与 GC 压力强相关，符合高负载特征。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "apache01",
+        "reason": "high CPU usage",
+        "time": "19:48:00.000",
+        "time_evidence_id": "e251",
+        "support_ids": [
+          "e251"
+        ],
+        "counter_ids": [],
+        "explanation": "apache01 在 19:48 出现 CPU 单核 100%（e251），但缺乏上游调用链证据证明其是根因，且该时间点晚于 Tomcat04 的初始异常，需确认因果方向。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat04",
+        "start": "19:30:00.000",
+        "end": "20:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Tomcat-MEMORY_7441-MEMORY_JVMMemoryUsedPercent",
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认 Tomcat04 的 JVM 堆内存使用率是否飙升，以及 CPU 使用率是否因线程阻塞而升高，以验证高负载假设。",
+        "basis_ids": [
+          "e277"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17549,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 43,
+        "available_facts": 279
+      }
+    }
+  ],
+  "labels_used": false
+}

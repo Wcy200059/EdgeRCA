@@ -1,0 +1,28 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "apache01",
+        "reason": "high disk I/O read usage",
+        "time": "11:55:00",
+        "evidence_ids": [
+          "e161",
+          "e162"
+        ],
+        "explanation": "e161 和 e162 显示 apache01 磁盘读写在 11:55:00 激增（从基线 5 升至 244+），早于 502 错误发生。磁盘 IO 饱和导致后端 Tomcat 连接池耗尽或响应超时，引发上游 502。证据链完整。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1616558400000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1",
+  "field_repairs": [],
+  "warnings": []
+}

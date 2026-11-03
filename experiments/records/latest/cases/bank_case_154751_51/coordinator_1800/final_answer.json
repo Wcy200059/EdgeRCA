@@ -1,0 +1,36 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "IG02",
+        "reason": "high memory usage",
+        "time": "22:10:44.161",
+        "evidence_ids": [
+          "e247"
+        ],
+        "explanation": "e247 显示 IG02 下游 dockerA2 在 22:10:44 出现 1447ms 长调用，结合候选 h1 中 IG02 自身 JVM 内存波动证据，推断内存压力导致业务阻塞。虽无直接 OOM 日志，但长调用与内存波动存在因果关联。"
+      },
+      {
+        "component": "Tomcat02",
+        "reason": "network latency",
+        "time": "22:07:00.076",
+        "evidence_ids": [
+          "e300"
+        ],
+        "explanation": "e300 显示 Tomcat02 在 22:07:00 出现 4723ms 极长调用，且 e331/e332 表明其接收来自 IG01/IG02 的调用。高延迟发生在 IG02 内存问题之前，可能为独立网络或处理瓶颈故障。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1614868200000,
+  "model_judgment_verified": false,
+  "expected_failures": 2,
+  "answer_schema": "faults_v1",
+  "field_repairs": [],
+  "warnings": []
+}

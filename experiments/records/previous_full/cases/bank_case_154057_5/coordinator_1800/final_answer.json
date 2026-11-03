@@ -1,0 +1,30 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": "14:37:10.000",
+        "evidence_ids": [
+          "e356",
+          "e361",
+          "e364",
+          "e367",
+          "e379",
+          "e383"
+        ],
+        "explanation": "Mysql01 在 14:37:10 出现多条 SELECT 查询，Query_time 显著升高（0.5s-0.7s），且 Lock_time 非零，表明存在磁盘 I/O 竞争或锁等待。结合节点有大量未加载日志，需确认磁盘指标。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615014000000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1"
+}

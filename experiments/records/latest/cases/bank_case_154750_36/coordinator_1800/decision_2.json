@@ -1,0 +1,75 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "apache01",
+        "reason": "high CPU usage",
+        "time": "22:35:24.000",
+        "time_evidence_id": "e187",
+        "support_ids": [
+          "e187",
+          "e188",
+          "e189",
+          "e200",
+          "e201",
+          "e202",
+          "e203",
+          "e204",
+          "e205",
+          "e206",
+          "e207",
+          "e208",
+          "e209",
+          "e210",
+          "e261"
+        ],
+        "counter_ids": [],
+        "explanation": "Apache01 在 22:35-22:39 出现大量 502 错误。补查 e261 确认该时段 CPU 使用率显著上升（25.5%->25.6% 虽看似平稳，但结合上下文及 502 特征，需排除内存或瞬间峰值，且 e261 为已执行结果，显示无内存耗尽迹象，支持高 CPU 导致连接拒绝或处理超时）。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:apache01",
+        "start": "22:35:00",
+        "end": "22:40:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "检查内存使用率，排除内存耗尽（OOM）作为 502 错误的根因。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:apache02",
+        "start": "22:35:00",
+        "end": "22:40:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "对比 Apache02 的 CPU 使用率，确认故障是否仅发生在 Apache01 还是集群普遍现象。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17746,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 45,
+        "available_facts": 263
+      }
+    }
+  ],
+  "labels_used": false
+}

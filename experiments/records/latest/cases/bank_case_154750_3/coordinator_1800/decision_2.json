@@ -1,0 +1,60 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Mysql02",
+        "reason": "high CPU usage",
+        "time": "19:16:00",
+        "time_evidence_id": "e105",
+        "support_ids": [
+          "e105",
+          "e248"
+        ],
+        "counter_ids": [],
+        "explanation": "Mysql02 在 19:16:00 触发 CPU 使用率异常（e105），早于其他观测。e248 确认了该时段 CPU 数值（12.47%）及早期峰值（19:08 27.67%），表明存在持续高负载趋势。这是当前最确凿的根因证据。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "IG01 存在长调用（e25），但尚未证实 JVM CPU 高负载。需补查 IG01 的 CPU 指标以确认是否早于 Mysql02 异常，排除网关自身故障导致下游压力的可能性。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:IG01",
+        "start": "19:10:00",
+        "end": "19:20:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认 IG01 在 19:16 前后 OS CPU 使用率是否异常升高，判断是否早于 Mysql02 出现资源瓶颈。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17555,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 48,
+        "available_facts": 238
+      }
+    }
+  ],
+  "labels_used": false
+}

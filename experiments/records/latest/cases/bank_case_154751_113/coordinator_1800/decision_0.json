@@ -1,0 +1,60 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "apache02",
+        "reason": "high CPU usage",
+        "time": "16:24:06.000",
+        "time_evidence_id": "e277",
+        "support_ids": [
+          "e277"
+        ],
+        "counter_ids": [],
+        "explanation": "e277 显示 apache02 在 16:24:06 发生 502 错误，且 public_task 明确为单故障。虽未直接测得 CPU 数值，但 502 通常由后端资源耗尽（如 CPU）导致。其他节点如 Tomcat/Redis 无明确 502 或 OOM 日志，且 docker 节点长调用多为结果而非根因。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat01 存在长调用（e202），但无法区分是自身 CPU 高还是下游（MG）高导致。需补查 Tomcat01 的 CPU 指标以确认是否触发高 CPU 规则。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "16:00:00.000",
+        "end": "16:30:00.000",
+        "tools": [
+          "list_metrics",
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认 Tomcat01 在该时段内 CPU 使用率是否显著升高，以验证其是否为长调用的根因。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17642,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 66,
+        "available_facts": 346
+      }
+    }
+  ],
+  "labels_used": false
+}

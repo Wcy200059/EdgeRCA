@@ -1,0 +1,64 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "apache02",
+        "reason": "high memory usage",
+        "time": "11:30:00.000",
+        "time_evidence_id": "e279",
+        "support_ids": [
+          "e279"
+        ],
+        "counter_ids": [],
+        "explanation": "e279 显示 device:apache02 内存占用自 11:30:00 起持续维持在 96% 且状态为 triggered，符合高内存故障特征。其他节点无明确内存满证据，且该节点最早出现异常，符合单故障题根因定位。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e194 显示 Mysql01 存在 InnoDB page_cleaner 耗时过长 (1000ms 预期耗时 9961ms) 的日志，暗示磁盘 I/O 瓶颈。但缺乏具体 I/O 指标数值支撑，且未确认是否导致业务失败，需补查磁盘 I/O 指标。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "11:30:00.000",
+        "end": "11:55:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKRead",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKWrite",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKRead",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKWrite"
+        ],
+        "focus": "确认 Mysql01 磁盘读取 I/O 是否存在显著升高或饱和，以验证 e194 中 page_cleaner 耗时过长是否由 I/O 瓶颈引起。",
+        "basis_ids": [
+          "e194"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17342,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 42,
+        "available_facts": 307
+      }
+    }
+  ],
+  "labels_used": false
+}

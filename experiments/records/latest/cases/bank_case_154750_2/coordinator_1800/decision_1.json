@@ -1,0 +1,82 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e237 显示 apache02 磁盘读流量异常，但 apache02 仅为边缘节点，无法直接证明 Tomcat02 自身磁盘故障。需补查 Tomcat02 磁盘指标以确认根因位置。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e296 仅显示 Tomcat02 CPU 负载在 06:17 达 1.17，缺乏故障窗口内持续高负载证据。需补查 CPU 趋势及与磁盘 I/O 的时间关联。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Tomcat04",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e213 显示 Tomcat04 CPU 空闲值极低，疑似高负载，但缺乏 JVM 具体负载数值。需补查 JVM CPU 指标确认是否达到故障阈值。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat02",
+        "start": "06:00:00.000",
+        "end": "06:30:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPULoad",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKRead"
+        ],
+        "focus": "确认 Tomcat02 在故障窗口内是否存在持续高 CPU 负载及磁盘读 I/O 激增，验证是否为根因。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "06:00:00.000",
+        "end": "06:30:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-Operating System_7778_JVM_JVM_CPULoad"
+        ],
+        "focus": "获取 Tomcat04 的 JVM CPU 负载具体数值，确认低空闲值是否由高 JVM 负载导致。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17597,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 51,
+        "available_facts": 278
+      }
+    }
+  ],
+  "labels_used": false
+}

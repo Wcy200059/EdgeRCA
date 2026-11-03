@@ -1,0 +1,1057 @@
+{
+  "node_id": "device:dockerB1",
+  "window_start_ms": 1615093200000,
+  "cutoff_ms": 1615095000000,
+  "scope": {
+    "start": "13:00:00.000",
+    "end": "13:30:00.000",
+    "raw_rows": {
+      "trace": 87146,
+      "metric": 33
+    },
+    "alarm_groups": 2,
+    "cpu_only_metric_count": 11
+  },
+  "facts": [
+    {
+      "id": "f1",
+      "kind": "alarm_history",
+      "signal": "completed_call_p95",
+      "state": "triggered",
+      "cycles": 1,
+      "timeline": [
+        [
+          "13:01:00",
+          "triggered"
+        ]
+      ],
+      "latest": [
+        {
+          "rule": "trace.latency",
+          "time": "13:30:00",
+          "p95_ms": 1015.0,
+          "max_ms": 7415.0,
+          "calls": 2711
+        }
+      ],
+      "first_trigger_values": {
+        "calls": 1949,
+        "p95_ms": 1018.0,
+        "max_ms": 5276.0
+      }
+    },
+    {
+      "id": "f2",
+      "kind": "alarm_history",
+      "signal": "maximum_call_duration",
+      "state": "triggered",
+      "cycles": 4,
+      "timeline": [
+        [
+          "13:01:00",
+          "triggered"
+        ],
+        [
+          "13:02:00",
+          "rules_cleared"
+        ],
+        [
+          "13:03:00",
+          "triggered"
+        ],
+        [
+          "13:15:00",
+          "rules_cleared"
+        ],
+        [
+          "13:16:00",
+          "triggered"
+        ],
+        [
+          "13:24:00",
+          "rules_cleared"
+        ],
+        [
+          "13:25:00",
+          "triggered"
+        ]
+      ],
+      "latest": [
+        {
+          "rule": "trace.extreme",
+          "time": "13:30:00",
+          "p95_ms": 1015.0,
+          "max_ms": 7415.0,
+          "calls": 2711
+        }
+      ],
+      "first_trigger_values": {
+        "calls": 1949,
+        "p95_ms": 1018.0,
+        "max_ms": 5276.0,
+        "threshold_ms": 5000
+      }
+    },
+    {
+      "id": "f3",
+      "kind": "log",
+      "status": "no_arrived_records_in_scope"
+    },
+    {
+      "id": "f4",
+      "kind": "latency_over_analysis_window",
+      "unit": "ms",
+      "reference": {
+        "count": 0,
+        "p50": null,
+        "p95": null,
+        "max": null
+      },
+      "current": {
+        "count": 87146,
+        "p50": 1.0,
+        "p95": 1016.0,
+        "max": 10600.0
+      },
+      "slow_calls": [
+        {
+          "start": "13:24:23.531",
+          "end": "13:24:34.131",
+          "duration_ms": 10600.0
+        }
+      ],
+      "invalid_count": 0,
+      "modality": "trace"
+    },
+    {
+      "id": "f5",
+      "kind": "observed_connection",
+      "from": "device:MG01",
+      "to": "device:dockerB1",
+      "child_latency_ms": {
+        "calls": 4922,
+        "p95": 3164.0,
+        "max": 10600.0
+      },
+      "interval_mismatch_count": 1,
+      "note": "父子ID匹配；时间区间可能不包含，不能据此直接确定因果或网络耗时。"
+    },
+    {
+      "id": "f6",
+      "kind": "observed_connection",
+      "from": "device:MG02",
+      "to": "device:dockerB1",
+      "child_latency_ms": {
+        "calls": 4939,
+        "p95": 3163.0,
+        "max": 9579.0
+      },
+      "interval_mismatch_count": 0,
+      "note": "父子ID匹配；时间区间可能不包含，不能据此直接确定因果或网络耗时。"
+    },
+    {
+      "id": "f7",
+      "kind": "observed_connection",
+      "from": "device:dockerB1",
+      "to": "device:MG01",
+      "child_latency_ms": {
+        "calls": 4610,
+        "p95": 130.0,
+        "max": 2775.0
+      },
+      "interval_mismatch_count": 98,
+      "note": "父子ID匹配；时间区间可能不包含，不能据此直接确定因果或网络耗时。"
+    },
+    {
+      "id": "f8",
+      "kind": "observed_connection",
+      "from": "device:dockerB1",
+      "to": "device:MG02",
+      "child_latency_ms": {
+        "calls": 4851,
+        "p95": 77.0,
+        "max": 2337.0
+      },
+      "interval_mismatch_count": 84,
+      "note": "父子ID匹配；时间区间可能不包含，不能据此直接确定因果或网络耗时。"
+    }
+  ],
+  "catalog": {
+    "f1": {
+      "alarm_view": {
+        "observation_id": "o-1b84fa9c85613b32",
+        "version": 30,
+        "node_id": "device:dockerB1",
+        "modality": "trace",
+        "signal": "completed_call_p95",
+        "cutoff_ms": 1615095000000,
+        "first_seen": "2021-03-07T13:01:00.000+08:00",
+        "last_trigger": "2021-03-07T13:30:00.000+08:00",
+        "last_change": "2021-03-07T13:01:00.000+08:00",
+        "status": "triggered",
+        "active_rules": [
+          "trace.latency"
+        ],
+        "rule_episodes": 1,
+        "rule_hits": 30,
+        "signal_activation_cycles": 1,
+        "state_changes": [
+          {
+            "time": "2021-03-07T13:01:00.000+08:00",
+            "status": "triggered"
+          }
+        ],
+        "actions": {
+          "open": 1
+        },
+        "latest_values": [
+          {
+            "rule": "trace.latency",
+            "time": "2021-03-07T13:30:00.000+08:00",
+            "p95_ms": 1015.0,
+            "max_ms": 7415.0,
+            "calls": 2711
+          }
+        ],
+        "transition_count": 1,
+        "source_reference_count": 2,
+        "error_variants": [],
+        "model_status": "pending",
+        "model_note": null,
+        "detail_ref": "o-1b84fa9c85613b32",
+        "note": "规则段与触发次数不是故障数；规则解除不等于故障恢复。"
+      },
+      "alarm_record": {
+        "observation_id": "o-1b84fa9c85613b32",
+        "node_id": "device:dockerB1",
+        "modality": "trace",
+        "signal": "completed_call_p95",
+        "version": 30,
+        "episodes": {
+          "b5f4d5f6e5197d0455fb": {
+            "alert_id": "b5f4d5f6e5197d0455fb",
+            "node_id": "device:dockerB1",
+            "rule": "trace.latency",
+            "signal": "completed_call_p95",
+            "status": "open",
+            "first_seen_ms": 1615093260000,
+            "last_seen_ms": 1615095000000,
+            "hits": 30,
+            "evidence_ids": [
+              "Bank:2021_03_07/trace/trace_span.csv:000009903134"
+            ],
+            "latest": {
+              "window_start_ms": 1615094940000,
+              "window_end_ms": 1615095000000,
+              "partial_window": false,
+              "calls": 2711,
+              "p95_ms": 1015.0,
+              "max_ms": 7415.0,
+              "baseline_p95_median_ms": null,
+              "baseline_windows": 0,
+              "fixed_threshold_ms": 1000,
+              "rule_basis": "fixed_threshold"
+            },
+            "peak_score": 1020.0,
+            "latest_evidence_ids": [
+              "Bank:2021_03_07/trace/trace_span.csv:000010683400"
+            ]
+          }
+        },
+        "transition_ids": [
+          "0b4db6601c3f465736253738c9a96abb9f46a58ec14d4b8e39bd273e43a5fcf5"
+        ],
+        "cutoff_ms": 1615095000000
+      },
+      "transitions": [
+        {
+          "action": "open",
+          "at_ms": 1615093260000,
+          "alert_id": "b5f4d5f6e5197d0455fb",
+          "node_id": "device:dockerB1",
+          "rule": "trace.latency",
+          "signal": "completed_call_p95",
+          "details": {
+            "window_start_ms": 1615093200000,
+            "window_end_ms": 1615093260000,
+            "partial_window": false,
+            "calls": 1949,
+            "p95_ms": 1018.0,
+            "max_ms": 5276.0,
+            "baseline_p95_median_ms": null,
+            "baseline_windows": 0,
+            "fixed_threshold_ms": 1000,
+            "rule_basis": "fixed_threshold"
+          },
+          "evidence_ids": [
+            "Bank:2021_03_07/trace/trace_span.csv:000009903134"
+          ]
+        }
+      ],
+      "metric": null
+    },
+    "f2": {
+      "alarm_view": {
+        "observation_id": "o-72cd65f32236ddce",
+        "version": 30,
+        "node_id": "device:dockerB1",
+        "modality": "trace",
+        "signal": "maximum_call_duration",
+        "cutoff_ms": 1615095000000,
+        "first_seen": "2021-03-07T13:01:00.000+08:00",
+        "last_trigger": "2021-03-07T13:30:00.000+08:00",
+        "last_change": "2021-03-07T13:25:00.000+08:00",
+        "status": "triggered",
+        "active_rules": [
+          "trace.extreme"
+        ],
+        "rule_episodes": 4,
+        "rule_hits": 27,
+        "signal_activation_cycles": 4,
+        "state_changes": [
+          {
+            "time": "2021-03-07T13:01:00.000+08:00",
+            "status": "triggered"
+          },
+          {
+            "time": "2021-03-07T13:02:00.000+08:00",
+            "status": "rules_cleared"
+          },
+          {
+            "time": "2021-03-07T13:03:00.000+08:00",
+            "status": "triggered"
+          },
+          {
+            "time": "2021-03-07T13:15:00.000+08:00",
+            "status": "rules_cleared"
+          },
+          {
+            "time": "2021-03-07T13:16:00.000+08:00",
+            "status": "triggered"
+          },
+          {
+            "time": "2021-03-07T13:24:00.000+08:00",
+            "status": "rules_cleared"
+          },
+          {
+            "time": "2021-03-07T13:25:00.000+08:00",
+            "status": "triggered"
+          }
+        ],
+        "actions": {
+          "open": 4,
+          "cleared": 3
+        },
+        "latest_values": [
+          {
+            "rule": "trace.extreme",
+            "time": "2021-03-07T13:30:00.000+08:00",
+            "p95_ms": 1015.0,
+            "max_ms": 7415.0,
+            "calls": 2711
+          }
+        ],
+        "transition_count": 7,
+        "source_reference_count": 10,
+        "error_variants": [],
+        "model_status": "pending",
+        "model_note": null,
+        "detail_ref": "o-72cd65f32236ddce",
+        "note": "规则段与触发次数不是故障数；规则解除不等于故障恢复。"
+      },
+      "alarm_record": {
+        "observation_id": "o-72cd65f32236ddce",
+        "node_id": "device:dockerB1",
+        "modality": "trace",
+        "signal": "maximum_call_duration",
+        "version": 30,
+        "episodes": {
+          "609282582164b1b5a8d3": {
+            "alert_id": "609282582164b1b5a8d3",
+            "node_id": "device:dockerB1",
+            "rule": "trace.extreme",
+            "signal": "maximum_call_duration",
+            "status": "cleared",
+            "first_seen_ms": 1615093260000,
+            "last_seen_ms": 1615093260000,
+            "hits": 1,
+            "evidence_ids": [
+              "Bank:2021_03_07/trace/trace_span.csv:000009903134"
+            ],
+            "latest": {
+              "window_start_ms": 1615093200000,
+              "window_end_ms": 1615093260000,
+              "partial_window": false,
+              "calls": 1949,
+              "p95_ms": 1018.0,
+              "max_ms": 5276.0,
+              "baseline_p95_median_ms": null,
+              "baseline_windows": 0,
+              "fixed_threshold_ms": 1000,
+              "rule_basis": "fixed_threshold",
+              "threshold_ms": 5000
+            },
+            "peak_score": 5276.0,
+            "cleared_at_ms": 1615093320000
+          },
+          "e1159fd2bc1dfd39d7b4": {
+            "alert_id": "e1159fd2bc1dfd39d7b4",
+            "node_id": "device:dockerB1",
+            "rule": "trace.extreme",
+            "signal": "maximum_call_duration",
+            "status": "cleared",
+            "first_seen_ms": 1615093380000,
+            "last_seen_ms": 1615094040000,
+            "hits": 12,
+            "evidence_ids": [
+              "Bank:2021_03_07/trace/trace_span.csv:000009970358"
+            ],
+            "latest": {
+              "window_start_ms": 1615093980000,
+              "window_end_ms": 1615094040000,
+              "partial_window": false,
+              "calls": 2634,
+              "p95_ms": 1015.0,
+              "max_ms": 5251.0,
+              "baseline_p95_median_ms": null,
+              "baseline_windows": 0,
+              "fixed_threshold_ms": 1000,
+              "rule_basis": "fixed_threshold",
+              "threshold_ms": 5000
+            },
+            "peak_score": 7305.0,
+            "latest_evidence_ids": [
+              "Bank:2021_03_07/trace/trace_span.csv:000010256111"
+            ],
+            "cleared_at_ms": 1615094100000
+          },
+          "c406e6b769caa142e681": {
+            "alert_id": "c406e6b769caa142e681",
+            "node_id": "device:dockerB1",
+            "rule": "trace.extreme",
+            "signal": "maximum_call_duration",
+            "status": "cleared",
+            "first_seen_ms": 1615094160000,
+            "last_seen_ms": 1615094580000,
+            "hits": 8,
+            "evidence_ids": [
+              "Bank:2021_03_07/trace/trace_span.csv:000010307343"
+            ],
+            "latest": {
+              "window_start_ms": 1615094520000,
+              "window_end_ms": 1615094580000,
+              "partial_window": false,
+              "calls": 3031,
+              "p95_ms": 1015.0,
+              "max_ms": 8711.0,
+              "baseline_p95_median_ms": null,
+              "baseline_windows": 0,
+              "fixed_threshold_ms": 1000,
+              "rule_basis": "fixed_threshold",
+              "threshold_ms": 5000
+            },
+            "peak_score": 9579.0,
+            "latest_evidence_ids": [
+              "Bank:2021_03_07/trace/trace_span.csv:000010491538"
+            ],
+            "cleared_at_ms": 1615094640000
+          },
+          "70843f17b2a1b76172c0": {
+            "alert_id": "70843f17b2a1b76172c0",
+            "node_id": "device:dockerB1",
+            "rule": "trace.extreme",
+            "signal": "maximum_call_duration",
+            "status": "open",
+            "first_seen_ms": 1615094700000,
+            "last_seen_ms": 1615095000000,
+            "hits": 6,
+            "evidence_ids": [
+              "Bank:2021_03_07/trace/trace_span.csv:000010545701"
+            ],
+            "latest": {
+              "window_start_ms": 1615094940000,
+              "window_end_ms": 1615095000000,
+              "partial_window": false,
+              "calls": 2711,
+              "p95_ms": 1015.0,
+              "max_ms": 7415.0,
+              "baseline_p95_median_ms": null,
+              "baseline_windows": 0,
+              "fixed_threshold_ms": 1000,
+              "rule_basis": "fixed_threshold",
+              "threshold_ms": 5000
+            },
+            "peak_score": 10600.0,
+            "latest_evidence_ids": [
+              "Bank:2021_03_07/trace/trace_span.csv:000010683400"
+            ]
+          }
+        },
+        "transition_ids": [
+          "b6f4cddde3635def1a9d9f2a8153ec3291d00aa77c36844ad66f3bd739f63768",
+          "b9a9dabe20b05590401adb7204dbe476a13e1934c71a0965cb71d6c1f19655f7",
+          "2ebc79f61986a537f7afb44801201c04bfba9437a82fbe4c5db022d327f9c1a1",
+          "d2f7a076f258259fcf367cd111ea8e54a000b54bfdb3ed405ab30360bdcd33f5",
+          "f542738d33e9cee51a47e751dec9a8688b6c4d8920fcb3f8a243eadaa7ff78a6",
+          "f07dd5ef25694a81818b96451bdf0202c8b88b9c49fe5128842a12dae691155b",
+          "d57b8a92c3a79fe32902d876dbc7b1b8d1c3f6e794f5b23b04246eeec5d5559f"
+        ],
+        "cutoff_ms": 1615095000000
+      },
+      "transitions": [
+        {
+          "action": "open",
+          "at_ms": 1615093260000,
+          "alert_id": "609282582164b1b5a8d3",
+          "node_id": "device:dockerB1",
+          "rule": "trace.extreme",
+          "signal": "maximum_call_duration",
+          "details": {
+            "window_start_ms": 1615093200000,
+            "window_end_ms": 1615093260000,
+            "partial_window": false,
+            "calls": 1949,
+            "p95_ms": 1018.0,
+            "max_ms": 5276.0,
+            "baseline_p95_median_ms": null,
+            "baseline_windows": 0,
+            "fixed_threshold_ms": 1000,
+            "rule_basis": "fixed_threshold",
+            "threshold_ms": 5000
+          },
+          "evidence_ids": [
+            "Bank:2021_03_07/trace/trace_span.csv:000009903134"
+          ]
+        },
+        {
+          "action": "cleared",
+          "at_ms": 1615093320000,
+          "alert_id": "609282582164b1b5a8d3",
+          "node_id": "device:dockerB1",
+          "rule": "trace.extreme",
+          "signal": "maximum_call_duration",
+          "details": {
+            "window_start_ms": 1615093260000,
+            "window_end_ms": 1615093320000,
+            "partial_window": false,
+            "calls": 2018,
+            "p95_ms": 1016.0,
+            "max_ms": 3195.0,
+            "baseline_p95_median_ms": null,
+            "baseline_windows": 0,
+            "fixed_threshold_ms": 1000,
+            "rule_basis": "fixed_threshold",
+            "threshold_ms": 5000
+          },
+          "evidence_ids": [
+            "Bank:2021_03_07/trace/trace_span.csv:000009923998"
+          ]
+        },
+        {
+          "action": "open",
+          "at_ms": 1615093380000,
+          "alert_id": "e1159fd2bc1dfd39d7b4",
+          "node_id": "device:dockerB1",
+          "rule": "trace.extreme",
+          "signal": "maximum_call_duration",
+          "details": {
+            "window_start_ms": 1615093320000,
+            "window_end_ms": 1615093380000,
+            "partial_window": false,
+            "calls": 2972,
+            "p95_ms": 1014.0,
+            "max_ms": 7213.0,
+            "baseline_p95_median_ms": null,
+            "baseline_windows": 0,
+            "fixed_threshold_ms": 1000,
+            "rule_basis": "fixed_threshold",
+            "threshold_ms": 5000
+          },
+          "evidence_ids": [
+            "Bank:2021_03_07/trace/trace_span.csv:000009970358"
+          ]
+        },
+        {
+          "action": "cleared",
+          "at_ms": 1615094100000,
+          "alert_id": "e1159fd2bc1dfd39d7b4",
+          "node_id": "device:dockerB1",
+          "rule": "trace.extreme",
+          "signal": "maximum_call_duration",
+          "details": {
+            "window_start_ms": 1615094040000,
+            "window_end_ms": 1615094100000,
+            "partial_window": false,
+            "calls": 2925,
+            "p95_ms": 1016.0,
+            "max_ms": 4282.0,
+            "baseline_p95_median_ms": null,
+            "baseline_windows": 0,
+            "fixed_threshold_ms": 1000,
+            "rule_basis": "fixed_threshold",
+            "threshold_ms": 5000
+          },
+          "evidence_ids": [
+            "Bank:2021_03_07/trace/trace_span.csv:000010277554"
+          ]
+        },
+        {
+          "action": "open",
+          "at_ms": 1615094160000,
+          "alert_id": "c406e6b769caa142e681",
+          "node_id": "device:dockerB1",
+          "rule": "trace.extreme",
+          "signal": "maximum_call_duration",
+          "details": {
+            "window_start_ms": 1615094100000,
+            "window_end_ms": 1615094160000,
+            "partial_window": false,
+            "calls": 4161,
+            "p95_ms": 1015.0,
+            "max_ms": 7842.0,
+            "baseline_p95_median_ms": null,
+            "baseline_windows": 0,
+            "fixed_threshold_ms": 1000,
+            "rule_basis": "fixed_threshold",
+            "threshold_ms": 5000
+          },
+          "evidence_ids": [
+            "Bank:2021_03_07/trace/trace_span.csv:000010307343"
+          ]
+        },
+        {
+          "action": "cleared",
+          "at_ms": 1615094640000,
+          "alert_id": "c406e6b769caa142e681",
+          "node_id": "device:dockerB1",
+          "rule": "trace.extreme",
+          "signal": "maximum_call_duration",
+          "details": {
+            "window_start_ms": 1615094580000,
+            "window_end_ms": 1615094640000,
+            "partial_window": false,
+            "calls": 1991,
+            "p95_ms": 1012.0,
+            "max_ms": 3474.0,
+            "baseline_p95_median_ms": null,
+            "baseline_windows": 0,
+            "fixed_threshold_ms": 1000,
+            "rule_basis": "fixed_threshold",
+            "threshold_ms": 5000
+          },
+          "evidence_ids": [
+            "Bank:2021_03_07/trace/trace_span.csv:000010528277"
+          ]
+        },
+        {
+          "action": "open",
+          "at_ms": 1615094700000,
+          "alert_id": "70843f17b2a1b76172c0",
+          "node_id": "device:dockerB1",
+          "rule": "trace.extreme",
+          "signal": "maximum_call_duration",
+          "details": {
+            "window_start_ms": 1615094640000,
+            "window_end_ms": 1615094700000,
+            "partial_window": false,
+            "calls": 2338,
+            "p95_ms": 1016.0,
+            "max_ms": 10600.0,
+            "baseline_p95_median_ms": null,
+            "baseline_windows": 0,
+            "fixed_threshold_ms": 1000,
+            "rule_basis": "fixed_threshold",
+            "threshold_ms": 5000
+          },
+          "evidence_ids": [
+            "Bank:2021_03_07/trace/trace_span.csv:000010545701"
+          ]
+        }
+      ],
+      "metric": null
+    },
+    "f3": {
+      "observation_id": "132c61d6c1bcaa663d86",
+      "modality": "log",
+      "status": "no_arrived_records_in_scope",
+      "evidence_ids": [],
+      "note": "所查范围无已到达记录，不代表正常或永久没有该模态。"
+    },
+    "f4": {
+      "observation_id": "d813497fa01e343be10c",
+      "evidence_ids": [
+        "Bank:2021_03_07/trace/trace_span.csv:000009894068",
+        "Bank:2021_03_07/trace/trace_span.csv:000010690377",
+        "Bank:2021_03_07/trace/trace_span.csv:000010545701"
+      ],
+      "cpu_fact": {
+        "observation_id": "d813497fa01e343be10c",
+        "modality": "trace",
+        "status": "available",
+        "unit": "ms",
+        "window_basis": "completion_availability",
+        "quantile_method": "nearest_rank",
+        "valid_count": 87146,
+        "invalid_count": 0,
+        "reference": {
+          "count": 0,
+          "mean": null,
+          "median": null,
+          "p50": null,
+          "p95": null,
+          "min": null,
+          "max": null,
+          "completed_calls_per_second": null,
+          "p95_low_sample": true
+        },
+        "current": {
+          "count": 87146,
+          "mean": 119.38101576664448,
+          "median": 1.0,
+          "p50": 1.0,
+          "p95": 1016.0,
+          "min": 0.0,
+          "max": 10600.0,
+          "completed_calls_per_second": 48.41444444444444,
+          "p95_low_sample": false
+        },
+        "p95_change": {
+          "direction": "unknown",
+          "delta": null,
+          "ratio": null
+        },
+        "slow_examples": [
+          {
+            "event_id": "Bank:2021_03_07/trace/trace_span.csv:000010545701",
+            "start_ms": 1615094663531,
+            "completed_ms": 1615094674131,
+            "duration_ms": 10600.0,
+            "trace_id": "gw0120210307132422058173",
+            "span_id": "21030700016393387208"
+          }
+        ],
+        "evidence_ids": [
+          "Bank:2021_03_07/trace/trace_span.csv:000009894068",
+          "Bank:2021_03_07/trace/trace_span.csv:000010690377",
+          "Bank:2021_03_07/trace/trace_span.csv:000010545701"
+        ],
+        "note": "只统计已完成调用；调用减少也可能是尚未完成。耗时不是网络延迟，不等于失败。"
+      }
+    },
+    "f5": {
+      "link_id": "9592d352fd8ebb4c6074",
+      "source_node": "device:MG01",
+      "target_node": "device:dockerB1",
+      "matched_calls": 4922,
+      "matched_calls_scope": "all_arrived_prefix",
+      "first_child_start_ms": 1615093200302,
+      "last_child_start_ms": 1615094999495,
+      "child_span_latency_ms": {
+        "reference": {
+          "count": 0,
+          "mean": null,
+          "median": null,
+          "p50": null,
+          "p95": null,
+          "min": null,
+          "max": null,
+          "calls": 0
+        },
+        "current": {
+          "count": 4922,
+          "mean": 585.2742787484763,
+          "median": 9.0,
+          "p50": 9.0,
+          "p95": 3164.0,
+          "min": 3.0,
+          "max": 10600.0,
+          "calls": 4922
+        }
+      },
+      "interval_mismatch_count": 1,
+      "examples": [
+        {
+          "child_event_id": "Bank:2021_03_07/trace/trace_span.csv:000009894067",
+          "parent_event_id": "Bank:2021_03_07/trace/trace_span.csv:000009894300",
+          "trace_id": "gw0120210307130000043660",
+          "child_start_ms": 1615093200302,
+          "parent_start_ms": 1615093200298,
+          "child_available_ms": 1615093200310,
+          "parent_available_ms": 1615093200311,
+          "known_at_ms": 1615093200311,
+          "child_duration_ms": 8.0,
+          "parent_duration_ms": 13.0,
+          "child_within_parent_interval": true
+        },
+        {
+          "child_event_id": "Bank:2021_03_07/trace/trace_span.csv:000010689720",
+          "parent_event_id": "Bank:2021_03_07/trace/trace_span.csv:000010689567",
+          "trace_id": "gw0120210307132959062093",
+          "child_start_ms": 1615094999495,
+          "parent_start_ms": 1615094999493,
+          "child_available_ms": 1615094999504,
+          "parent_available_ms": 1615094999507,
+          "known_at_ms": 1615094999507,
+          "child_duration_ms": 9.0,
+          "parent_duration_ms": 14.0,
+          "child_within_parent_interval": true
+        },
+        {
+          "child_event_id": "Bank:2021_03_07/trace/trace_span.csv:000010545701",
+          "parent_event_id": "Bank:2021_03_07/trace/trace_span.csv:000010545873",
+          "trace_id": "gw0120210307132422058173",
+          "child_start_ms": 1615094663531,
+          "parent_start_ms": 1615094663528,
+          "child_available_ms": 1615094674131,
+          "parent_available_ms": 1615094674133,
+          "known_at_ms": 1615094674133,
+          "child_duration_ms": 10600.0,
+          "parent_duration_ms": 10605.0,
+          "child_within_parent_interval": true
+        }
+      ]
+    },
+    "f6": {
+      "link_id": "6266cf318a8606259c3f",
+      "source_node": "device:MG02",
+      "target_node": "device:dockerB1",
+      "matched_calls": 4939,
+      "matched_calls_scope": "all_arrived_prefix",
+      "first_child_start_ms": 1615093200662,
+      "last_child_start_ms": 1615094999491,
+      "child_span_latency_ms": {
+        "reference": {
+          "count": 0,
+          "mean": null,
+          "median": null,
+          "p50": null,
+          "p95": null,
+          "min": null,
+          "max": null,
+          "calls": 0
+        },
+        "current": {
+          "count": 4939,
+          "mean": 579.410811905244,
+          "median": 9.0,
+          "p50": 9.0,
+          "p95": 3163.0,
+          "min": 3.0,
+          "max": 9579.0,
+          "calls": 4939
+        }
+      },
+      "interval_mismatch_count": 0,
+      "examples": [
+        {
+          "child_event_id": "Bank:2021_03_07/trace/trace_span.csv:000009894356",
+          "parent_event_id": "Bank:2021_03_07/trace/trace_span.csv:000009894359",
+          "trace_id": "gw0120210307130000041775",
+          "child_start_ms": 1615093200662,
+          "parent_start_ms": 1615093200659,
+          "child_available_ms": 1615093200667,
+          "parent_available_ms": 1615093200669,
+          "known_at_ms": 1615093200669,
+          "child_duration_ms": 5.0,
+          "parent_duration_ms": 10.0,
+          "child_within_parent_interval": true
+        },
+        {
+          "child_event_id": "Bank:2021_03_07/trace/trace_span.csv:000010689586",
+          "parent_event_id": "Bank:2021_03_07/trace/trace_span.csv:000010689757",
+          "trace_id": "gw0120210307132958063882",
+          "child_start_ms": 1615094998496,
+          "parent_start_ms": 1615094998493,
+          "child_available_ms": 1615094999543,
+          "parent_available_ms": 1615094999545,
+          "known_at_ms": 1615094999545,
+          "child_duration_ms": 1047.0,
+          "parent_duration_ms": 1052.0,
+          "child_within_parent_interval": true
+        },
+        {
+          "child_event_id": "Bank:2021_03_07/trace/trace_span.csv:000010451959",
+          "parent_event_id": "Bank:2021_03_07/trace/trace_span.csv:000010452185",
+          "trace_id": "gw0120210307132034055720",
+          "child_start_ms": 1615094434953,
+          "parent_start_ms": 1615094434948,
+          "child_available_ms": 1615094444532,
+          "parent_available_ms": 1615094444534,
+          "known_at_ms": 1615094444534,
+          "child_duration_ms": 9579.0,
+          "parent_duration_ms": 9586.0,
+          "child_within_parent_interval": true
+        }
+      ]
+    },
+    "f7": {
+      "link_id": "caac6525474351fa8ee8",
+      "source_node": "device:dockerB1",
+      "target_node": "device:MG01",
+      "matched_calls": 4610,
+      "matched_calls_scope": "all_arrived_prefix",
+      "first_child_start_ms": 1615093201669,
+      "last_child_start_ms": 1615094999589,
+      "child_span_latency_ms": {
+        "reference": {
+          "count": 0,
+          "mean": null,
+          "median": null,
+          "p50": null,
+          "p95": null,
+          "min": null,
+          "max": null,
+          "calls": 0
+        },
+        "current": {
+          "count": 4610,
+          "mean": 54.138394793926246,
+          "median": 6.0,
+          "p50": 6.0,
+          "p95": 130.0,
+          "min": 3.0,
+          "max": 2775.0,
+          "calls": 4610
+        }
+      },
+      "interval_mismatch_count": 98,
+      "examples": [
+        {
+          "child_event_id": "Bank:2021_03_07/trace/trace_span.csv:000009894732",
+          "parent_event_id": "Bank:2021_03_07/trace/trace_span.csv:000009895460",
+          "trace_id": "gw0120210307130001041783",
+          "child_start_ms": 1615093201669,
+          "parent_start_ms": 1615093201666,
+          "child_available_ms": 1615093201675,
+          "parent_available_ms": 1615093201675,
+          "known_at_ms": 1615093201675,
+          "child_duration_ms": 6.0,
+          "parent_duration_ms": 9.0,
+          "child_within_parent_interval": true
+        },
+        {
+          "child_event_id": "Bank:2021_03_07/trace/trace_span.csv:000010689800",
+          "parent_event_id": "Bank:2021_03_07/trace/trace_span.csv:000010690084",
+          "trace_id": "gw0120210307132957062064",
+          "child_start_ms": 1615094999589,
+          "parent_start_ms": 1615094999586,
+          "child_available_ms": 1615094999595,
+          "parent_available_ms": 1615094999595,
+          "known_at_ms": 1615094999595,
+          "child_duration_ms": 6.0,
+          "parent_duration_ms": 9.0,
+          "child_within_parent_interval": true
+        },
+        {
+          "child_event_id": "Bank:2021_03_07/trace/trace_span.csv:000010544546",
+          "parent_event_id": "Bank:2021_03_07/trace/trace_span.csv:000010545259",
+          "trace_id": "gw0120210307132428060356",
+          "child_start_ms": 1615094669013,
+          "parent_start_ms": 1615094669009,
+          "child_available_ms": 1615094671788,
+          "parent_available_ms": 1615094671789,
+          "known_at_ms": 1615094671789,
+          "child_duration_ms": 2775.0,
+          "parent_duration_ms": 2780.0,
+          "child_within_parent_interval": true
+        }
+      ]
+    },
+    "f8": {
+      "link_id": "c451540929a55b911e93",
+      "source_node": "device:dockerB1",
+      "target_node": "device:MG02",
+      "matched_calls": 4851,
+      "matched_calls_scope": "all_arrived_prefix",
+      "first_child_start_ms": 1615093200829,
+      "last_child_start_ms": 1615094999112,
+      "child_span_latency_ms": {
+        "reference": {
+          "count": 0,
+          "mean": null,
+          "median": null,
+          "p50": null,
+          "p95": null,
+          "min": null,
+          "max": null,
+          "calls": 0
+        },
+        "current": {
+          "count": 4851,
+          "mean": 50.91589363017935,
+          "median": 6.0,
+          "p50": 6.0,
+          "p95": 77.0,
+          "min": 3.0,
+          "max": 2337.0,
+          "calls": 4851
+        }
+      },
+      "interval_mismatch_count": 84,
+      "examples": [
+        {
+          "child_event_id": "Bank:2021_03_07/trace/trace_span.csv:000009894543",
+          "parent_event_id": "Bank:2021_03_07/trace/trace_span.csv:000009894554",
+          "trace_id": "gw0120210307130000043668",
+          "child_start_ms": 1615093200829,
+          "parent_start_ms": 1615093200827,
+          "child_available_ms": 1615093200834,
+          "parent_available_ms": 1615093200835,
+          "known_at_ms": 1615093200835,
+          "child_duration_ms": 5.0,
+          "parent_duration_ms": 8.0,
+          "child_within_parent_interval": true
+        },
+        {
+          "child_event_id": "Bank:2021_03_07/trace/trace_span.csv:000010689372",
+          "parent_event_id": "Bank:2021_03_07/trace/trace_span.csv:000010689450",
+          "trace_id": "gw0120210307132959062086",
+          "child_start_ms": 1615094999112,
+          "parent_start_ms": 1615094999110,
+          "child_available_ms": 1615094999117,
+          "parent_available_ms": 1615094999118,
+          "known_at_ms": 1615094999118,
+          "child_duration_ms": 5.0,
+          "parent_duration_ms": 8.0,
+          "child_within_parent_interval": true
+        },
+        {
+          "child_event_id": "Bank:2021_03_07/trace/trace_span.csv:000010544363",
+          "parent_event_id": "Bank:2021_03_07/trace/trace_span.csv:000010544376",
+          "trace_id": "gw0120210307132427060341",
+          "child_start_ms": 1615094669230,
+          "parent_start_ms": 1615094669227,
+          "child_available_ms": 1615094671567,
+          "parent_available_ms": 1615094671567,
+          "known_at_ms": 1615094671567,
+          "child_duration_ms": 2337.0,
+          "parent_duration_ms": 2340.0,
+          "child_within_parent_interval": true
+        }
+      ]
+    }
+  },
+  "cpu_only_metric_ids": [
+    "7ae41b08e8752f3d221a",
+    "21e6838410fd6af2cd51",
+    "6a8776720d99cf1141c6",
+    "c1c5e685c064dd3a903e",
+    "b99e62234448c2b7ac5e",
+    "5052dc9a7dda13e442d8",
+    "f478d72b42d414c20091",
+    "111cdfc75cd492e7804e",
+    "9c6da60a6c1953d7848f",
+    "4013116308f29b5d3050",
+    "967331df8c10775a3f17"
+  ],
+  "limitations": [
+    "未入本次模型视图的指标仍保留在CPU明细，不能认定已检查或正常。",
+    "本输入覆盖截至当前的告警记录及工具选取的对照，不是全数据无损表达。",
+    "没有标准答案；节点不独立确定全局根因。"
+  ],
+  "labels_used": false,
+  "case_id": "40798e35e235a243",
+  "request_id": "device_dockerB1_1615095000000",
+  "previous_template_decisions": [],
+  "already_checked": []
+}

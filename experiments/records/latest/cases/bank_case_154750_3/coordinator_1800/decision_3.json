@@ -1,0 +1,49 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Mysql02",
+        "reason": "high CPU usage",
+        "time": "19:16:00",
+        "time_evidence_id": "e105",
+        "support_ids": [
+          "e105",
+          "e248"
+        ],
+        "counter_ids": [],
+        "explanation": "Mysql02 在 19:16:00 触发 CPU 使用率异常（e105），早于其他观测。e248 确认了该时段 CPU 数值（12.47%）及早期峰值（19:08 27.67%），表明存在持续高负载趋势。这是当前最确凿的根因证据。"
+      },
+      {
+        "id": "h2",
+        "assessment": "not_supported",
+        "component": "IG01",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [
+          "e249",
+          "e250"
+        ],
+        "explanation": "IG01 的 OS CPU 使用率在 19:16 前后（e249, e250）保持稳定在 25% 左右，无明显升高迹象，不支持其作为高负载根因。长调用（e25）可能由下游 Mysql02 响应慢引起。"
+      }
+    ],
+    "requests": []
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17701,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 42,
+        "available_facts": 239
+      }
+    }
+  ],
+  "labels_used": false
+}

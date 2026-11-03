@@ -1,0 +1,92 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "apache01",
+        "reason": "high CPU usage",
+        "time": "02:58:00.000",
+        "time_evidence_id": "e268",
+        "support_ids": [
+          "e268",
+          "e269",
+          "e270",
+          "e271",
+          "e272",
+          "e273"
+        ],
+        "counter_ids": [],
+        "explanation": "apache01 多核 CPU 在 02:48-02:58 持续触发高负载规则，e268 于 02:58 再次触发，伴随空闲率 e269 下降。其他节点无同等强度持续高负载证据。需确认是否为根因。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e300 请求的特定磁盘指标缺失，e299 显示的数值极低不支持高 I/O。需补查 e300 缺失指标是否真实存在及具体数值，或确认是否有其他未展示的 I/O 异常。"
+      },
+      {
+        "id": "h3",
+        "assessment": "not_supported",
+        "component": "Tomcat04",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [
+          "e298"
+        ],
+        "explanation": "e298 显示 Tomcat04 CPU 使用率稳定在 25%-26% 之间，无剧烈波动或高负载迹象，直接反驳高 CPU 假设。"
+      },
+      {
+        "id": "h4",
+        "assessment": "not_supported",
+        "component": "Redis02",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [
+          "e198"
+        ],
+        "explanation": "e198 显示 Redis02 操作数在 02:37 峰值后迅速回落至 62 且状态为 rules_cleared。虽有过激峰值但已恢复，不足以作为单一持续故障根因。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "02:30:00.000",
+        "end": "03:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdc_DSKReadBps"
+        ],
+        "focus": "获取 Mysql01 磁盘 sdc 每秒读吞吐量具体数值，确认 e300 请求的缺失指标是否真实存在且在此期间是否出现高负载，以验证磁盘 I/O 故障假设。",
+        "basis_ids": [
+          "e300"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17514,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 26,
+        "available_facts": 303
+      }
+    }
+  ],
+  "labels_used": false
+}

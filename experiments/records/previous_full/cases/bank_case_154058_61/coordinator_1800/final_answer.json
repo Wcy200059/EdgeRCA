@@ -1,0 +1,25 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Mysql02",
+        "reason": "high disk I/O read usage",
+        "time": "02:37:00.000",
+        "evidence_ids": [
+          "e19"
+        ],
+        "explanation": "Mysql02磁盘读指标在02:37首次从0.57飙升至8.93，早于Tomcat P95延迟（02:42），符合因果链。Mysql01无对应高IO证据，故锁定Mysql02单点故障。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615316400000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1"
+}

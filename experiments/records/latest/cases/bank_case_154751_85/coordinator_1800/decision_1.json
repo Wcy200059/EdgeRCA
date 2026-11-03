@@ -1,0 +1,117 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat01",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "04:40:00.000",
+        "time_evidence_id": "e140",
+        "support_ids": [
+          "e140",
+          "e248"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat01 在 04:40:00 观测到 CPU 使用率瞬间飙升至 99.7%（e140），随后在 04:39:00 触发规则。关键证据 e248 显示 04:38:20 发生一次 GC 暂停（134.9ms），原因为 Allocation Failure，直接指向 Heap 内存耗尽导致的 OOM。资源高与 GC 暂停时间吻合。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 在 04:38:00 观测到 OS CPU SysTime 升高（e71），可能源于磁盘 I/O 等待，但 e71 未明确标记为 Disk I/O 故障，且 SysTime 也可能由计算负载引起。缺乏直接的磁盘 I/O 指标或错误日志支持。需补查磁盘指标以确认根因。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "04:35:00",
+        "end": "04:45:00",
+        "tools": [
+          "list_metrics",
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadTime",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKRead"
+        ],
+        "focus": "确认 04:38:00 附近 CPU SysTime 升高是否由磁盘读取 I/O 阻塞导致，排除 CPU 计算密集型负载。",
+        "basis_ids": [
+          "e71"
+        ]
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "04:35:00",
+        "end": "04:45:00",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "检查 Mysql01 在 04:38:00 附近的日志，寻找 I/O 等待错误或磁盘空间不足提示，以佐证或排除磁盘 I/O 故障假设。",
+        "basis_ids": [
+          "e71"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "04:38:00",
+        "end": "04:45:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Tomcat-MEMORY_7441-MEMORY_JVMFreeMemory",
+          "Tomcat-MEMORY_7441-MEMORY_JVMMaxMemory"
+        ],
+        "focus": "直接观测 Tomcat01 的 JVM 堆内存使用情况，确认 04:38:00 至 04:40:00 期间是否存在 Heap 内存耗尽（FreeMemory 接近 0 或 MaxMemory 阈值），以最终确认 OOM 根因。",
+        "basis_ids": [
+          "e248"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "h2: time 04:38:00.000 requires e71 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "not_supported",
+            "component": "Mysql01",
+            "reason": "high disk I/O read usage",
+            "time": "04:38:00.000",
+            "time_evidence_id": "e71",
+            "support_ids": [],
+            "counter_ids": [
+              "e71"
+            ],
+            "explanation": "e71 仅显示 CPU SysTime 在 04:38 达到 0.44，未提供磁盘 I/O 指标证实。且 Tomcat01 在 04:38 已有明确的 GC 事件 (e248) 和随后的 CPU 尖峰，时间上 Tomcat01 的异常更早且直接关联业务层，Mysql01 的 SysTime 升高更可能是 GC 导致的计算等待或下游压力结果，而非根因。"
+          },
+          "error": "h2: time 04:38:00.000 requires e71 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        }
+      ]
+    },
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17590,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 52,
+        "available_facts": 239
+      }
+    }
+  ],
+  "labels_used": false
+}

@@ -1,0 +1,43 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Mysql02",
+        "reason": "high disk I/O read usage",
+        "time": "00:02:00.000",
+        "evidence_ids": [
+          "e21"
+        ],
+        "explanation": "Mysql02 磁盘 I/O 在 00:02:00 首次触发异常（e21），早段中位数 3.0 高于后段 0.5，且日志显示 page_cleaner 耗时过长。时间标记明确，符合故障特征。"
+      },
+      {
+        "component": "Tomcat04",
+        "reason": "high memory usage",
+        "time": "00:02:00.000",
+        "evidence_ids": [
+          "e39"
+        ],
+        "explanation": "Tomcat04 内存占用在 00:02:00 达到 98% 并触发（e39），早段 97% 后升至 98%，且持续处于触发状态。时间标记清晰，确认为内存故障。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "Expecting ',' delimiter: line 1 column 441 (char 440)"
+    },
+    {
+      "valid": false,
+      "error": "each fault needs exactly component/reason/time/evidence_ids/explanation"
+    },
+    {
+      "valid": true,
+      "source": "coordinator_seed_fallback"
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1616603400000,
+  "model_judgment_verified": false,
+  "expected_failures": 2,
+  "answer_schema": "faults_v1"
+}

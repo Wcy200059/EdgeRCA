@@ -1,0 +1,67 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat04",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "16:30:17.000",
+        "time_evidence_id": "e209",
+        "support_ids": [
+          "e209"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 在窗口起始即发生 Allocation Failure 导致的 GC（e209），且磁盘 I/O 和 TCP 状态在随后持续异常，符合 OOM 导致资源争用链。"
+      },
+      {
+        "id": "h2",
+        "assessment": "supported",
+        "component": "Tomcat04",
+        "reason": "high disk I/O read usage",
+        "time": "16:40:00.000",
+        "time_evidence_id": "e198",
+        "support_ids": [
+          "e198"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 磁盘读取规则在 16:40 触发并持续至 16:57，与 OOM 事件时间重叠，可能是 OOM 引发的日志刷盘或缓存重建导致的 I/O 风暴。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat04",
+        "start": "16:30:00.000",
+        "end": "17:00:00.000",
+        "tools": [
+          "get_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc",
+          "JVM-Memory_7778_JVM_Memory_HeapMemoryUsage"
+        ],
+        "focus": "确认 Tomcat04 的 CPU 使用率、内存占用百分比及堆内存具体数值，验证 OOM 和磁盘高 I/O 是否由内存耗尽直接引起，排除单纯磁盘故障。",
+        "basis_ids": [
+          "e209",
+          "e198"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17443,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 41,
+        "available_facts": 228
+      }
+    }
+  ],
+  "labels_used": false
+}

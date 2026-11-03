@@ -1,0 +1,688 @@
+{
+  "case_id": "cddb7d68493aa372",
+  "node_id": "device:dockerA2",
+  "window_start_ms": 1615012200000,
+  "cutoff_ms": 1615014000000,
+  "groups": [
+    {
+      "source_ids": [
+        "s0_f1"
+      ],
+      "summary": "completed_call_p95",
+      "priority": "routine",
+      "cpu_facts": [
+        {
+          "id": "s0_f1",
+          "kind": "alarm_history",
+          "signal": "completed_call_p95",
+          "state": "triggered",
+          "cycles": 2,
+          "timeline": [
+            [
+              "14:31:00",
+              "triggered"
+            ],
+            [
+              "14:49:00",
+              "rules_cleared"
+            ],
+            [
+              "14:50:00",
+              "triggered"
+            ]
+          ],
+          "latest": [
+            {
+              "rule": "trace.latency",
+              "time": "15:00:00",
+              "p95_ms": 1042.0,
+              "max_ms": 4178.0,
+              "calls": 3899
+            }
+          ],
+          "first_trigger_values": {
+            "calls": 3306,
+            "p95_ms": 1049.0,
+            "max_ms": 4210.0
+          }
+        }
+      ]
+    },
+    {
+      "source_ids": [
+        "s0_f2"
+      ],
+      "summary": "maximum_call_duration",
+      "priority": "routine",
+      "cpu_facts": [
+        {
+          "id": "s0_f2",
+          "kind": "alarm_history",
+          "signal": "maximum_call_duration",
+          "state": "rules_cleared",
+          "cycles": 3,
+          "timeline": [
+            [
+              "14:33:00",
+              "triggered"
+            ],
+            [
+              "14:35:00",
+              "rules_cleared"
+            ],
+            [
+              "14:37:00",
+              "triggered"
+            ],
+            [
+              "14:38:00",
+              "rules_cleared"
+            ],
+            [
+              "14:52:00",
+              "triggered"
+            ],
+            [
+              "14:53:00",
+              "rules_cleared"
+            ]
+          ],
+          "latest": [
+            {
+              "rule": "trace.extreme",
+              "time": "14:53:00",
+              "p95_ms": 1046.0,
+              "max_ms": 3144.0,
+              "calls": 3052
+            }
+          ],
+          "first_trigger_values": {
+            "calls": 4048,
+            "p95_ms": 1049.0,
+            "max_ms": 5231.0,
+            "threshold_ms": 5000
+          }
+        }
+      ]
+    },
+    {
+      "source_ids": [
+        "s0_f4"
+      ],
+      "summary": "latency_over_analysis_window",
+      "priority": "routine",
+      "cpu_facts": [
+        {
+          "id": "s0_f4",
+          "kind": "latency_over_analysis_window",
+          "unit": "ms",
+          "reference": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "max": null
+          },
+          "current": {
+            "count": 80348,
+            "p50": 1.0,
+            "p95": 1044.0,
+            "max": 6127.0
+          },
+          "slow_calls": [
+            {
+              "start": "14:36:51.458",
+              "end": "14:36:57.585",
+              "duration_ms": 6127.0
+            }
+          ],
+          "invalid_count": 0,
+          "modality": "trace"
+        }
+      ]
+    }
+  ],
+  "tool_card_catalog": {
+    "s0_f1": {
+      "id": "s0_f1",
+      "tool_fact": "信号调用P95；截至报告时规则触发。规则状态变化：14:31:00 规则触发 → 14:49:00 规则条件已解除 → 14:50:00 规则触发。首次触发时：全部调用3306次（不是慢调用次数）；P95=1049毫秒；最大单次耗时=4210毫秒。首次触发值不是正常基线。规则trace.latency最近一次评估（15:00:00）：全部调用3899次（不是慢调用次数）；P95=1042毫秒；最大单次耗时=4178毫秒。最近评估不一定是当前采样；解除只指规则，不证明故障恢复。"
+    },
+    "s0_f2": {
+      "id": "s0_f2",
+      "tool_fact": "信号最大单次调用耗时；截至报告时规则条件已解除。规则状态变化：14:33:00 规则触发 → 14:35:00 规则条件已解除 → 14:37:00 规则触发 → 14:38:00 规则条件已解除 → 14:52:00 规则触发 → 14:53:00 规则条件已解除。首次触发时：全部调用4048次（不是慢调用次数）；P95=1049毫秒；最大单次耗时=5231毫秒。规则阈值=5000毫秒。首次触发值不是正常基线。规则trace.extreme最近一次评估（14:53:00）：全部调用3052次（不是慢调用次数）；P95=1046毫秒；最大单次耗时=3144毫秒。最近评估不一定是当前采样；解除只指规则，不证明故障恢复。"
+    },
+    "s0_f3": {
+      "id": "s0_f3",
+      "tool_fact": "本范围未收到日志；不是没有错误，也不是没有其他模态数据。"
+    },
+    "s0_f4": {
+      "id": "s0_f4",
+      "tool_fact": "累计统计范围14:30:00.000—15:00:00.000：全部调用80348次（不是慢调用次数）；P50=1毫秒（中位数，不是平均值）；P95=1044毫秒；最大单次耗时=6127毫秒。参考段：全部调用0次（不是慢调用次数）；P50=未知毫秒（中位数，不是平均值）；P95=未知毫秒；最大单次耗时=未知毫秒。长调用样本14:36:51.458—14:36:57.585，耗时6127毫秒。无效记录0条；调用耗时不是网络RTT，也不表示调用失败。"
+    },
+    "s0_f5": {
+      "id": "s0_f5",
+      "tool_fact": "父子ID观察到连接device:MG01 → device:dockerA2；该连接的子调用统计：全部调用4934次（不是慢调用次数）；P95=2090毫秒；最大单次耗时=5480毫秒。其中0对时间区间不满足包含关系，不可据此计算网络耗时、相减父子时长或确定故障传播方向。"
+    },
+    "s0_f6": {
+      "id": "s0_f6",
+      "tool_fact": "父子ID观察到连接device:MG02 → device:dockerA2；该连接的子调用统计：全部调用5002次（不是慢调用次数）；P95=2088毫秒；最大单次耗时=6127毫秒。其中0对时间区间不满足包含关系，不可据此计算网络耗时、相减父子时长或确定故障传播方向。"
+    },
+    "s0_f7": {
+      "id": "s0_f7",
+      "tool_fact": "父子ID观察到连接device:dockerA2 → device:MG01；该连接的子调用统计：全部调用1321次（不是慢调用次数）；P95=1015毫秒；最大单次耗时=2518毫秒。其中24对时间区间不满足包含关系，不可据此计算网络耗时、相减父子时长或确定故障传播方向。"
+    },
+    "s0_f8": {
+      "id": "s0_f8",
+      "tool_fact": "父子ID观察到连接device:dockerA2 → device:MG02；该连接的子调用统计：全部调用1376次（不是慢调用次数）；P95=1010毫秒；最大单次耗时=3011毫秒。其中24对时间区间不满足包含关系，不可据此计算网络耗时、相减父子时长或确定故障传播方向。"
+    }
+  },
+  "retain_local": [
+    "s0_f6",
+    "s0_f8",
+    "s0_f5",
+    "s0_f3",
+    "s0_f7"
+  ],
+  "defer": [],
+  "cpu_only_metric_ids": [
+    "b0770e673f0622996db0",
+    "d775f572e06d552a13ae",
+    "49065da2898f977d6813",
+    "d091045dec812a3b7776",
+    "82c82d5e8d87065fce87",
+    "410aed2299a6527261ff",
+    "dac8d806ab2aa009566a",
+    "1fab91986e00d6e8f8df",
+    "e9a88a1e5eb67ff37955",
+    "a7994fa6c96d79b77e4d",
+    "01b25a67d1ac4dbcfc2b",
+    "39c97c7b07f6a5c5096a",
+    "6ce28c7679dfe4a640f6",
+    "cf372c3d64dd9643638d",
+    "031e2c0bcc3366093cad",
+    "521941e6fdc88180ba01",
+    "f72087e034ccabd13678",
+    "99399eafe322c4d3dc3d",
+    "a6ab9b7f8d84de840def",
+    "621c33966df40fd0ecb2",
+    "3fca33c4f997e341f731"
+  ],
+  "questions": [],
+  "overview_text": "本地保留8条观测；0条变化或明确错误优先展示。稳定采样0条，数据不足1条。稳定不等于正常；节点没有判定全局根因。",
+  "scope": {
+    "start": "14:30:00.000",
+    "end": "15:00:00.000",
+    "raw_rows": {
+      "metric": 48,
+      "trace": 80348
+    },
+    "alarm_groups": 2,
+    "cpu_only_metric_count": 21
+  },
+  "question_overview": null,
+  "prose_semantics_verified": false,
+  "pending_self_queries": [],
+  "node_mode": "catalogue",
+  "template_rows": [
+    {
+      "id": "s0_f1",
+      "subject": "completed_call_p95",
+      "fields": {
+        "signal": "completed_call_p95",
+        "first_trigger_values": {
+          "calls": 3306,
+          "p95_ms": 1049.0,
+          "max_ms": 4210.0
+        },
+        "timeline": [
+          [
+            "14:31:00",
+            "triggered"
+          ],
+          [
+            "14:49:00",
+            "rules_cleared"
+          ],
+          [
+            "14:50:00",
+            "triggered"
+          ]
+        ],
+        "state": "triggered"
+      },
+      "pattern": "rule_signal",
+      "pattern_description": "规则触发记录；需结合对照",
+      "protected": false,
+      "node_id": "device:dockerA2",
+      "template": "rule_notice",
+      "question": "【组件】的【信号】在【时间】触发规则，观测值【值】。这说明【reading】，应【use】。",
+      "reading_options": {
+        "uncertain": "现有材料不足，暂不作该项解释",
+        "rule_notice": "规则曾触发，需要结合实际值和其他观测"
+      },
+      "catalogue_action": "expand",
+      "model_selection": {
+        "use": "report",
+        "reading": "rule_notice",
+        "related_ids": [],
+        "relation_to_request": null,
+        "detail_deferred": true,
+        "id": "s0_f1"
+      },
+      "model_valid": true,
+      "handling": "catalogue_report",
+      "filled_statement": null,
+      "raw_fact": {
+        "id": "s0_f1",
+        "kind": "alarm_history",
+        "signal": "completed_call_p95",
+        "state": "triggered",
+        "cycles": 2,
+        "timeline": [
+          [
+            "14:31:00",
+            "triggered"
+          ],
+          [
+            "14:49:00",
+            "rules_cleared"
+          ],
+          [
+            "14:50:00",
+            "triggered"
+          ]
+        ],
+        "latest": [
+          {
+            "rule": "trace.latency",
+            "time": "15:00:00",
+            "p95_ms": 1042.0,
+            "max_ms": 4178.0,
+            "calls": 3899
+          }
+        ],
+        "first_trigger_values": {
+          "calls": 3306,
+          "p95_ms": 1049.0,
+          "max_ms": 4210.0
+        }
+      }
+    },
+    {
+      "id": "s0_f2",
+      "subject": "maximum_call_duration",
+      "fields": {
+        "signal": "maximum_call_duration",
+        "first_trigger_values": {
+          "calls": 4048,
+          "p95_ms": 1049.0,
+          "max_ms": 5231.0,
+          "threshold_ms": 5000
+        },
+        "timeline": [
+          [
+            "14:33:00",
+            "triggered"
+          ],
+          [
+            "14:35:00",
+            "rules_cleared"
+          ],
+          [
+            "14:37:00",
+            "triggered"
+          ],
+          [
+            "14:38:00",
+            "rules_cleared"
+          ],
+          [
+            "14:52:00",
+            "triggered"
+          ],
+          [
+            "14:53:00",
+            "rules_cleared"
+          ]
+        ],
+        "state": "rules_cleared"
+      },
+      "pattern": "rule_signal",
+      "pattern_description": "规则触发记录；需结合对照",
+      "protected": false,
+      "node_id": "device:dockerA2",
+      "template": "rule_notice",
+      "question": "【组件】的【信号】在【时间】触发规则，观测值【值】。这说明【reading】，应【use】。",
+      "reading_options": {
+        "uncertain": "现有材料不足，暂不作该项解释",
+        "rule_notice": "规则曾触发，需要结合实际值和其他观测"
+      },
+      "catalogue_action": "expand",
+      "model_selection": {
+        "use": "report",
+        "reading": "rule_notice",
+        "related_ids": [],
+        "relation_to_request": null,
+        "detail_deferred": true,
+        "id": "s0_f2"
+      },
+      "model_valid": true,
+      "handling": "catalogue_report",
+      "filled_statement": null,
+      "raw_fact": {
+        "id": "s0_f2",
+        "kind": "alarm_history",
+        "signal": "maximum_call_duration",
+        "state": "rules_cleared",
+        "cycles": 3,
+        "timeline": [
+          [
+            "14:33:00",
+            "triggered"
+          ],
+          [
+            "14:35:00",
+            "rules_cleared"
+          ],
+          [
+            "14:37:00",
+            "triggered"
+          ],
+          [
+            "14:38:00",
+            "rules_cleared"
+          ],
+          [
+            "14:52:00",
+            "triggered"
+          ],
+          [
+            "14:53:00",
+            "rules_cleared"
+          ]
+        ],
+        "latest": [
+          {
+            "rule": "trace.extreme",
+            "time": "14:53:00",
+            "p95_ms": 1046.0,
+            "max_ms": 3144.0,
+            "calls": 3052
+          }
+        ],
+        "first_trigger_values": {
+          "calls": 4048,
+          "p95_ms": 1049.0,
+          "max_ms": 5231.0,
+          "threshold_ms": 5000
+        }
+      }
+    },
+    {
+      "id": "s0_f3",
+      "subject": "log",
+      "fields": {
+        "status": "no_arrived_records_in_scope"
+      },
+      "pattern": "insufficient_data",
+      "pattern_description": "数据或样本不足",
+      "protected": false,
+      "node_id": "device:dockerA2",
+      "template": "log_event",
+      "question": "【组件】在【起止】出现【日志类型】，共【次数】条。这说明【reading】，应【use】。",
+      "reading_options": {
+        "uncertain": "现有材料不足，暂不作该项解释"
+      },
+      "catalogue_action": "background",
+      "model_selection": null,
+      "model_valid": false,
+      "handling": "catalogue_background",
+      "raw_fact": {
+        "id": "s0_f3",
+        "kind": "log",
+        "status": "no_arrived_records_in_scope"
+      }
+    },
+    {
+      "id": "s0_f4",
+      "subject": "latency_over_analysis_window",
+      "fields": {
+        "unit": "ms",
+        "current": {
+          "count": 80348,
+          "p50": 1.0,
+          "p95": 1044.0,
+          "max": 6127.0
+        },
+        "reference": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "slow_calls": [
+          {
+            "start": "14:36:51.458",
+            "end": "14:36:57.585",
+            "duration_ms": 6127.0
+          }
+        ]
+      },
+      "pattern": "latency_observed",
+      "pattern_description": "有调用耗时观测；需区分背景与受影响现象",
+      "protected": false,
+      "node_id": "device:dockerA2",
+      "template": "call_latency",
+      "question": "【组件】有【次数】次调用，P95【值】，最长【值】，此前对照【值】。这说明【reading】，应【use】。",
+      "reading_options": {
+        "uncertain": "现有材料不足，暂不作该项解释",
+        "tail": "存在个别较长调用，不能代表全部请求都慢"
+      },
+      "catalogue_action": "expand",
+      "model_selection": {
+        "use": "report",
+        "reading": "tail",
+        "related_ids": [],
+        "relation_to_request": null,
+        "detail_deferred": true,
+        "id": "s0_f4"
+      },
+      "model_valid": true,
+      "handling": "catalogue_report",
+      "filled_statement": null,
+      "raw_fact": {
+        "id": "s0_f4",
+        "kind": "latency_over_analysis_window",
+        "unit": "ms",
+        "reference": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "current": {
+          "count": 80348,
+          "p50": 1.0,
+          "p95": 1044.0,
+          "max": 6127.0
+        },
+        "slow_calls": [
+          {
+            "start": "14:36:51.458",
+            "end": "14:36:57.585",
+            "duration_ms": 6127.0
+          }
+        ],
+        "invalid_count": 0,
+        "modality": "trace"
+      }
+    },
+    {
+      "id": "s0_f5",
+      "subject": "observed_connection",
+      "fields": {
+        "from": "device:MG01",
+        "to": "device:dockerA2",
+        "child_latency_ms": {
+          "calls": 4934,
+          "p95": 2090.0,
+          "max": 5480.0
+        },
+        "interval_mismatch_count": 0,
+        "note": "父子ID匹配；时间区间可能不包含，不能据此直接确定因果或网络耗时。"
+      },
+      "pattern": "observation_only",
+      "pattern_description": "已有观测；未据此判故障",
+      "protected": false,
+      "node_id": "device:dockerA2",
+      "template": "connection",
+      "question": "已观测【父节点】到【子节点】的连接及【延迟】。这说明【reading】，应【use】。",
+      "reading_options": {
+        "uncertain": "现有材料不足，暂不作该项解释",
+        "connection": "已观测到调用连接，不能据此判定故障传播方向"
+      },
+      "catalogue_action": "background",
+      "model_selection": null,
+      "model_valid": false,
+      "handling": "catalogue_background",
+      "raw_fact": {
+        "id": "s0_f5",
+        "kind": "observed_connection",
+        "from": "device:MG01",
+        "to": "device:dockerA2",
+        "child_latency_ms": {
+          "calls": 4934,
+          "p95": 2090.0,
+          "max": 5480.0
+        },
+        "interval_mismatch_count": 0,
+        "note": "父子ID匹配；时间区间可能不包含，不能据此直接确定因果或网络耗时。"
+      }
+    },
+    {
+      "id": "s0_f6",
+      "subject": "observed_connection",
+      "fields": {
+        "from": "device:MG02",
+        "to": "device:dockerA2",
+        "child_latency_ms": {
+          "calls": 5002,
+          "p95": 2088.0,
+          "max": 6127.0
+        },
+        "interval_mismatch_count": 0,
+        "note": "父子ID匹配；时间区间可能不包含，不能据此直接确定因果或网络耗时。"
+      },
+      "pattern": "observation_only",
+      "pattern_description": "已有观测；未据此判故障",
+      "protected": false,
+      "node_id": "device:dockerA2",
+      "template": "connection",
+      "question": "已观测【父节点】到【子节点】的连接及【延迟】。这说明【reading】，应【use】。",
+      "reading_options": {
+        "uncertain": "现有材料不足，暂不作该项解释",
+        "connection": "已观测到调用连接，不能据此判定故障传播方向"
+      },
+      "catalogue_action": "background",
+      "model_selection": null,
+      "model_valid": false,
+      "handling": "catalogue_background",
+      "raw_fact": {
+        "id": "s0_f6",
+        "kind": "observed_connection",
+        "from": "device:MG02",
+        "to": "device:dockerA2",
+        "child_latency_ms": {
+          "calls": 5002,
+          "p95": 2088.0,
+          "max": 6127.0
+        },
+        "interval_mismatch_count": 0,
+        "note": "父子ID匹配；时间区间可能不包含，不能据此直接确定因果或网络耗时。"
+      }
+    },
+    {
+      "id": "s0_f7",
+      "subject": "observed_connection",
+      "fields": {
+        "from": "device:dockerA2",
+        "to": "device:MG01",
+        "child_latency_ms": {
+          "calls": 1321,
+          "p95": 1015.0,
+          "max": 2518.0
+        },
+        "interval_mismatch_count": 24,
+        "note": "父子ID匹配；时间区间可能不包含，不能据此直接确定因果或网络耗时。"
+      },
+      "pattern": "observation_only",
+      "pattern_description": "已有观测；未据此判故障",
+      "protected": false,
+      "node_id": "device:dockerA2",
+      "template": "connection",
+      "question": "已观测【父节点】到【子节点】的连接及【延迟】。这说明【reading】，应【use】。",
+      "reading_options": {
+        "uncertain": "现有材料不足，暂不作该项解释",
+        "connection": "已观测到调用连接，不能据此判定故障传播方向"
+      },
+      "catalogue_action": "background",
+      "model_selection": null,
+      "model_valid": false,
+      "handling": "catalogue_background",
+      "raw_fact": {
+        "id": "s0_f7",
+        "kind": "observed_connection",
+        "from": "device:dockerA2",
+        "to": "device:MG01",
+        "child_latency_ms": {
+          "calls": 1321,
+          "p95": 1015.0,
+          "max": 2518.0
+        },
+        "interval_mismatch_count": 24,
+        "note": "父子ID匹配；时间区间可能不包含，不能据此直接确定因果或网络耗时。"
+      }
+    },
+    {
+      "id": "s0_f8",
+      "subject": "observed_connection",
+      "fields": {
+        "from": "device:dockerA2",
+        "to": "device:MG02",
+        "child_latency_ms": {
+          "calls": 1376,
+          "p95": 1010.0,
+          "max": 3011.0
+        },
+        "interval_mismatch_count": 24,
+        "note": "父子ID匹配；时间区间可能不包含，不能据此直接确定因果或网络耗时。"
+      },
+      "pattern": "observation_only",
+      "pattern_description": "已有观测；未据此判故障",
+      "protected": false,
+      "node_id": "device:dockerA2",
+      "template": "connection",
+      "question": "已观测【父节点】到【子节点】的连接及【延迟】。这说明【reading】，应【use】。",
+      "reading_options": {
+        "uncertain": "现有材料不足，暂不作该项解释",
+        "connection": "已观测到调用连接，不能据此判定故障传播方向"
+      },
+      "catalogue_action": "background",
+      "model_selection": null,
+      "model_valid": false,
+      "handling": "catalogue_background",
+      "raw_fact": {
+        "id": "s0_f8",
+        "kind": "observed_connection",
+        "from": "device:dockerA2",
+        "to": "device:MG02",
+        "child_latency_ms": {
+          "calls": 1376,
+          "p95": 1010.0,
+          "max": 3011.0
+        },
+        "interval_mismatch_count": 24,
+        "note": "父子ID匹配；时间区间可能不包含，不能据此直接确定因果或网络耗时。"
+      }
+    }
+  ]
+}

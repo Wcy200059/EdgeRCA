@@ -1,0 +1,74 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "IG01→Tomcat01 调用 P95 高达 10014ms，且 Tomcat01 本地 CPU 指标（e105）显示早期单核利用率 51.46% 高于晚期 99.97% 的波动（注：此处需核实早期/晚期定义及具体数值趋势，当前证据不足以确认持续高负载或泄漏）。缺乏明确的 JVM CPU 或内存溢出证据，且时间戳缺失。需补查 Tomcat01 详细日志及指标。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "15:30:00",
+        "end": "16:00:00",
+        "tools": [
+          "get_logs",
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-Memory_7778_JVM_Memory_HeapMemoryUsage",
+          "JVM-CPU_CPU_CPUUserTime"
+        ],
+        "focus": "确认 Tomcat01 是否存在 JVM 内存溢出或 CPU 过载，以解释上游高延迟。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:dockerB1",
+        "start": "15:30:00",
+        "end": "16:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadOps",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadBytes"
+        ],
+        "focus": "验证 dockerB1 的磁盘读取活动是否异常，以确认长调用是否由磁盘 IO 瓶颈引起。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "component must use a public candidate or null",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "unresolved",
+            "component": "dockerB1",
+            "reason": "high disk I/O read usage",
+            "time": null,
+            "time_evidence_id": null,
+            "support_ids": [],
+            "counter_ids": [],
+            "explanation": "dockerB1 存在单次 81877ms 的长调用（e232），且 MG01/IG01 到 dockerB1 的 P95 延迟均超 18s。但 dockerB1 磁盘指标未加载（e231 无记录），无法确认是否为磁盘 IO 导致。需补查 dockerB1 磁盘指标。"
+          },
+          "error": "component must use a public candidate or null"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

@@ -1,0 +1,75 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat02",
+        "reason": "high memory usage",
+        "time": "00:30:00.000",
+        "time_evidence_id": "e289",
+        "support_ids": [
+          "e289",
+          "e288"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat02 内存占用在 00:30:00 即达到 98% 且全程未降 (e289)，伴随 CPU 使用率波动 (e288)。高内存是 GC 频繁的直接诱因，解释了业务延迟现象。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql02",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql02 流量大但缺磁盘指标。需确认高磁盘读是否导致上游 Tomcat 等待或资源争用，目前证据链不完整。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql02",
+        "start": "00:30:00.000",
+        "end": "01:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_DISK_DISK_ReadIOPS",
+          "OSLinux-OSLinux_DISK_DISK_ReadBytes"
+        ],
+        "focus": "确认 Mysql02 在故障时段是否存在高磁盘读 I/O 或高读吞吐量，排查是否因磁盘瓶颈影响业务。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "00:30:00.000",
+        "end": "01:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认 Tomcat01 资源状态，排除其作为根因的可能性，并对比 Tomcat02 的异常。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17768,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 49,
+        "available_facts": 281
+      }
+    }
+  ],
+  "labels_used": false
+}

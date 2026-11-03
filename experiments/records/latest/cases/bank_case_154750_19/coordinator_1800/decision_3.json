@@ -1,0 +1,101 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "上一轮 e303 显示 OS CPU 100%，但 JVM 指标缺失。需确认是 JVM 内部高负载导致，还是系统级资源耗尽。等待新指标结果。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "MG01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e305 显示磁盘忙碌率极低，不支持高磁盘 I/O 假设。需排查是否有其他磁盘指标（如读秒数）未加载，或该组件非根因。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Redis01",
+        "reason": "high memory usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e157 显示命令处理速率上升，但未直接观测到内存使用率（MEMUsedMemPerc）飙升。需补查内存指标以确认是否内存耗尽。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "14:00:00.000",
+        "end": "14:30:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Tomcat-MEMORY_7441-MEMORY_JVMMemoryUsedPercent",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认 Tomcat01 的 JVM 堆内存占比及 OS 内存使用率是否显著升高，以区分是 JVM 内存泄漏/耗尽还是系统内存不足。",
+        "basis_ids": [
+          "e301"
+        ]
+      },
+      {
+        "node_id": "device:MG01",
+        "start": "14:00:00.000",
+        "end": "14:30:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadSec"
+        ],
+        "focus": "直接查询 MG01 磁盘读取吞吐量（ReadSec），验证是否存在高磁盘 I/O 读负载导致下游延迟。",
+        "basis_ids": [
+          "e306"
+        ]
+      },
+      {
+        "node_id": "device:Redis01",
+        "start": "14:00:00.000",
+        "end": "14:30:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "获取 Redis01 内存使用百分比的具体数值，确认命令处理速率上升是否伴随内存压力增大。",
+        "basis_ids": [
+          "e157"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17745,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 36,
+        "available_facts": 296
+      }
+    }
+  ],
+  "labels_used": false
+}

@@ -1,0 +1,113 @@
+{
+  "case_id": "9beb1dccb021e5ab",
+  "cutoff_ms": 1615296600000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 298
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 300
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 302
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 303
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:IG02",
+      "start": "21:16:52",
+      "end": "21:17:03",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_NETWORK_NETWORK_NetworkRxBytes",
+        "OSLinux-OSLinux_NETWORK_NETWORK_NetworkTxBytes"
+      ],
+      "focus": "检查 IG02 在长调用发生时的网络流量指标，判断是否存在网络拥塞或丢包导致延迟。",
+      "basis_ids": [
+        "e34"
+      ]
+    },
+    {
+      "node_id": "device:dockerB2",
+      "start": "21:00:00",
+      "end": "21:30:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_DISK_DISK_ReadIOPS",
+        "OSLinux-OSLinux_DISK_DISK_ReadBytes"
+      ],
+      "focus": "确认dockerB2在21:17至21:19期间磁盘读IOPS或吞吐量是否显著升高，以验证e260规则触发是否由磁盘I/O过载引起，排除网络延迟可能性。",
+      "basis_ids": [
+        "e260",
+        "e262"
+      ]
+    }
+  ],
+  "peak_gpu_gib": 21.133185863494873,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e278",
+      "e279",
+      "e280",
+      "e281",
+      "e282",
+      "e283",
+      "e284",
+      "e285",
+      "e286",
+      "e287",
+      "e288",
+      "e289",
+      "e290",
+      "e291",
+      "e292",
+      "e293",
+      "e294",
+      "e295",
+      "e296",
+      "e297",
+      "e298",
+      "e299",
+      "e300",
+      "e301",
+      "e302",
+      "e303",
+      "e304",
+      "e305",
+      "e306",
+      "e307",
+      "e308",
+      "e309"
+    ],
+    "notes": "保留所有涉及候选组件（IG, MG, Tomcat, docker）的实际父子调用匹配证据。这些边包含调用次数、P95/最大延迟及时间区间不匹配数量，是构建传播链、定位高延迟源头及区分资源故障的关键依据。e267-e277为业务统计，未含组件间调用关系，故拒绝。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 43
+  }
+}

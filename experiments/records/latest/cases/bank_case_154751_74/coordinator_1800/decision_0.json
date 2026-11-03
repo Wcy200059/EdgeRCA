@@ -1,0 +1,88 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 磁盘指标缺失，无法确认高 I/O。Tomcat 端出现长调用（e141），但缺乏数据库侧 I/O 证据支撑因果。需补查 Mysql01 磁盘指标。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "IG02",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "IG02 CPU 波动（e18），但缺乏明确故障阈值触发证据及下游影响。Tomcat 长调用时间点在 06:49，早于 IG02 CPU 主要波动。需补查 IG02 CPU 具体数值及趋势。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "06:30:00",
+        "end": "07:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKBps"
+        ],
+        "focus": "确认 Mysql01 在 06:30-07:00 期间是否存在 CPU 飙升、内存不足或磁盘 I/O 激增，以验证高负载是否导致下游 Tomcat 长调用。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:IG02",
+        "start": "06:30:00",
+        "end": "07:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "获取 IG02 CPU 使用率的具体数值和变化趋势，确认 06:40 附近的峰值是否构成故障，并观察其持续时间。",
+        "basis_ids": [
+          "e18"
+        ]
+      },
+      {
+        "node_id": "device:Mysql02",
+        "start": "06:30:00",
+        "end": "07:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "检查 Mysql02 资源状态，排除双数据库同时故障的可能性，或确认是否存在主从同步延迟等间接影响。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17667,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 56,
+        "available_facts": 240
+      }
+    }
+  ],
+  "labels_used": false
+}

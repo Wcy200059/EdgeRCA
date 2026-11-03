@@ -1,0 +1,37 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Tomcat01",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "19:31:13.030",
+        "evidence_ids": [
+          "e131",
+          "e238"
+        ],
+        "explanation": "e131 证实 Tomcat01 在 19:31:13 出现 5465ms 长调用。e238 显示 IG02 到 Tomcat01 存在连接。长调用与 OOM 特征吻合，且时间链明确，虽缺直接日志但为最有力候选。"
+      },
+      {
+        "component": "Redis02",
+        "reason": "high disk I/O read usage",
+        "time": "19:42:00.000",
+        "evidence_ids": [
+          "e126"
+        ],
+        "explanation": "e126 明确显示 Redis02 磁盘 I/O 在 19:42 触发规则并持续至 19:50。这是当前唯一有明确规则触发证据的磁盘故障，符合第二起故障的时间窗口。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1614859200000,
+  "model_judgment_verified": false,
+  "expected_failures": 2,
+  "answer_schema": "faults_v1",
+  "field_repairs": [],
+  "warnings": []
+}

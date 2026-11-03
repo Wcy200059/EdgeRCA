@@ -1,0 +1,739 @@
+{
+  "answer": {
+    "case_id": "2102576d39b0de7a",
+    "node_id": "device:dockerB2",
+    "request_id": "device_dockerB2_1615015800000",
+    "cutoff_ms": 1615015800000,
+    "requested_scope": {
+      "start": "15:00:00.000",
+      "end": "15:30:00.000",
+      "raw_rows": {
+        "trace": 111772,
+        "metric": 10
+      },
+      "alarm_groups": 2,
+      "cpu_only_metric_count": 6
+    },
+    "tools_executed": [],
+    "missing_metrics": [],
+    "available_metric_names": [],
+    "metric_catalog_in_facts": false,
+    "facts": [
+      {
+        "id": "f1",
+        "tool_fact": "信号调用P95；截至报告时规则触发。规则状态变化：15:01:00 规则触发。首次触发时：全部调用4043次（不是慢调用次数）；P95=1012毫秒；最大单次耗时=6708毫秒。首次触发值不是正常基线。规则trace.latency最近一次评估（15:30:00）：全部调用3750次（不是慢调用次数）；P95=1016毫秒；最大单次耗时=9255毫秒。最近评估不一定是当前采样；解除只指规则，不证明故障恢复。",
+        "time_marks": [
+          "15:01:00"
+        ],
+        "template_payload": {
+          "subject": "completed_call_p95",
+          "pattern": "rule_signal",
+          "fields": {
+            "signal": "completed_call_p95",
+            "first_trigger_values": {
+              "calls": 4043,
+              "p95_ms": 1012.0,
+              "max_ms": 6708.0
+            },
+            "timeline": [
+              [
+                "15:01:00",
+                "triggered"
+              ]
+            ],
+            "state": "triggered"
+          },
+          "protected": false
+        },
+        "detail_fields": {
+          "signal": "completed_call_p95",
+          "first_trigger_values": {
+            "calls": 4043,
+            "p95_ms": 1012.0,
+            "max_ms": 6708.0
+          },
+          "timeline": [
+            [
+              "15:01:00",
+              "triggered"
+            ]
+          ],
+          "state": "triggered"
+        }
+      },
+      {
+        "id": "f2",
+        "tool_fact": "信号最大单次调用耗时；截至报告时规则触发。规则状态变化：15:01:00 规则触发。首次触发时：全部调用4043次（不是慢调用次数）；P95=1012毫秒；最大单次耗时=6708毫秒。规则阈值=5000毫秒。首次触发值不是正常基线。规则trace.extreme最近一次评估（15:30:00）：全部调用3750次（不是慢调用次数）；P95=1016毫秒；最大单次耗时=9255毫秒。最近评估不一定是当前采样；解除只指规则，不证明故障恢复。",
+        "time_marks": [
+          "15:01:00"
+        ],
+        "template_payload": {
+          "subject": "maximum_call_duration",
+          "pattern": "rule_signal",
+          "fields": {
+            "signal": "maximum_call_duration",
+            "first_trigger_values": {
+              "calls": 4043,
+              "p95_ms": 1012.0,
+              "max_ms": 6708.0,
+              "threshold_ms": 5000
+            },
+            "timeline": [
+              [
+                "15:01:00",
+                "triggered"
+              ]
+            ],
+            "state": "triggered"
+          },
+          "protected": false
+        },
+        "detail_fields": {
+          "signal": "maximum_call_duration",
+          "first_trigger_values": {
+            "calls": 4043,
+            "p95_ms": 1012.0,
+            "max_ms": 6708.0,
+            "threshold_ms": 5000
+          },
+          "timeline": [
+            [
+              "15:01:00",
+              "triggered"
+            ]
+          ],
+          "state": "triggered"
+        }
+      },
+      {
+        "id": "f3",
+        "tool_fact": "本范围未收到日志；不是没有错误，也不是没有其他模态数据。",
+        "time_marks": [],
+        "template_payload": {
+          "subject": "log",
+          "pattern": "insufficient_data",
+          "fields": {
+            "status": "no_arrived_records_in_scope"
+          },
+          "protected": false
+        },
+        "detail_fields": {
+          "status": "no_arrived_records_in_scope"
+        }
+      },
+      {
+        "id": "f4",
+        "tool_fact": "累计统计范围15:00:00.000—15:30:00.000：全部调用111772次（不是慢调用次数）；P50=0毫秒（中位数，不是平均值）；P95=1013毫秒；最大单次耗时=10600毫秒。参考段：全部调用0次（不是慢调用次数）；P50=未知毫秒（中位数，不是平均值）；P95=未知毫秒；最大单次耗时=未知毫秒。长调用样本15:03:04.134—15:03:14.734，耗时10600毫秒。无效记录0条；调用耗时不是网络RTT，也不表示调用失败。",
+        "time_marks": [
+          "15:03:04.134",
+          "15:03:14.734"
+        ],
+        "template_payload": {
+          "subject": "latency_over_analysis_window",
+          "pattern": "latency_observed",
+          "fields": {
+            "unit": "ms",
+            "current": {
+              "count": 111772,
+              "p50": 0.0,
+              "p95": 1013.0,
+              "max": 10600.0
+            },
+            "reference": {
+              "count": 0,
+              "p50": null,
+              "p95": null,
+              "max": null
+            },
+            "slow_calls": [
+              {
+                "start": "15:03:04.134",
+                "end": "15:03:14.734",
+                "duration_ms": 10600.0
+              }
+            ]
+          },
+          "protected": false
+        },
+        "detail_fields": {
+          "unit": "ms",
+          "current": {
+            "count": 111772,
+            "p50": 0.0,
+            "p95": 1013.0,
+            "max": 10600.0
+          },
+          "reference": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "max": null
+          },
+          "slow_calls": [
+            {
+              "start": "15:03:04.134",
+              "end": "15:03:14.734",
+              "duration_ms": 10600.0
+            }
+          ]
+        }
+      },
+      {
+        "id": "f5",
+        "tool_fact": "父子ID观察到连接device:MG01 → device:dockerB2；该连接的子调用统计：全部调用6761次（不是慢调用次数）；P95=3120毫秒；最大单次耗时=9260毫秒。其中6对时间区间不满足包含关系，不可据此计算网络耗时、相减父子时长或确定故障传播方向。",
+        "time_marks": [],
+        "template_payload": {
+          "subject": "observed_connection",
+          "pattern": "observation_only",
+          "fields": {
+            "from": "device:MG01",
+            "to": "device:dockerB2",
+            "child_latency_ms": {
+              "calls": 6761,
+              "p95": 3120.0,
+              "max": 9260.0
+            },
+            "interval_mismatch_count": 6,
+            "note": "父子ID匹配；时间区间可能不包含，不能据此直接确定因果或网络耗时。"
+          },
+          "protected": false
+        },
+        "detail_fields": {
+          "from": "device:MG01",
+          "to": "device:dockerB2",
+          "child_latency_ms": {
+            "calls": 6761,
+            "p95": 3120.0,
+            "max": 9260.0
+          },
+          "interval_mismatch_count": 6,
+          "note": "父子ID匹配；时间区间可能不包含，不能据此直接确定因果或网络耗时。"
+        }
+      },
+      {
+        "id": "f6",
+        "tool_fact": "父子ID观察到连接device:MG02 → device:dockerB2；该连接的子调用统计：全部调用6724次（不是慢调用次数）；P95=3125毫秒；最大单次耗时=10600毫秒。其中8对时间区间不满足包含关系，不可据此计算网络耗时、相减父子时长或确定故障传播方向。",
+        "time_marks": [],
+        "template_payload": {
+          "subject": "observed_connection",
+          "pattern": "observation_only",
+          "fields": {
+            "from": "device:MG02",
+            "to": "device:dockerB2",
+            "child_latency_ms": {
+              "calls": 6724,
+              "p95": 3125.0,
+              "max": 10600.0
+            },
+            "interval_mismatch_count": 8,
+            "note": "父子ID匹配；时间区间可能不包含，不能据此直接确定因果或网络耗时。"
+          },
+          "protected": false
+        },
+        "detail_fields": {
+          "from": "device:MG02",
+          "to": "device:dockerB2",
+          "child_latency_ms": {
+            "calls": 6724,
+            "p95": 3125.0,
+            "max": 10600.0
+          },
+          "interval_mismatch_count": 8,
+          "note": "父子ID匹配；时间区间可能不包含，不能据此直接确定因果或网络耗时。"
+        }
+      },
+      {
+        "id": "f7",
+        "tool_fact": "父子ID观察到连接device:dockerB2 → device:MG01；该连接的子调用统计：全部调用5817次（不是慢调用次数）；P95=1012毫秒；最大单次耗时=2341毫秒。其中319对时间区间不满足包含关系，不可据此计算网络耗时、相减父子时长或确定故障传播方向。",
+        "time_marks": [],
+        "template_payload": {
+          "subject": "observed_connection",
+          "pattern": "observation_only",
+          "fields": {
+            "from": "device:dockerB2",
+            "to": "device:MG01",
+            "child_latency_ms": {
+              "calls": 5817,
+              "p95": 1012.0,
+              "max": 2341.0
+            },
+            "interval_mismatch_count": 319,
+            "note": "父子ID匹配；时间区间可能不包含，不能据此直接确定因果或网络耗时。"
+          },
+          "protected": false
+        },
+        "detail_fields": {
+          "from": "device:dockerB2",
+          "to": "device:MG01",
+          "child_latency_ms": {
+            "calls": 5817,
+            "p95": 1012.0,
+            "max": 2341.0
+          },
+          "interval_mismatch_count": 319,
+          "note": "父子ID匹配；时间区间可能不包含，不能据此直接确定因果或网络耗时。"
+        }
+      },
+      {
+        "id": "f8",
+        "tool_fact": "父子ID观察到连接device:dockerB2 → device:MG02；该连接的子调用统计：全部调用5860次（不是慢调用次数）；P95=1012毫秒；最大单次耗时=3147毫秒。其中290对时间区间不满足包含关系，不可据此计算网络耗时、相减父子时长或确定故障传播方向。",
+        "time_marks": [],
+        "template_payload": {
+          "subject": "observed_connection",
+          "pattern": "observation_only",
+          "fields": {
+            "from": "device:dockerB2",
+            "to": "device:MG02",
+            "child_latency_ms": {
+              "calls": 5860,
+              "p95": 1012.0,
+              "max": 3147.0
+            },
+            "interval_mismatch_count": 290,
+            "note": "父子ID匹配；时间区间可能不包含，不能据此直接确定因果或网络耗时。"
+          },
+          "protected": false
+        },
+        "detail_fields": {
+          "from": "device:dockerB2",
+          "to": "device:MG02",
+          "child_latency_ms": {
+            "calls": 5860,
+            "p95": 1012.0,
+            "max": 3147.0
+          },
+          "interval_mismatch_count": 290,
+          "note": "父子ID匹配；时间区间可能不包含，不能据此直接确定因果或网络耗时。"
+        }
+      }
+    ],
+    "groups": [
+      {
+        "observation_ids": [
+          "f1"
+        ],
+        "summary": "completed_call_p95",
+        "priority": "routine"
+      },
+      {
+        "observation_ids": [
+          "f2"
+        ],
+        "summary": "maximum_call_duration",
+        "priority": "routine"
+      },
+      {
+        "observation_ids": [
+          "f4"
+        ],
+        "summary": "latency_over_analysis_window",
+        "priority": "routine"
+      }
+    ],
+    "pending_fact_ids": [
+      "f3"
+    ],
+    "questions": [],
+    "self_requests": [],
+    "request_errors": [],
+    "template_rows": [
+      {
+        "id": "f1",
+        "subject": "completed_call_p95",
+        "fields": {
+          "signal": "completed_call_p95",
+          "first_trigger_values": {
+            "calls": 4043,
+            "p95_ms": 1012.0,
+            "max_ms": 6708.0
+          },
+          "timeline": [
+            [
+              "15:01:00",
+              "triggered"
+            ]
+          ],
+          "state": "triggered"
+        },
+        "pattern": "rule_signal",
+        "pattern_description": "规则触发记录；需结合对照",
+        "protected": false,
+        "node_id": "device:dockerB2",
+        "template": "rule_notice",
+        "question": "【组件】的【信号】在【时间】触发规则，观测值【值】。这说明【reading】，应【use】。",
+        "reading_options": {
+          "uncertain": "现有材料不足，暂不作该项解释",
+          "rule_notice": "规则曾触发，需要结合实际值和其他观测"
+        },
+        "catalogue_action": "expand",
+        "model_selection": {
+          "use": "report",
+          "reading": "rule_notice",
+          "related_ids": [],
+          "relation_to_request": null,
+          "detail_deferred": true
+        },
+        "model_valid": true,
+        "handling": "catalogue_report",
+        "filled_statement": null
+      },
+      {
+        "id": "f2",
+        "subject": "maximum_call_duration",
+        "fields": {
+          "signal": "maximum_call_duration",
+          "first_trigger_values": {
+            "calls": 4043,
+            "p95_ms": 1012.0,
+            "max_ms": 6708.0,
+            "threshold_ms": 5000
+          },
+          "timeline": [
+            [
+              "15:01:00",
+              "triggered"
+            ]
+          ],
+          "state": "triggered"
+        },
+        "pattern": "rule_signal",
+        "pattern_description": "规则触发记录；需结合对照",
+        "protected": false,
+        "node_id": "device:dockerB2",
+        "template": "rule_notice",
+        "question": "【组件】的【信号】在【时间】触发规则，观测值【值】。这说明【reading】，应【use】。",
+        "reading_options": {
+          "uncertain": "现有材料不足，暂不作该项解释",
+          "rule_notice": "规则曾触发，需要结合实际值和其他观测"
+        },
+        "catalogue_action": "expand",
+        "model_selection": {
+          "use": "report",
+          "reading": "rule_notice",
+          "related_ids": [],
+          "relation_to_request": null,
+          "detail_deferred": true
+        },
+        "model_valid": true,
+        "handling": "catalogue_report",
+        "filled_statement": null
+      },
+      {
+        "id": "f3",
+        "subject": "log",
+        "fields": {
+          "status": "no_arrived_records_in_scope"
+        },
+        "pattern": "insufficient_data",
+        "pattern_description": "数据或样本不足",
+        "protected": false,
+        "node_id": "device:dockerB2",
+        "template": "log_event",
+        "question": "【组件】在【起止】出现【日志类型】，共【次数】条。这说明【reading】，应【use】。",
+        "reading_options": {
+          "uncertain": "现有材料不足，暂不作该项解释"
+        },
+        "catalogue_action": "defer",
+        "model_selection": {
+          "use": "uncertain",
+          "reading": "uncertain",
+          "related_ids": [],
+          "relation_to_request": null
+        },
+        "model_valid": true,
+        "handling": "catalogue_defer"
+      },
+      {
+        "id": "f4",
+        "subject": "latency_over_analysis_window",
+        "fields": {
+          "unit": "ms",
+          "current": {
+            "count": 111772,
+            "p50": 0.0,
+            "p95": 1013.0,
+            "max": 10600.0
+          },
+          "reference": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "max": null
+          },
+          "slow_calls": [
+            {
+              "start": "15:03:04.134",
+              "end": "15:03:14.734",
+              "duration_ms": 10600.0
+            }
+          ]
+        },
+        "pattern": "latency_observed",
+        "pattern_description": "有调用耗时观测；需区分背景与受影响现象",
+        "protected": false,
+        "node_id": "device:dockerB2",
+        "template": "call_latency",
+        "question": "【组件】有【次数】次调用，P95【值】，最长【值】，此前对照【值】。这说明【reading】，应【use】。",
+        "reading_options": {
+          "uncertain": "现有材料不足，暂不作该项解释",
+          "tail": "存在个别较长调用，不能代表全部请求都慢"
+        },
+        "catalogue_action": "expand",
+        "model_selection": {
+          "use": "report",
+          "reading": "tail",
+          "related_ids": [],
+          "relation_to_request": null,
+          "detail_deferred": true
+        },
+        "model_valid": true,
+        "handling": "catalogue_report",
+        "filled_statement": null
+      },
+      {
+        "id": "f5",
+        "subject": "observed_connection",
+        "fields": {
+          "from": "device:MG01",
+          "to": "device:dockerB2",
+          "child_latency_ms": {
+            "calls": 6761,
+            "p95": 3120.0,
+            "max": 9260.0
+          },
+          "interval_mismatch_count": 6,
+          "note": "父子ID匹配；时间区间可能不包含，不能据此直接确定因果或网络耗时。"
+        },
+        "pattern": "observation_only",
+        "pattern_description": "已有观测；未据此判故障",
+        "protected": false,
+        "node_id": "device:dockerB2",
+        "template": "connection",
+        "question": "已观测【父节点】到【子节点】的连接及【延迟】。这说明【reading】，应【use】。",
+        "reading_options": {
+          "uncertain": "现有材料不足，暂不作该项解释",
+          "connection": "已观测到调用连接，不能据此判定故障传播方向"
+        },
+        "catalogue_action": "background",
+        "model_selection": null,
+        "model_valid": false,
+        "handling": "catalogue_background"
+      },
+      {
+        "id": "f6",
+        "subject": "observed_connection",
+        "fields": {
+          "from": "device:MG02",
+          "to": "device:dockerB2",
+          "child_latency_ms": {
+            "calls": 6724,
+            "p95": 3125.0,
+            "max": 10600.0
+          },
+          "interval_mismatch_count": 8,
+          "note": "父子ID匹配；时间区间可能不包含，不能据此直接确定因果或网络耗时。"
+        },
+        "pattern": "observation_only",
+        "pattern_description": "已有观测；未据此判故障",
+        "protected": false,
+        "node_id": "device:dockerB2",
+        "template": "connection",
+        "question": "已观测【父节点】到【子节点】的连接及【延迟】。这说明【reading】，应【use】。",
+        "reading_options": {
+          "uncertain": "现有材料不足，暂不作该项解释",
+          "connection": "已观测到调用连接，不能据此判定故障传播方向"
+        },
+        "catalogue_action": "background",
+        "model_selection": null,
+        "model_valid": false,
+        "handling": "catalogue_background"
+      },
+      {
+        "id": "f7",
+        "subject": "observed_connection",
+        "fields": {
+          "from": "device:dockerB2",
+          "to": "device:MG01",
+          "child_latency_ms": {
+            "calls": 5817,
+            "p95": 1012.0,
+            "max": 2341.0
+          },
+          "interval_mismatch_count": 319,
+          "note": "父子ID匹配；时间区间可能不包含，不能据此直接确定因果或网络耗时。"
+        },
+        "pattern": "observation_only",
+        "pattern_description": "已有观测；未据此判故障",
+        "protected": false,
+        "node_id": "device:dockerB2",
+        "template": "connection",
+        "question": "已观测【父节点】到【子节点】的连接及【延迟】。这说明【reading】，应【use】。",
+        "reading_options": {
+          "uncertain": "现有材料不足，暂不作该项解释",
+          "connection": "已观测到调用连接，不能据此判定故障传播方向"
+        },
+        "catalogue_action": "background",
+        "model_selection": null,
+        "model_valid": false,
+        "handling": "catalogue_background"
+      },
+      {
+        "id": "f8",
+        "subject": "observed_connection",
+        "fields": {
+          "from": "device:dockerB2",
+          "to": "device:MG02",
+          "child_latency_ms": {
+            "calls": 5860,
+            "p95": 1012.0,
+            "max": 3147.0
+          },
+          "interval_mismatch_count": 290,
+          "note": "父子ID匹配；时间区间可能不包含，不能据此直接确定因果或网络耗时。"
+        },
+        "pattern": "observation_only",
+        "pattern_description": "已有观测；未据此判故障",
+        "protected": false,
+        "node_id": "device:dockerB2",
+        "template": "connection",
+        "question": "已观测【父节点】到【子节点】的连接及【延迟】。这说明【reading】，应【use】。",
+        "reading_options": {
+          "uncertain": "现有材料不足，暂不作该项解释",
+          "connection": "已观测到调用连接，不能据此判定故障传播方向"
+        },
+        "catalogue_action": "background",
+        "model_selection": null,
+        "model_valid": false,
+        "handling": "catalogue_background"
+      }
+    ],
+    "node_model_status": "incomplete",
+    "labels_used": false,
+    "report_mode": "template",
+    "note": "程序固定数值与来源；仅变化/错误/告警候选自动调用模型，其余本地保留，不等于正常。",
+    "screening": {
+      "total": 8,
+      "model_candidates": 0,
+      "screen_limit": null,
+      "unchanged_reused": 0,
+      "retained_by_rule": 8,
+      "labels_used": false
+    },
+    "selection_mode": "catalogue",
+    "catalogue_audit": {
+      "total_observations": 8,
+      "unique_entries": 8,
+      "aliases": {},
+      "pages": [
+        {
+          "page": 0,
+          "pages": 1,
+          "ids": [
+            "f1",
+            "f2",
+            "f3",
+            "f4",
+            "f5",
+            "f6",
+            "f7",
+            "f8"
+          ],
+          "attempts": [
+            {
+              "valid": true
+            }
+          ],
+          "reply": {
+            "report": [
+              "f1",
+              "f2",
+              "f4"
+            ],
+            "defer": [
+              "f3"
+            ]
+          },
+          "omitted_ids": []
+        }
+      ],
+      "decisions": {
+        "f1": "expand",
+        "f2": "expand",
+        "f4": "expand",
+        "f3": "defer",
+        "f5": "background",
+        "f6": "background",
+        "f7": "background",
+        "f8": "background"
+      },
+      "omitted_count": 0,
+      "coverage": {
+        "available": 8,
+        "shown": 8,
+        "pages": 1
+      },
+      "note": "全部观测已分批展示并逐项决定；未展示项只可能来自无效页，标记为 unprocessed。"
+    },
+    "question_response": {
+      "question": "整理本节点观测",
+      "checked_scope": {
+        "start": "15:00:00.000",
+        "end": "15:30:00.000",
+        "raw_rows": {
+          "trace": 111772,
+          "metric": 10
+        },
+        "alarm_groups": 2,
+        "cpu_only_metric_count": 6
+      },
+      "tools": [],
+      "observation_ids": [
+        "f1",
+        "f2",
+        "f3",
+        "f4",
+        "f5",
+        "f6",
+        "f7",
+        "f8"
+      ],
+      "reported_ids": [
+        "f1",
+        "f2",
+        "f4"
+      ],
+      "interpretations_unverified": [
+        {
+          "id": "f1",
+          "reading": "rule_notice",
+          "relation_to_request": null
+        },
+        {
+          "id": "f2",
+          "reading": "rule_notice",
+          "relation_to_request": null
+        },
+        {
+          "id": "f3",
+          "reading": "uncertain",
+          "relation_to_request": null
+        },
+        {
+          "id": "f4",
+          "reading": "tail",
+          "relation_to_request": null
+        }
+      ],
+      "unresolved_ids": [
+        "f3"
+      ],
+      "limitations": [
+        "未入本次模型视图的指标仍保留在CPU明细，不能认定已检查或正常。",
+        "本输入覆盖截至当前的告警记录及工具选取的对照，不是全数据无损表达。",
+        "没有标准答案；节点不独立确定全局根因。",
+        "模型解释是待核实意见；工具不支持的问题不能强行回答，缺少记录不等于正常。"
+      ]
+    }
+  },
+  "pages": []
+}

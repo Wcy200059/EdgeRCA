@@ -1,0 +1,76 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat01 有 CPU 空闲下降迹象，但缺乏 JVM 具体负载或 OOM 的直接数值证据。需补查 Tomcat01 的 JVM 指标以确认是否因高 CPU 或内存耗尽导致下游延迟。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "15:30:00.000",
+        "end": "16:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "JVM-Memory_HeapUsedPercent",
+          "JVM-CPU_Load"
+        ],
+        "focus": "核实 Tomcat01 在故障时段是否存在 JVM 内存溢出（OOM）或 CPU 负载过高，以解释下游延迟。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:dockerB1",
+        "start": "15:30:00.000",
+        "end": "16:00:00.000",
+        "tools": [
+          "get_metrics",
+          "list_metrics"
+        ],
+        "metrics": [
+          "OSLinux-DISK_READ_AvgSec",
+          "OSLinux-DISK_SPACE_UsedPercent"
+        ],
+        "focus": "确认 dockerB1 的磁盘读取 I/O 是否飙升导致慢调用，以及磁盘空间是否不足。",
+        "basis_ids": [
+          "e213"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "component must use a public candidate or null",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "unresolved",
+            "component": "dockerB1",
+            "reason": "high disk I/O read usage",
+            "time": null,
+            "time_evidence_id": null,
+            "support_ids": [],
+            "counter_ids": [],
+            "explanation": "dockerB1 观测到一次长达 28 秒的慢调用，且磁盘 I/O 指标尚未加载。需确认该慢调用是否由磁盘 I/O 阻塞引起，并检查磁盘空间是否充足。"
+          },
+          "error": "component must use a public candidate or null"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

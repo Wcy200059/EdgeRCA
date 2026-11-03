@@ -1,0 +1,87 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat04",
+        "reason": "high CPU usage",
+        "time": "20:48:00.000",
+        "time_evidence_id": "e180",
+        "support_ids": [
+          "e180"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 在 20:48 观测到 CPU 使用率峰值 98.78%（e180），且早于部分慢调用。但缺乏直接证据表明该 CPU 高负载导致了业务失败或传播至下游，需确认是否有慢调用直接源于此节点或由其引发。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:dockerB2",
+        "start": "20:30:00",
+        "end": "21:00:00",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "获取 dockerB2 的详细调用链信息，确认长调用（如 20:38 和 20:59 的慢调用）的父节点是谁，以判断故障源头。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "20:45:00",
+        "end": "20:50:00",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "检查 Tomcat04 在 CPU 高负载期间（20:45-20:50）是否有大量慢调用发出，或其上游调用是否因此变慢。",
+        "basis_ids": [
+          "e180"
+        ]
+      },
+      {
+        "node_id": "device:IG02",
+        "start": "20:37:00",
+        "end": "20:39:00",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "核查 IG02 在 20:38 观测到长调用时的具体调用目标，确认是否直接调用了 dockerB2 或 Tomcat 集群，以建立因果链。",
+        "basis_ids": [
+          "e35"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "component must use a public candidate or null",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "unresolved",
+            "component": "dockerB2",
+            "reason": "network latency",
+            "time": "20:38:00.000",
+            "time_evidence_id": "e231",
+            "support_ids": [
+              "e231",
+              "e233"
+            ],
+            "counter_ids": [],
+            "explanation": "dockerB2 在 20:38 和 20:59 分别观测到长调用（e231, e233），且最大调用时长 5359ms。但缺乏明确的父子调用链证明这些慢调用源自上游特定组件，也未见明确的网络丢包证据，需进一步排查调用源头。"
+          },
+          "error": "component must use a public candidate or null"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

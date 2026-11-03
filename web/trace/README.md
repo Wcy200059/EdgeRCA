@@ -6,6 +6,15 @@
 
 直接打开 **[EdgeRCA_trace.html](EdgeRCA_trace.html)**。资源和三个案例全部内嵌，不需要联网或启动模型。直接打开 `index.html` 也会转到这个单文件入口。
 
+新克隆 GitHub 仓库时，先从已发布的实验参考记录恢复案例，再生成单文件：
+
+```bash
+python3 -m tools.experiment_records frontend
+python3 -m tools.build_standalone_trace
+```
+
+这两步不需要原始数据集或模型，不覆盖已有案例目录。完整说明见[实验记录入口](../../experiments/README.md)。
+
 通过本地服务查看多文件版：
 
 ```bash

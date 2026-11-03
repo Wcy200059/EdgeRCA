@@ -1,0 +1,112 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": "22:07:00.000",
+        "time_evidence_id": "e54",
+        "support_ids": [
+          "e54",
+          "e297",
+          "e265",
+          "e266"
+        ],
+        "counter_ids": [],
+        "explanation": "MG01 CPU 于 22:07 达峰值 40.26% (e54)。IG01 CPU 随后维持高位 (e297)。IG01 向 Tomcat01/02 发起大量调用且 P95 延迟显著 (e265, e266)。时间线吻合：资源高→计算负载高→下游延迟。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "IG02",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "IG02 有 JVM Heap 波动 (e17) 且向 Tomcat 发起大量高延迟调用 (e270, e272)。但缺乏 IG02 自身 CPU 高负载的直接指标证据，需补查确认是否由 CPU 过高引发。"
+      },
+      {
+        "id": "h3",
+        "assessment": "supported",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [
+          "e299"
+        ],
+        "counter_ids": [],
+        "explanation": "Mysql01 在窗口期内无任何 Trace 记录到达 (e299)，且之前请求特定磁盘读指标失败。这强烈暗示存在严重的 I/O 瓶颈或连接问题导致无法产生 Trace，符合双故障之一。需确认具体 I/O 指标数值。"
+      },
+      {
+        "id": "h4",
+        "assessment": "unresolved",
+        "component": "Mysql02",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql02 有 Trace 记录缺失 (e147)，但缺乏直接 I/O 指标证据。需确认其磁盘读 I/O 是否同样存在瓶颈，以区分是单点故障还是全局 I/O 问题。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "22:00:00",
+        "end": "22:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Mysql-MySQL_3306_DiskIO_Read"
+        ],
+        "focus": "获取 Mysql01 磁盘读 I/O 指标数值，确认是否存在 I/O 瓶颈导致业务失败。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql02",
+        "start": "22:00:00",
+        "end": "22:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Mysql-MySQL_3306_DiskIO_Read"
+        ],
+        "focus": "获取 Mysql02 磁盘读 I/O 指标数值，确认是否存在 I/O 瓶颈导致业务失败。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:IG02",
+        "start": "22:00:00",
+        "end": "22:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认 IG02 在窗口期内 CPU 使用率是否出现显著升高或持续高位，以验证高 CPU 导致下游 Tomcat 延迟的假设。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17707,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 41,
+        "available_facts": 273
+      }
+    }
+  ],
+  "labels_used": false
+}

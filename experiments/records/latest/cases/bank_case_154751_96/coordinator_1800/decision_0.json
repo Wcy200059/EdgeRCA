@@ -1,0 +1,123 @@
+{
+  "reply": {
+    "hypotheses": [],
+    "requests": [
+      {
+        "node_id": "device:apache02",
+        "start": "11:00:00",
+        "end": "11:30:00",
+        "tools": [
+          "list_metrics",
+          "get_calls"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUUserTime",
+          "OSLinux-CPU_CPU_CPUSysTime",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认 apache02 是否存在 CPU 过载或内存不足导致无法处理请求，以解释 502 错误。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:apache02",
+        "start": "11:00:00",
+        "end": "11:30:00",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "获取 apache02 的调用链详情，确认 502 错误请求对应的上游或下游组件，验证是否存在网络延迟或后端超时。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "11:00:00",
+        "end": "11:30:00",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "检查 Tomcat01 是否有长调用或大量请求堆积，以验证其是否因负载过高导致响应超时从而引发 502。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "h1: time 11:08:00.000 requires e150 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 0,
+          "item": {
+            "id": "h1",
+            "assessment": "supported",
+            "component": "apache02",
+            "reason": "high CPU usage",
+            "time": "11:08:00.000",
+            "time_evidence_id": "e150",
+            "support_ids": [
+              "e150",
+              "e151",
+              "e152",
+              "e153",
+              "e154",
+              "e155",
+              "e156",
+              "e157",
+              "e158",
+              "e159",
+              "e160",
+              "e142",
+              "e143",
+              "e144",
+              "e145",
+              "e146",
+              "e147"
+            ],
+            "counter_ids": [],
+            "explanation": "apache02 在 11:08:00 起连续出现 11 个不同路径的 502 报错 (e150-e160)，伴随 CPU 规则触发 (e142, e143, e144) 及网络连接异常 (e146, e147)。业务影响集中在 ServiceTest 接口。其他节点如 Mysql/Redis 无明确报错证据，且 apache02 资源指标变化早于业务失败，符合根因特征。"
+          },
+          "error": "h1: time 11:08:00.000 requires e150 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        }
+      ]
+    },
+    {
+      "valid": false,
+      "error": "reason must use a public candidate or null",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 0,
+          "item": {
+            "id": "h1",
+            "assessment": "unresolved",
+            "component": "apache02",
+            "reason": "http_5xx",
+            "time": null,
+            "time_evidence_id": null,
+            "support_ids": [
+              "e150",
+              "e151",
+              "e152",
+              "e153",
+              "e154",
+              "e155",
+              "e156",
+              "e157",
+              "e158",
+              "e159",
+              "e160"
+            ],
+            "counter_ids": [],
+            "explanation": "apache02 在 11:08:00 至 11:12:00 期间出现大量 502 错误，表明后端服务不可用。虽然 Tomcat 等下游组件可能存在资源问题，但缺乏明确的父子调用链证明 apache02 是根因，且未发现 apache02 自身的 CPU/OOM 等明确故障指标。需补查 apache02 资源及调用链以确认根因。"
+          },
+          "error": "reason must use a public candidate or null"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

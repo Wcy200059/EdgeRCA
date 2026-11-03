@@ -1,0 +1,113 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": "13:25:00",
+        "time_evidence_id": "e5",
+        "support_ids": [
+          "e5"
+        ],
+        "counter_ids": [],
+        "explanation": "IG01 CPU 在 13:25 触发告警并持续至窗口结束，变化显著。但缺乏下游业务失败或上游资源耗尽的直接证据链，且仅凭 CPU 高无法直接断定导致单点业务失败，需补查业务影响。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:IG01",
+        "start": "13:24:00",
+        "end": "13:26:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "核实 IG01 在 13:25 触发告警时的 CPU 具体数值及趋势，确认是否达到故障阈值并持续高位。",
+        "basis_ids": [
+          "e5"
+        ]
+      },
+      {
+        "node_id": "device:dockerB2",
+        "start": "13:00:00",
+        "end": "13:02:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_DISK_DISKUsedDiskPerc"
+        ],
+        "focus": "检查 dockerB2 在 13:00 长调用发生时磁盘使用率，确认是否存在空间不足导致的阻塞。",
+        "basis_ids": [
+          "e244"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "13:24:00",
+        "end": "13:25:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "JVM-Memory-MemoryHeapUsedPercent"
+        ],
+        "focus": "检查 Tomcat04 在 13:24 长调用发生时的 OS CPU 和 JVM 堆内存使用率，判断是否为资源耗尽导致业务失败。",
+        "basis_ids": [
+          "e203"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "component must use a public candidate or null",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "unresolved",
+            "component": "dockerB2",
+            "reason": "high disk space usage",
+            "time": "13:00:30",
+            "time_evidence_id": "e244",
+            "support_ids": [
+              "e244"
+            ],
+            "counter_ids": [],
+            "explanation": "dockerB2 在 13:00:30 出现长调用，可能暗示磁盘空间不足导致写入阻塞。但该时间点早于主要业务异常（13:24+），且无明确的磁盘指标确认空间耗尽，需补查磁盘状态。"
+          },
+          "error": "component must use a public candidate or null"
+        },
+        {
+          "section": "hypotheses",
+          "index": 2,
+          "item": {
+            "id": "h3",
+            "assessment": "unresolved",
+            "component": "Tomcat04",
+            "reason": "high JVM CPU load",
+            "time": "13:24:22",
+            "time_evidence_id": "e203",
+            "support_ids": [
+              "e203"
+            ],
+            "counter_ids": [],
+            "explanation": "Tomcat04 在 13:24:22 出现极长调用（11s），符合业务失败特征。但缺乏 JVM CPU 或内存的具体高负载证据，且长调用也可能是网络或下游原因，需补查 JVM 指标。"
+          },
+          "error": "h3: time 13:24:22 requires e203 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

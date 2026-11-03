@@ -1,0 +1,90 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Mysql02",
+        "reason": "high memory usage",
+        "time": "11:24:00.000",
+        "time_evidence_id": "e132",
+        "support_ids": [
+          "e132",
+          "e316"
+        ],
+        "counter_ids": [],
+        "explanation": "Mysql02 内存持续 98% (e316)，CPU 同步上升 (e132)。该资源耗尽状态足以导致进程挂起或触发长 GC，解释 MG01 观测到的长调用。无其他组件出现同等严重资源指标，支持单点故障。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql02",
+        "start": "11:24:00.000",
+        "end": "11:30:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadOps"
+        ],
+        "focus": "验证 Mysql02 内存高时是否伴随磁盘读 I/O 激增，确认是否为磁盘瓶颈加剧了内存压力或导致 IO 等待。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:MG01",
+        "start": "11:24:00.000",
+        "end": "11:30:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认 MG01 在 Mysql02 故障时段自身资源正常，排除其自身 CPU/内存问题导致长调用，验证故障传播路径。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:MG01",
+        "start": "11:00:00.000",
+        "end": "11:30:00.000",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "NETWORK"
+        ],
+        "focus": "获取 MG01 可用网络指标名称，以便后续查询网络延迟或丢包情况，彻底排除网络故障作为 11:06 长调用的根因。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "h2: time 11:06:00.000 requires e43 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "unresolved",
+            "component": "MG01",
+            "reason": "network latency",
+            "time": "11:06:00.000",
+            "time_evidence_id": "e43",
+            "support_ids": [
+              "e43"
+            ],
+            "counter_ids": [],
+            "explanation": "MG01 在 11:06 观测到 9.5s 长调用 (e43)。但缺乏网络指标（丢包、RTT）支持，且时间早于 Mysql02 内存故障。需确认是否为网络问题或应用层处理慢，排除其作为根因的可能性。"
+          },
+          "error": "h2: time 11:06:00.000 requires e43 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

@@ -1,0 +1,38 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": "22:07:00.000",
+        "evidence_ids": [
+          "e54",
+          "e297",
+          "e265"
+        ],
+        "explanation": "e54 显示 MG01 CPU 于 22:07 达峰值 40.26%。e297 显示 IG01 CPU 在窗口内维持高位（25.9%）。e265 显示 IG01 向 Tomcat01 发起大量高延迟调用。时间线与因果链吻合：MG01 资源瓶颈导致 IG01 负载升高，进而引发下游延迟。"
+      },
+      {
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "evidence_ids": [
+          "e299"
+        ],
+        "explanation": "e299 显示在查询窗口内无法获取 Mysql01 的磁盘读 I/O 指标（Mysql-MySQL_3306_DiskIO_Read）。结合业务上下文，这种指标缺失强烈暗示存在严重的 I/O 瓶颈或连接问题导致无法产生正常 Trace 数据，符合双故障之一。具体发生时间未知。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1614868200000,
+  "model_judgment_verified": false,
+  "expected_failures": 2,
+  "answer_schema": "faults_v1",
+  "field_repairs": [],
+  "warnings": []
+}

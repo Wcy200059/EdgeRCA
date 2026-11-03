@@ -1,0 +1,373 @@
+{
+  "case_id": "cbe25beae3d66b49",
+  "node_id": "device:Tomcat01",
+  "request_id": "q62d086577c46b053",
+  "window_start_ms": 1615321800000,
+  "cutoff_ms": 1615323600000,
+  "query_end_ms": 1615322400000,
+  "scope": {
+    "start": "04:38:00.000",
+    "end": "04:40:00.000"
+  },
+  "requested_scope": {
+    "reference": {
+      "start_ms": 1615321980000,
+      "end_ms": 1615322280000,
+      "seconds": 300.0,
+      "bounds": "[start,end)"
+    },
+    "current": {
+      "start_ms": 1615322280000,
+      "end_ms": 1615322400000,
+      "seconds": 120.0,
+      "bounds": "[start,end)"
+    },
+    "rows_considered": 561,
+    "prefix_rows": 692,
+    "counts_by_modality": {
+      "metric": 342,
+      "log": 27,
+      "trace": 192
+    },
+    "must_report_ids": [],
+    "raw_archive_preserved": true
+  },
+  "request": {
+    "node_id": "device:Tomcat01",
+    "start": "04:38:00",
+    "end": "04:40:00",
+    "tools": [
+      "get_logs"
+    ],
+    "metrics": [],
+    "focus": "查找 04:38:20 GC 暂停对应的日志，确认是否存在 OOM 错误信息或 Full GC 记录，以锁定根因为 JVM Heap 耗尽。",
+    "basis_ids": [
+      "e248"
+    ]
+  },
+  "tools_executed": [
+    "get_logs"
+  ],
+  "facts": [
+    {
+      "id": "f1",
+      "kind": "log",
+      "status": "available",
+      "category": "gc",
+      "details": {
+        "gc_kind": "young_or_unspecified",
+        "gc_reason": "Allocation Failure"
+      },
+      "count": 1,
+      "first": "04:38:20.000",
+      "last": "04:38:20.000",
+      "explicit_error": false,
+      "gc_pause_max_ms": 134.9185
+    },
+    {
+      "id": "f2",
+      "kind": "http_access",
+      "status": "200",
+      "count": 15,
+      "first": "04:38:20.000",
+      "last": "04:39:53.000",
+      "template_count": 6
+    }
+  ],
+  "catalog": {
+    "f1": {
+      "modality": "log",
+      "status": "available",
+      "log_name": "gc",
+      "category": "gc",
+      "signature": "dcb38e5fd5ebde72a410",
+      "details": {
+        "gc_kind": "young_or_unspecified",
+        "gc_reason": "Allocation Failure"
+      },
+      "count": 1,
+      "first_observed_ms": 1615322300000,
+      "last_observed_ms": 1615322300000,
+      "first_available_ms": 1615322300000,
+      "last_available_ms": 1615322300000,
+      "reference_count": 0,
+      "current_count": 1,
+      "reference_per_second": null,
+      "current_per_second": 0.008333333333333333,
+      "has_explicit_error": false,
+      "gc_pause_ms": {
+        "count": 1,
+        "mean": 134.9185,
+        "median": 134.9185,
+        "p50": 134.9185,
+        "p95": 134.9185,
+        "min": 134.9185,
+        "max": 134.9185
+      },
+      "evidence_ids": [
+        "Bank:2021_03_10/log/log_service.csv:000000001955"
+      ],
+      "note": "普通GC不是OOM；HTTP错误/错误词是观测，不直接确定根因。",
+      "all_source_ids": [
+        "Bank:2021_03_10/log/log_service.csv:000000001955"
+      ]
+    },
+    "f2": [
+      {
+        "modality": "log",
+        "status": "available",
+        "log_name": "localhost_access_log",
+        "category": "http_access",
+        "signature": "9cc3141a3da62b1b4501",
+        "details": {
+          "method": "POST",
+          "path": "/UOCP/base/ServiceTest6.json",
+          "status": "200",
+          "requester": "IG01"
+        },
+        "count": 5,
+        "first_observed_ms": 1615322304000,
+        "last_observed_ms": 1615322370000,
+        "first_available_ms": 1615322304000,
+        "last_available_ms": 1615322370000,
+        "reference_count": 0,
+        "current_count": 5,
+        "reference_per_second": null,
+        "current_per_second": 0.041666666666666664,
+        "has_explicit_error": false,
+        "gc_pause_ms": {
+          "count": 0,
+          "mean": null,
+          "median": null,
+          "p50": null,
+          "p95": null,
+          "min": null,
+          "max": null
+        },
+        "evidence_ids": [
+          "Bank:2021_03_10/log/log_service.csv:000000010121",
+          "Bank:2021_03_10/log/log_service.csv:000000010132"
+        ],
+        "note": "普通GC不是OOM；HTTP错误/错误词是观测，不直接确定根因。",
+        "all_source_ids": [
+          "Bank:2021_03_10/log/log_service.csv:000000010121",
+          "Bank:2021_03_10/log/log_service.csv:000000010122",
+          "Bank:2021_03_10/log/log_service.csv:000000010123",
+          "Bank:2021_03_10/log/log_service.csv:000000010125",
+          "Bank:2021_03_10/log/log_service.csv:000000010132"
+        ]
+      },
+      {
+        "modality": "log",
+        "status": "available",
+        "log_name": "localhost_access_log",
+        "category": "http_access",
+        "signature": "e6d96c01330c07343904",
+        "details": {
+          "method": "POST",
+          "path": "/UOCP/base/ServiceTest6.json",
+          "status": "200",
+          "requester": "IG02"
+        },
+        "count": 1,
+        "first_observed_ms": 1615322334000,
+        "last_observed_ms": 1615322334000,
+        "first_available_ms": 1615322334000,
+        "last_available_ms": 1615322334000,
+        "reference_count": 0,
+        "current_count": 1,
+        "reference_per_second": null,
+        "current_per_second": 0.008333333333333333,
+        "has_explicit_error": false,
+        "gc_pause_ms": {
+          "count": 0,
+          "mean": null,
+          "median": null,
+          "p50": null,
+          "p95": null,
+          "min": null,
+          "max": null
+        },
+        "evidence_ids": [
+          "Bank:2021_03_10/log/log_service.csv:000000010129"
+        ],
+        "note": "普通GC不是OOM；HTTP错误/错误词是观测，不直接确定根因。",
+        "all_source_ids": [
+          "Bank:2021_03_10/log/log_service.csv:000000010129"
+        ]
+      },
+      {
+        "modality": "log",
+        "status": "available",
+        "log_name": "localhost_access_log",
+        "category": "http_access",
+        "signature": "90a5e8797aa491a0a103",
+        "details": {
+          "method": "POST",
+          "path": "/UOCP/base/ServiceTest7.json",
+          "status": "200",
+          "requester": "IG01"
+        },
+        "count": 2,
+        "first_observed_ms": 1615322323000,
+        "last_observed_ms": 1615322390000,
+        "first_available_ms": 1615322323000,
+        "last_available_ms": 1615322390000,
+        "reference_count": 0,
+        "current_count": 2,
+        "reference_per_second": null,
+        "current_per_second": 0.016666666666666666,
+        "has_explicit_error": false,
+        "gc_pause_ms": {
+          "count": 0,
+          "mean": null,
+          "median": null,
+          "p50": null,
+          "p95": null,
+          "min": null,
+          "max": null
+        },
+        "evidence_ids": [
+          "Bank:2021_03_10/log/log_service.csv:000000010124",
+          "Bank:2021_03_10/log/log_service.csv:000000010133"
+        ],
+        "note": "普通GC不是OOM；HTTP错误/错误词是观测，不直接确定根因。",
+        "all_source_ids": [
+          "Bank:2021_03_10/log/log_service.csv:000000010124",
+          "Bank:2021_03_10/log/log_service.csv:000000010133"
+        ]
+      },
+      {
+        "modality": "log",
+        "status": "available",
+        "log_name": "localhost_access_log",
+        "category": "http_access",
+        "signature": "6da758a7b0dac058ec09",
+        "details": {
+          "method": "POST",
+          "path": "/UOCP/base/ServiceTest7.json",
+          "status": "200",
+          "requester": "IG02"
+        },
+        "count": 2,
+        "first_observed_ms": 1615322300000,
+        "last_observed_ms": 1615322327000,
+        "first_available_ms": 1615322300000,
+        "last_available_ms": 1615322327000,
+        "reference_count": 0,
+        "current_count": 2,
+        "reference_per_second": null,
+        "current_per_second": 0.016666666666666666,
+        "has_explicit_error": false,
+        "gc_pause_ms": {
+          "count": 0,
+          "mean": null,
+          "median": null,
+          "p50": null,
+          "p95": null,
+          "min": null,
+          "max": null
+        },
+        "evidence_ids": [
+          "Bank:2021_03_10/log/log_service.csv:000000010120",
+          "Bank:2021_03_10/log/log_service.csv:000000010126"
+        ],
+        "note": "普通GC不是OOM；HTTP错误/错误词是观测，不直接确定根因。",
+        "all_source_ids": [
+          "Bank:2021_03_10/log/log_service.csv:000000010120",
+          "Bank:2021_03_10/log/log_service.csv:000000010126"
+        ]
+      },
+      {
+        "modality": "log",
+        "status": "available",
+        "log_name": "localhost_access_log",
+        "category": "http_access",
+        "signature": "6c776c89c4db709e2126",
+        "details": {
+          "method": "POST",
+          "path": "/UOCP/base/ServiceTest8.json",
+          "status": "200",
+          "requester": "IG02"
+        },
+        "count": 4,
+        "first_observed_ms": 1615322331000,
+        "last_observed_ms": 1615322393000,
+        "first_available_ms": 1615322331000,
+        "last_available_ms": 1615322393000,
+        "reference_count": 0,
+        "current_count": 4,
+        "reference_per_second": null,
+        "current_per_second": 0.03333333333333333,
+        "has_explicit_error": false,
+        "gc_pause_ms": {
+          "count": 0,
+          "mean": null,
+          "median": null,
+          "p50": null,
+          "p95": null,
+          "min": null,
+          "max": null
+        },
+        "evidence_ids": [
+          "Bank:2021_03_10/log/log_service.csv:000000010127",
+          "Bank:2021_03_10/log/log_service.csv:000000010134"
+        ],
+        "note": "普通GC不是OOM；HTTP错误/错误词是观测，不直接确定根因。",
+        "all_source_ids": [
+          "Bank:2021_03_10/log/log_service.csv:000000010127",
+          "Bank:2021_03_10/log/log_service.csv:000000010130",
+          "Bank:2021_03_10/log/log_service.csv:000000010131",
+          "Bank:2021_03_10/log/log_service.csv:000000010134"
+        ]
+      },
+      {
+        "modality": "log",
+        "status": "available",
+        "log_name": "localhost_access_log",
+        "category": "http_access",
+        "signature": "d2d2ccf695f8d07dc258",
+        "details": {
+          "method": "POST",
+          "path": "/UOCP/person/ServiceTest10.json",
+          "status": "200",
+          "requester": "IG01"
+        },
+        "count": 1,
+        "first_observed_ms": 1615322331000,
+        "last_observed_ms": 1615322331000,
+        "first_available_ms": 1615322331000,
+        "last_available_ms": 1615322331000,
+        "reference_count": 0,
+        "current_count": 1,
+        "reference_per_second": null,
+        "current_per_second": 0.008333333333333333,
+        "has_explicit_error": false,
+        "gc_pause_ms": {
+          "count": 0,
+          "mean": null,
+          "median": null,
+          "p50": null,
+          "p95": null,
+          "min": null,
+          "max": null
+        },
+        "evidence_ids": [
+          "Bank:2021_03_10/log/log_service.csv:000000010128"
+        ],
+        "note": "普通GC不是OOM；HTTP错误/错误词是观测，不直接确定根因。",
+        "all_source_ids": [
+          "Bank:2021_03_10/log/log_service.csv:000000010128"
+        ]
+      }
+    ]
+  },
+  "available_metric_names": [],
+  "missing_metrics": [],
+  "limitations": [
+    "只检查请求节点、指定范围与最多前5分钟对照；参考段不保证正常。",
+    "请求之外的指标尚未检查；原始记录和工具完整结果保留。",
+    "没有相应字段或记录不能证明设备正常；慢调用不是网络RTT。"
+  ],
+  "labels_used": false
+}

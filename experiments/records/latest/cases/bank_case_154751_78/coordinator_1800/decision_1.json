@@ -1,0 +1,102 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat01",
+        "reason": "high CPU usage",
+        "time": "17:56:00.000",
+        "time_evidence_id": "e153",
+        "support_ids": [
+          "e153"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat01 CPU 在 17:56 激增至 99.98% 并持续高负载，导致下游 MG 及上游 IG 调用延迟（e33, e279）。该节点是因果链中明确的资源瓶颈点。"
+      },
+      {
+        "id": "h3",
+        "assessment": "supported",
+        "component": "Tomcat02",
+        "reason": "high CPU usage",
+        "time": "17:56:00.000",
+        "time_evidence_id": "e153",
+        "support_ids": [
+          "e153"
+        ],
+        "counter_ids": [],
+        "explanation": "e153 显示 Tomcat02 在 17:53 触发规则，17:56 达到 99.5% 高负载。作为 IG01 的直接下游，其 CPU 饱和解释了长调用（e183, e280）及业务延迟。"
+      },
+      {
+        "id": "h4",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "network latency",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "IG01 观测到长调用（e33, e279），但无法区分是网络问题还是下游 Tomcat CPU 高负载导致。需补查 IG01 网络指标或确认 Tomcat 负载完全解释延迟。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:IG01",
+        "start": "17:55:00",
+        "end": "18:00:00",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_NETWORK"
+        ],
+        "focus": "确认 IG01 是否有网络延迟或丢包指标，以区分网络故障与下游 CPU 高负载。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat03",
+        "start": "17:55:00",
+        "end": "18:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "获取 Tomcat03 CPU 具体数值，验证是否存在与 Tomcat01/02 同步的高负载现象。",
+        "basis_ids": [
+          "e204"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "17:55:00",
+        "end": "18:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "获取 Tomcat04 CPU 具体数值，验证是否存在与 Tomcat01/02 同步的高负载现象。",
+        "basis_ids": [
+          "e220"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17772,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 53,
+        "available_facts": 297
+      }
+    }
+  ],
+  "labels_used": false
+}

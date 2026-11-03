@@ -1,0 +1,485 @@
+{
+  "case_id": "ceca0c07e22f8abc",
+  "node_id": "device:apache02",
+  "window_start_ms": 1616511600000,
+  "cutoff_ms": 1616513400000,
+  "groups": [],
+  "tool_card_catalog": {
+    "s0_f1": {
+      "id": "s0_f1",
+      "tool_fact": "信号OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc；截至报告时规则触发。规则状态变化：23:02:00 规则触发。首次触发时：采样值=93。首次触发值不是正常基线。规则metric.memory_high最近一次评估（23:28:00）：采样值=93。最近评估不一定是当前采样；解除只指规则，不证明故障恢复。本报告范围共20点，范围93—93，中位数93；范围不能证明涨跌。单位为百分比。含义：内存占用比例，可能包含缓存。窗口前后5分钟：前段4点中位数93，后段5点中位数93；比较：相等。极值观测：23:02:00.000=93。极值观测：23:02:00.000=93。"
+    },
+    "s0_f2": {
+      "id": "s0_f2",
+      "tool_fact": "指标OSLinux-CPU_CPU_CPUCpuUtil；OS CPU使用率。本报告范围19点，范围0.3241—0.6522，中位数0.4403。参考段0点，中位数未知；参考段比较：对照不足，无法判断变化。范围本身不能证明趋势。单位为百分比。窗口前后5分钟：前段3点中位数0.5235，后段4点中位数0.42375；比较：下降。极值观测：23:11:00.000=0.3241。极值观测：23:16:00.000=0.6522。"
+    },
+    "s0_f3": {
+      "id": "s0_f3",
+      "tool_fact": "指标OSLinux-OSLinux_MEMORY_MEMORY_NoCacheMemPerc；只描述原始数值，未确认累计/瞬时含义，不直接断言故障。本报告范围19点，范围27.6081—27.9898，中位数27.6399。参考段0点，中位数未知；参考段比较：对照不足，无法判断变化。范围本身不能证明趋势。原始单位未确认，不能自行换算为GB、百分比等单位。窗口前后5分钟：前段3点中位数27.9898，后段4点中位数27.6081；比较：下降。极值观测：23:12:00.000=27.6081。极值观测：23:00:00.000=27.9898。"
+    },
+    "s0_f4": {
+      "id": "s0_f4",
+      "tool_fact": "HTTP状态码200，共5049条，出现范围23:00:00.000—23:29:59.000；合并11种模板。只描述本组状态码，不能据此认为全部请求成功。"
+    },
+    "s0_f5": {
+      "id": "s0_f5",
+      "tool_fact": "本范围没有已到达的已完成调用记录；不代表其他模态缺失，也不表示设备正常。"
+    }
+  },
+  "retain_local": [
+    "s0_f4",
+    "s0_f1",
+    "s0_f2",
+    "s0_f5",
+    "s0_f3"
+  ],
+  "defer": [],
+  "cpu_only_metric_ids": [
+    "90a364fc0b3483cbc4fd",
+    "05da7daf576f4d37e713",
+    "7aab13f1bb4ce80a220f",
+    "d8674a15900498bf1e11",
+    "7a8e3ab1b11337144bfc",
+    "adcc608a7a66537b5a88",
+    "2717eefbedd6f6b7c042",
+    "4f4f40aeb398b2310989"
+  ],
+  "questions": [],
+  "overview_text": "本地保留5条观测；0条变化或明确错误优先展示。稳定采样1条，数据不足1条。稳定不等于正常；节点没有判定全局根因。",
+  "scope": {
+    "start": "23:00:00.000",
+    "end": "23:30:00.000",
+    "raw_rows": {
+      "log": 5049,
+      "metric": 130
+    },
+    "alarm_groups": 1,
+    "cpu_only_metric_count": 8
+  },
+  "question_overview": null,
+  "prose_semantics_verified": false,
+  "pending_self_queries": [],
+  "node_mode": "catalogue",
+  "template_rows": [
+    {
+      "id": "s0_f1",
+      "subject": "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc",
+      "fields": {
+        "signal": "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc",
+        "meaning": "内存占用比例，可能包含缓存",
+        "metric_unit": "%",
+        "whole_prefix": {
+          "count": 20,
+          "min": 93.0,
+          "max": 93.0,
+          "median": 93.0
+        },
+        "early": {
+          "count": 4,
+          "median": 93.0
+        },
+        "late": {
+          "count": 5,
+          "median": 93.0
+        },
+        "early_late_change": {
+          "direction": "unchanged",
+          "delta": 0.0,
+          "ratio": 1.0
+        },
+        "extremes": [
+          {
+            "value": 93.0,
+            "time": "23:02:00.000"
+          },
+          {
+            "value": 93.0,
+            "time": "23:02:00.000"
+          }
+        ],
+        "first_trigger_values": {
+          "value": 93.0,
+          "raw_value": 93.0,
+          "kind": "observation",
+          "unit": "%"
+        },
+        "timeline": [
+          [
+            "23:02:00",
+            "triggered"
+          ]
+        ],
+        "state": "triggered"
+      },
+      "pattern": "stable_samples",
+      "pattern_description": "本窗口采样稳定；不等于已证实正常",
+      "protected": false,
+      "node_id": "device:apache02",
+      "template": "metric_change",
+      "question": "【组件】的【指标】早段【值】，在【时间】出现【值】，后段【值】。变化属于【reading】，应【use】。",
+      "reading_options": {
+        "uncertain": "现有材料不足，暂不作该项解释",
+        "stable": "当前采样基本稳定，未据此认定正常"
+      },
+      "catalogue_action": "background",
+      "model_selection": null,
+      "model_valid": false,
+      "handling": "catalogue_background",
+      "raw_fact": {
+        "id": "s0_f1",
+        "kind": "alarm_history",
+        "signal": "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc",
+        "state": "triggered",
+        "cycles": 1,
+        "timeline": [
+          [
+            "23:02:00",
+            "triggered"
+          ]
+        ],
+        "latest": [
+          {
+            "rule": "metric.memory_high",
+            "time": "23:28:00",
+            "value": 93.0,
+            "kind": "observation",
+            "unit": "%",
+            "threshold": 90
+          }
+        ],
+        "first_trigger_values": {
+          "value": 93.0,
+          "raw_value": 93.0,
+          "kind": "observation",
+          "unit": "%"
+        },
+        "metric_unit": "%",
+        "meaning": "内存占用比例，可能包含缓存",
+        "whole_prefix": {
+          "count": 20,
+          "min": 93.0,
+          "max": 93.0,
+          "median": 93.0
+        },
+        "early": {
+          "count": 4,
+          "median": 93.0
+        },
+        "late": {
+          "count": 5,
+          "median": 93.0
+        },
+        "early_late_change": {
+          "direction": "unchanged",
+          "delta": 0.0,
+          "ratio": 1.0
+        },
+        "extremes": [
+          {
+            "time_ms": 1616511720000,
+            "value": 93.0
+          },
+          {
+            "time_ms": 1616511720000,
+            "value": 93.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "s0_f2",
+      "subject": "OSLinux-CPU_CPU_CPUCpuUtil",
+      "fields": {
+        "metric": "OSLinux-CPU_CPU_CPUCpuUtil",
+        "meaning": "OS CPU使用率",
+        "unit": "%",
+        "current": {
+          "count": 19,
+          "median": 0.4403,
+          "min": 0.3241,
+          "max": 0.6522
+        },
+        "reference": {
+          "count": 0,
+          "median": null
+        },
+        "early": {
+          "count": 3,
+          "median": 0.5235
+        },
+        "late": {
+          "count": 4,
+          "median": 0.42375
+        },
+        "early_late_change": {
+          "direction": "down",
+          "delta": -0.09975,
+          "ratio": 0.809456
+        },
+        "change": {
+          "direction": "unknown",
+          "delta": null,
+          "ratio": null
+        },
+        "extremes": [
+          {
+            "value": 0.3241,
+            "time": "23:11:00.000"
+          },
+          {
+            "value": 0.6522,
+            "time": "23:16:00.000"
+          }
+        ]
+      },
+      "pattern": "small_variation",
+      "pattern_description": "本窗口小幅波动；未据此判故障",
+      "protected": false,
+      "node_id": "device:apache02",
+      "template": "metric_change",
+      "question": "【组件】的【指标】早段【值】，在【时间】出现【值】，后段【值】。变化属于【reading】，应【use】。",
+      "reading_options": {
+        "uncertain": "现有材料不足，暂不作该项解释",
+        "variable": "存在波动，但不能据此确认持续涨跌",
+        "early_higher": "早段中位数较高，后段较低；不等于已证实恢复",
+        "middle_peak": "中途出现高值，后段采样较低；不等于已证实恢复"
+      },
+      "catalogue_action": "background",
+      "model_selection": null,
+      "model_valid": false,
+      "handling": "catalogue_background",
+      "raw_fact": {
+        "id": "s0_f2",
+        "metric": "OSLinux-CPU_CPU_CPUCpuUtil",
+        "meaning": "OS CPU使用率",
+        "unit": "%",
+        "reference": {
+          "count": 0,
+          "median": null
+        },
+        "current": {
+          "count": 19,
+          "median": 0.4403,
+          "min": 0.3241,
+          "max": 0.6522
+        },
+        "early": {
+          "count": 3,
+          "median": 0.5235
+        },
+        "late": {
+          "count": 4,
+          "median": 0.42375
+        },
+        "early_late_change": {
+          "direction": "down",
+          "delta": -0.09975,
+          "ratio": 0.809456
+        },
+        "extremes": [
+          {
+            "time_ms": 1616512260000,
+            "value": 0.3241
+          },
+          {
+            "time_ms": 1616512560000,
+            "value": 0.6522
+          }
+        ],
+        "change": {
+          "direction": "unknown",
+          "delta": null,
+          "ratio": null
+        },
+        "quality": {
+          "invalid": 0,
+          "conflicts": 0,
+          "counter_resets": 0,
+          "comparison": "limited_history"
+        },
+        "selected_because": [
+          "control"
+        ],
+        "modality": "metric"
+      }
+    },
+    {
+      "id": "s0_f3",
+      "subject": "OSLinux-OSLinux_MEMORY_MEMORY_NoCacheMemPerc",
+      "fields": {
+        "metric": "OSLinux-OSLinux_MEMORY_MEMORY_NoCacheMemPerc",
+        "meaning": "只描述原始数值，未确认累计/瞬时含义，不直接断言故障",
+        "unit": "source_unit_unverified",
+        "current": {
+          "count": 19,
+          "median": 27.6399,
+          "min": 27.6081,
+          "max": 27.9898
+        },
+        "reference": {
+          "count": 0,
+          "median": null
+        },
+        "early": {
+          "count": 3,
+          "median": 27.9898
+        },
+        "late": {
+          "count": 4,
+          "median": 27.6081
+        },
+        "early_late_change": {
+          "direction": "down",
+          "delta": -0.3817,
+          "ratio": 0.986363
+        },
+        "change": {
+          "direction": "unknown",
+          "delta": null,
+          "ratio": null
+        },
+        "extremes": [
+          {
+            "value": 27.6081,
+            "time": "23:12:00.000"
+          },
+          {
+            "value": 27.9898,
+            "time": "23:00:00.000"
+          }
+        ]
+      },
+      "pattern": "small_variation",
+      "pattern_description": "本窗口小幅波动；未据此判故障",
+      "protected": false,
+      "node_id": "device:apache02",
+      "template": "metric_change",
+      "question": "【组件】的【指标】早段【值】，在【时间】出现【值】，后段【值】。变化属于【reading】，应【use】。",
+      "reading_options": {
+        "uncertain": "现有材料不足，暂不作该项解释",
+        "variable": "存在波动，但不能据此确认持续涨跌",
+        "early_higher": "早段中位数较高，后段较低；不等于已证实恢复"
+      },
+      "catalogue_action": "background",
+      "model_selection": null,
+      "model_valid": false,
+      "handling": "catalogue_background",
+      "raw_fact": {
+        "id": "s0_f3",
+        "metric": "OSLinux-OSLinux_MEMORY_MEMORY_NoCacheMemPerc",
+        "meaning": "只描述原始数值，未确认累计/瞬时含义，不直接断言故障",
+        "unit": "source_unit_unverified",
+        "reference": {
+          "count": 0,
+          "median": null
+        },
+        "current": {
+          "count": 19,
+          "median": 27.6399,
+          "min": 27.6081,
+          "max": 27.9898
+        },
+        "early": {
+          "count": 3,
+          "median": 27.9898
+        },
+        "late": {
+          "count": 4,
+          "median": 27.6081
+        },
+        "early_late_change": {
+          "direction": "down",
+          "delta": -0.3817,
+          "ratio": 0.986363
+        },
+        "extremes": [
+          {
+            "time_ms": 1616512320000,
+            "value": 27.6081
+          },
+          {
+            "time_ms": 1616511600000,
+            "value": 27.9898
+          }
+        ],
+        "change": {
+          "direction": "unknown",
+          "delta": null,
+          "ratio": null
+        },
+        "quality": {
+          "invalid": 0,
+          "conflicts": 0,
+          "counter_resets": 0,
+          "comparison": "limited_history"
+        },
+        "selected_because": [
+          "control"
+        ],
+        "modality": "metric"
+      }
+    },
+    {
+      "id": "s0_f4",
+      "subject": "http_access",
+      "fields": {
+        "count": 5049,
+        "first": "23:00:00.000",
+        "last": "23:29:59.000",
+        "status": "200",
+        "note": "本组只包含该状态码；其他日志另列。"
+      },
+      "pattern": "observation_only",
+      "pattern_description": "已有观测；未据此判故障",
+      "protected": false,
+      "node_id": "device:apache02",
+      "template": "log_event",
+      "question": "【组件】在【起止】出现【日志类型】，共【次数】条。这说明【reading】，应【use】。",
+      "reading_options": {
+        "uncertain": "现有材料不足，暂不作该项解释",
+        "routine_event": "当前所见属于运行事件，尚不足以说明故障"
+      },
+      "catalogue_action": "background",
+      "model_selection": null,
+      "model_valid": false,
+      "handling": "catalogue_background",
+      "raw_fact": {
+        "id": "s0_f4",
+        "kind": "http_access",
+        "status": "200",
+        "count": 5049,
+        "first": "23:00:00.000",
+        "last": "23:29:59.000",
+        "template_count": 11,
+        "note": "本组只包含该状态码；其他日志另列。"
+      }
+    },
+    {
+      "id": "s0_f5",
+      "subject": "missing",
+      "fields": {
+        "note": "本查询范围无已到达记录，不能判正常。",
+        "modality": "trace"
+      },
+      "pattern": "insufficient_data",
+      "pattern_description": "数据或样本不足",
+      "protected": false,
+      "node_id": "device:apache02",
+      "template": "unavailable",
+      "question": "当前缺少【数据】；暂待补充，不填成正常。",
+      "reading_options": {
+        "uncertain": "现有材料不足，暂不作该项解释"
+      },
+      "catalogue_action": "background",
+      "model_selection": null,
+      "model_valid": false,
+      "handling": "catalogue_background",
+      "raw_fact": {
+        "id": "s0_f5",
+        "kind": "missing",
+        "note": "本查询范围无已到达记录，不能判正常。",
+        "modality": "trace"
+      }
+    }
+  ]
+}

@@ -1,0 +1,128 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat03",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [
+          "e151"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat03 在 08:15 出现 CPU 使用率峰值 99.77% (e151)，且早晚期有上升趋势。但缺乏该时段具体的业务失败或下游超时证据来确认其为根因，且未排除其他 Tomcat 节点同时故障的可能性。需补查该节点详细日志及调用链。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat03",
+        "start": "08:12:00",
+        "end": "08:23:00",
+        "tools": [
+          "get_logs",
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "JVM-Memory_7778_JVM_Memory_HeapMemoryUsed"
+        ],
+        "focus": "核实 08:12-08:23 期间 Tomcat03 的 CPU 高负载是否持续，以及是否有对应的 GC 日志、线程阻塞或内存溢出记录，以确认是否为根因。",
+        "basis_ids": [
+          "e151"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "use unique e IDs from current evidence; node overviews are not evidence",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "unresolved",
+            "component": "Tomcat02",
+            "reason": "high CPU usage",
+            "time": null,
+            "time_evidence_id": null,
+            "support_ids": [
+              "e140"
+            ],
+            "counter_ids": [],
+            "explanation": "Tomcat02 在 08:15 出现 CPU 使用率峰值 100% (e140)。虽然数值极高，但同样缺乏直接关联的业务失败证据或明确的父子调用超时链指向该节点。需进一步核实其负载来源及影响范围。"
+          },
+          "error": "use unique e IDs from current evidence; node overviews are not evidence"
+        },
+        {
+          "section": "hypotheses",
+          "index": 2,
+          "item": {
+            "id": "h3",
+            "assessment": "unresolved",
+            "component": "Tomcat04",
+            "reason": "high CPU usage",
+            "time": null,
+            "time_evidence_id": null,
+            "support_ids": [
+              "e160"
+            ],
+            "counter_ids": [],
+            "explanation": "Tomcat04 在 08:15 出现 CPU 使用率峰值 100% (e160)。存在高 CPU 迹象，但无直接证据表明其导致了系统级故障或影响了关键业务流。需确认其 CPU 高是否由内部逻辑引起或受外部请求驱动。"
+          },
+          "error": "use unique e IDs from current evidence; node overviews are not evidence"
+        },
+        {
+          "section": "requests",
+          "index": 1,
+          "item": {
+            "node_id": "device:Tomcat02",
+            "start": "08:12:00",
+            "end": "08:24:30",
+            "tools": [
+              "get_logs",
+              "get_metrics"
+            ],
+            "metrics": [
+              "OSLinux-CPU_CPU_CPUCpuUtil",
+              "JVM-Memory_7778_JVM_Memory_HeapMemoryUsed"
+            ],
+            "focus": "核实 08:12-08:24 期间 Tomcat02 的 CPU 高负载 (100%) 的具体表现，检查是否存在长尾调用或资源争用导致的业务延迟。",
+            "basis_ids": [
+              "e140"
+            ]
+          },
+          "error": "basis_ids must use e IDs from current evidence"
+        },
+        {
+          "section": "requests",
+          "index": 2,
+          "item": {
+            "node_id": "device:Tomcat04",
+            "start": "08:12:00",
+            "end": "08:24:00",
+            "tools": [
+              "get_logs",
+              "get_metrics"
+            ],
+            "metrics": [
+              "OSLinux-CPU_CPU_CPUCpuUtil",
+              "JVM-Memory_7778_JVM_Memory_HeapMemoryUsed"
+            ],
+            "focus": "核实 08:12-08:24 期间 Tomcat04 的 CPU 高负载 (100%) 原因，确认是否为孤立事件或影响了上游 MG 节点。",
+            "basis_ids": [
+              "e160"
+            ]
+          },
+          "error": "basis_ids must use e IDs from current evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

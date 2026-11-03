@@ -1,0 +1,96 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat01 存在长调用（e179），且 CPU 指标（e167）显示单核利用率曾达 100%。但这可能是长调用导致的后果而非根因，也可能是 OOM 前的现象。需结合内存指标判断是 CPU 过载还是内存溢出。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "MG01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "apache01 的磁盘指标（e230）显示 sdb 磁盘在 16:41-16:43 和 16:53-16:57 有规则触发波动，但未明确是读还是写，也未确认是否导致服务故障。需进一步确认磁盘活动类型及其对业务的影响。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:dockerB2",
+        "start": "16:30:00",
+        "end": "17:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc",
+          "JVM-Memory_HeapMemoryUsed"
+        ],
+        "focus": "确认 dockerB2 在故障时段是否存在内存使用率飙升或 JVM Heap 内存耗尽（OOM），以验证其是否为长调用的根因。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "16:30:00",
+        "end": "17:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "检查 Tomcat01 的内存使用率，判断其长调用（e179）是否由内存不足引起，或是否为 CPU 过载导致。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:apache01",
+        "start": "16:30:00",
+        "end": "17:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKReadBps"
+        ],
+        "focus": "明确 apache01 磁盘 sdb 的读写方向，确认 e230 中的规则触发是否由高磁盘读 I/O 引起，并评估其对业务的影响。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "component must use a public candidate or null",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 0,
+          "item": {
+            "id": "h1",
+            "assessment": "unresolved",
+            "component": "dockerB2",
+            "reason": "JVM Out of Memory (OOM) Heap",
+            "time": null,
+            "time_evidence_id": null,
+            "support_ids": [],
+            "counter_ids": [],
+            "explanation": "dockerB2 的调用规则（e252, e253）持续触发，且最大调用时长高达 16915ms，疑似资源耗尽导致。但节点未上报内存或 CPU 指标，缺乏直接 OOM 证据。需补查内存使用情况以确认是否为 OOM 根因，排除单纯网络或下游延迟。"
+          },
+          "error": "component must use a public candidate or null"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

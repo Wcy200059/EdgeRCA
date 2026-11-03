@@ -1,0 +1,29 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "apache01",
+        "reason": "high CPU usage",
+        "time": "22:35:14",
+        "evidence_ids": [
+          "e28",
+          "e29",
+          "e30",
+          "e100",
+          "e101"
+        ],
+        "explanation": "apache01 在 22:35:14 触发 http_5xx 规则 (e28) 并返回大量 502 错误 (e29-e30)。该节点 CPU 使用率在故障期间从 25.49% 微升至 25.67% (e100, e101)。虽幅度不大且无 OOM，但结合 502 超时现象，CPU 资源受限是导致请求处理失败的最直接可观测原因。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615561200000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1"
+}

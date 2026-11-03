@@ -1,0 +1,105 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat01",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "19:31:13.030",
+        "time_evidence_id": "e131",
+        "support_ids": [
+          "e131",
+          "e238"
+        ],
+        "counter_ids": [],
+        "explanation": "e131 证实 Tomcat01 在 19:31:13 出现 5465ms 长调用。e238 显示 IG02 到 Tomcat01 存在连接，且 IG02(e28) 同期有 6618ms 慢调用。资源耗尽导致下游延迟进而业务失败，时间链吻合。"
+      },
+      {
+        "id": "h2",
+        "assessment": "supported",
+        "component": "Redis02",
+        "reason": "high disk I/O read usage",
+        "time": "19:42:00.000",
+        "time_evidence_id": "e126",
+        "support_ids": [
+          "e126",
+          "e239",
+          "e243"
+        ],
+        "counter_ids": [],
+        "explanation": "e126 显示 Redis02 磁盘 I/O 在 19:42 触发规则，19:48 解除。e239/e243 证实 Tomcat02 和 dockerA1 均连接 MG01，而 MG01 连接 dockerA1。磁盘高 I/O 阻塞 IO 密集型任务，导致业务失败。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "需补查 Tomcat02 的 JVM Heap 使用率及 GC 日志。e266 显示关键内存指标缺失，e267 无日志。需确认是否为 OOM 导致线程堆积。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat02",
+        "start": "19:40:00.000",
+        "end": "19:50:00.000",
+        "tools": [
+          "get_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc",
+          "JVM-Memory_7778_JVM_Memory_HeapMemoryUsed"
+        ],
+        "focus": "核实 Tomcat02 在 19:42-19:50 期间内存使用率是否爆满及是否存在 GC 暂停，确认是否为 OOM 根因。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat02",
+        "start": "19:30:00.000",
+        "end": "20:00:00.000",
+        "tools": [
+          "get_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "JVM-GC_7778_GC_PauseTime"
+        ],
+        "focus": "补查 Tomcat02 全时段 GC 暂停情况，确认是否存在频繁 Full GC 或 OOM Killer 行为。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "19:30:00.000",
+        "end": "20:00:00.000",
+        "tools": [
+          "get_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "JVM-Memory_7778_JVM_Memory_HeapMemoryUsed"
+        ],
+        "focus": "补查 Tomcat01 全时段 Heap 使用情况，确认 19:31 长调用时是否伴随内存爆满。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17710,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 27,
+        "available_facts": 263
+      }
+    }
+  ],
+  "labels_used": false
+}

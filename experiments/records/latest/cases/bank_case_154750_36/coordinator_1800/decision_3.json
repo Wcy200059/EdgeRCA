@@ -1,0 +1,98 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "apache01",
+        "reason": "high CPU usage",
+        "time": "22:35:24.000",
+        "time_evidence_id": "e187",
+        "support_ids": [
+          "e187",
+          "e188",
+          "e189",
+          "e200",
+          "e201",
+          "e202",
+          "e203",
+          "e204",
+          "e205",
+          "e206",
+          "e207",
+          "e208",
+          "e209",
+          "e210",
+          "e261"
+        ],
+        "counter_ids": [],
+        "explanation": "Apache01 在 22:35-22:39 出现大量 502 错误。补查 e261 确认该时段 CPU 使用率仅 25.5%-25.6%，无明显飙升，不支持高 CPU 导致 502 的假设。需排除内存耗尽或网络问题。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql02",
+        "reason": "high memory usage",
+        "time": "22:31:00.000",
+        "time_evidence_id": "e263",
+        "support_ids": [
+          "e263"
+        ],
+        "counter_ids": [],
+        "explanation": "Mysql02 内存使用率持续 98% 直至窗口结束，时间早于 Apache 502 爆发。但缺乏后续内存泄漏或 OOM 导致服务无响应的直接证据（如 GC 日志或连接超时）。需确认内存是否导致下游服务不可用。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql02",
+        "start": "22:30:00",
+        "end": "22:40:00",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "检查 Mysql02 在 22:30-22:40 期间的 GC 日志和错误日志，确认高内存使用是否导致频繁 Full GC 或连接拒绝，从而引发上游 502 错误。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:apache01",
+        "start": "22:30:00",
+        "end": "22:40:00",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "检查 Apache01 在 502 爆发期间的错误日志，确认错误类型（如连接超时、拒绝连接）及上游来源，以区分是资源耗尽还是网络问题。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql02",
+        "start": "22:30:00",
+        "end": "22:40:00",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "MEMORY",
+          "DISK"
+        ],
+        "focus": "列出 Mysql02 所有内存和磁盘相关指标名称，以便后续精确查询是否存在内存泄漏或磁盘 I/O 瓶颈指标。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17736,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 39,
+        "available_facts": 264
+      }
+    }
+  ],
+  "labels_used": false
+}

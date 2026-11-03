@@ -1,0 +1,291 @@
+{
+  "scope": "Offline validation replay of unchanged saved replies; no model rerun or change to baseline scores.",
+  "source_sha256": "9730762d3107e43418db7393670b23fc321046b6b81153cbbcc22ba854be6dda",
+  "rows": [
+    {
+      "row": 11,
+      "accepted_after_validator_repairs": false,
+      "accepted": [],
+      "errors_remaining": [
+        {
+          "phase": "final_commit/0",
+          "error": "time must match this fault's cited time_mark, otherwise null"
+        },
+        {
+          "phase": "final_commit/1",
+          "error": "each fault needs exactly component/reason/time/evidence_ids/explanation"
+        }
+      ]
+    },
+    {
+      "row": 12,
+      "accepted_after_validator_repairs": false,
+      "accepted": [],
+      "errors_remaining": [
+        {
+          "phase": "final_commit/0",
+          "error": "evidence_ids must use current e IDs"
+        },
+        {
+          "phase": "final_commit/1",
+          "error": "Expecting value: line 16 column 1 (char 261)"
+        }
+      ]
+    },
+    {
+      "row": 129,
+      "accepted_after_validator_repairs": false,
+      "accepted": [],
+      "errors_remaining": [
+        {
+          "phase": "final_commit/0",
+          "error": "evidence_ids must use current e IDs"
+        },
+        {
+          "phase": "final_commit/1",
+          "error": "evidence_ids must use current e IDs"
+        }
+      ]
+    },
+    {
+      "row": 28,
+      "accepted_after_validator_repairs": false,
+      "accepted": [],
+      "errors_remaining": [
+        {
+          "phase": "final_commit/0",
+          "error": "evidence_ids must use current e IDs"
+        },
+        {
+          "phase": "final_commit/1",
+          "error": "each prediction requires its own cited evidence"
+        }
+      ]
+    },
+    {
+      "row": 36,
+      "accepted_after_validator_repairs": false,
+      "accepted": [],
+      "errors_remaining": [
+        {
+          "phase": "final_commit/0",
+          "error": "evidence_ids must use current e IDs"
+        },
+        {
+          "phase": "final_commit/1",
+          "error": "evidence_ids must use current e IDs"
+        }
+      ]
+    },
+    {
+      "row": 40,
+      "accepted_after_validator_repairs": true,
+      "accepted": [
+        {
+          "phase": "final_commit/0",
+          "unchanged_raw_reply": {
+            "faults": [
+              {
+                "component": "Mysql01",
+                "reason": "high disk I/O read usage",
+                "time": "14:40:00.000",
+                "evidence_ids": [
+                  "e17",
+                  "e18",
+                  "e22",
+                  "e23"
+                ],
+                "explanation": "Mysql01 在 14:40 后出现 Binlog Cache 使用激增 (e17) 和 Bytes Sent 暴涨 (e18)，伴随 InnoDB page_cleaner 超时日志 (e23)，表明磁盘 I/O 读瓶颈。Redis01 CPU 高 (e26) 为后续受影响症状，非根因。"
+              }
+            ]
+          },
+          "raw_reply_sha256": "aa46e3e924e1947b2e2e7b7faa3e838a5d488b23fd2d5772fe868a42afd441f3",
+          "offline_reply_scores": {
+            "60": 0.0,
+            "300": 0.0
+          }
+        },
+        {
+          "phase": "final_commit/1",
+          "unchanged_raw_reply": {
+            "faults": [
+              {
+                "component": "Mysql01",
+                "reason": "high disk I/O read usage",
+                "time": "14:40:00.000",
+                "evidence_ids": [
+                  "e18"
+                ],
+                "explanation": "e18 显示 Mysql01 在 14:40:00 开始 Bytes Sent 激增并持续至 14:57，伴随 e15/e16 连接重置及 e17 缓存爆满，符合 I/O 瓶颈特征。Redis01 CPU 高为后续影响。"
+              }
+            ]
+          },
+          "raw_reply_sha256": "6a592940e650b8166cd083d12feee058b36615f122922a0f83a8f70164806b84",
+          "offline_reply_scores": {
+            "60": 0.0,
+            "300": 0.0
+          }
+        }
+      ],
+      "errors_remaining": []
+    },
+    {
+      "row": 50,
+      "accepted_after_validator_repairs": true,
+      "accepted": [
+        {
+          "phase": "final_commit/1",
+          "unchanged_raw_reply": {
+            "faults": [
+              {
+                "component": "Mysql01",
+                "reason": "high disk I/O read usage",
+                "time": "22:08:00.000",
+                "evidence_ids": [
+                  "e16"
+                ],
+                "explanation": "Mysql01 的 'Innodb buffer pool pages dirty' 在 22:08:00 从 0 突增至 8 并持续触发，直接反映磁盘写入压力。该时间早于其他异常，且无证据表明其是下游结果。"
+              },
+              {
+                "component": "Redis01",
+                "reason": "network latency",
+                "time": "22:18:00.000",
+                "evidence_ids": [
+                  "e24",
+                  "e25"
+                ],
+                "explanation": "Redis01 的入站和出站网络包计数在 22:18:00 后出现数量级激增（从数百至数十亿），导致网络拥塞和高延迟，符合 network latency 特征。"
+              }
+            ]
+          },
+          "raw_reply_sha256": "750b1708b331d45c2e70cd8e84209591afb9a477028e7315c6e6a06352281686",
+          "offline_reply_scores": {
+            "60": 0.0,
+            "300": 0.0
+          }
+        }
+      ],
+      "errors_remaining": [
+        {
+          "phase": "final_commit/0",
+          "error": "reason must be a public candidate or null"
+        }
+      ]
+    },
+    {
+      "row": 64,
+      "accepted_after_validator_repairs": true,
+      "accepted": [
+        {
+          "phase": "final_commit/0",
+          "unchanged_raw_reply": {
+            "faults": [
+              {
+                "component": "IG01",
+                "reason": "network latency",
+                "time": "15:31:00.000",
+                "evidence_ids": [
+                  "e55",
+                  "e56",
+                  "e57",
+                  "e58",
+                  "e113",
+                  "e114",
+                  "e115"
+                ],
+                "explanation": "e55/e56 显示 dockerB1 在 15:31:00 触发 P95 飙升 (2157ms) 及最大耗时 (21093ms)。e114 证实 IG01 在同一分钟 P95 达 7913ms，e115 显示 15:31-15:32 期间 P95 仍高 (10125ms)。e57/e58 显示 MG 到 dockerB1 的长调用与 IG01 延迟同步。虽无直接丢包证据，但 IG01 是延迟源头且 CPU 正常，网络延迟是唯一符合因果链的根因。"
+              }
+            ]
+          },
+          "raw_reply_sha256": "5066ef340fb59a5ad280deb19d5fcfdf7b103f24e01fc747465d74ce61ed4695",
+          "offline_reply_scores": {
+            "60": 0.0,
+            "300": 0.0
+          }
+        }
+      ],
+      "errors_remaining": [
+        {
+          "phase": "final_commit/1",
+          "error": "time must match this fault's cited time_mark, otherwise null"
+        }
+      ]
+    },
+    {
+      "row": 65,
+      "accepted_after_validator_repairs": true,
+      "accepted": [
+        {
+          "phase": "final_commit/0",
+          "unchanged_raw_reply": {
+            "faults": [
+              {
+                "component": "Tomcat01",
+                "reason": "high JVM CPU load",
+                "time": "22:17:00.000",
+                "evidence_ids": [
+                  "e18",
+                  "e20",
+                  "e47",
+                  "e59",
+                  "e60"
+                ],
+                "explanation": "e18 显示 Tomcat01 在 22:17:00 触发 CPU 规则。e20 记录该节点存在 3407ms 的长调用。e47 显示 IG02 到 Tomcat01 延迟最高。e59/e60 显示 Tomcat01 到下游 MG 存在大量时间不匹配，表明其处理延迟导致调度异常。"
+              },
+              {
+                "component": "Tomcat03",
+                "reason": "high JVM CPU load",
+                "time": "22:17:00.000",
+                "evidence_ids": [
+                  "e25",
+                  "e27"
+                ],
+                "explanation": "e25 显示 Tomcat03 在 22:17:00 触发 CPU 规则，且 CPU-2 核心利用率达 100%。e27 记录该节点在 22:23 出现 3785ms 的长调用。时间上与 Tomcat01 一致，符合双故障点特征。"
+              }
+            ]
+          },
+          "raw_reply_sha256": "139b08f05047ea07d75c906603a32a61f307136af3cd6de141ee08756df808e7",
+          "offline_reply_scores": {
+            "60": 0.0,
+            "300": 0.17
+          }
+        },
+        {
+          "phase": "final_commit/1",
+          "unchanged_raw_reply": {
+            "faults": [
+              {
+                "component": "Tomcat01",
+                "reason": "high JVM CPU load",
+                "time": "22:17:00.000",
+                "evidence_ids": [
+                  "e18",
+                  "e20",
+                  "e47"
+                ],
+                "explanation": "Tomcat01 在 22:17:00 触发 CPU 规则(e18)，随后出现长调用(e20)。IG02 到 Tomcat01 延迟最高(e47)，且 Tomcat01 到下游 MG 存在大量时间不匹配，暗示资源耗尽导致调度延迟。"
+              },
+              {
+                "component": "Tomcat03",
+                "reason": "high JVM CPU load",
+                "time": "22:17:00.000",
+                "evidence_ids": [
+                  "e25",
+                  "e27",
+                  "e49"
+                ],
+                "explanation": "Tomcat03 在 22:17:00 触发 CPU 规则(e25)，随后出现长调用(e27)。IG02 到 Tomcat03 延迟高(e49)，且 Tomcat03 到下游 MG 存在大量时间不匹配，符合资源耗尽特征。"
+              }
+            ]
+          },
+          "raw_reply_sha256": "1655f435fb9d04bf8926e3c5a11a7e11e2ea780538c87613234f485568e2b219",
+          "offline_reply_scores": {
+            "60": 0.0,
+            "300": 0.17
+          }
+        }
+      ],
+      "errors_remaining": []
+    }
+  ]
+}

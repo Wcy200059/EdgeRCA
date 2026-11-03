@@ -1,0 +1,59 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "IG02",
+        "reason": "high CPU usage",
+        "time": "22:33:00",
+        "time_evidence_id": "e26",
+        "support_ids": [
+          "e26"
+        ],
+        "counter_ids": [],
+        "explanation": "IG02 在 22:33:00 出现 CPU 使用率峰值 (99.76%)，随后下降。该节点有明确的父子调用连接指向 Tomcat 集群 (e236-e239)，且 Tomcat 端观测到长调用。IG02 作为上游入口，其 CPU 飙升最符合根因特征，导致下游处理延迟。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "IG01 同样连接至 Tomcat 集群且观测到长调用，但其 CPU 指标详情未加载 (candidate_slate 仅显示 e1 为 CPU-0，需确认具体利用率)。需补查 IG01 CPU 详细指标以确认是否也存在类似 IG02 的 CPU 瓶颈，或仅为网络/下游问题。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:IG01",
+        "start": "22:30:00",
+        "end": "22:40:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认 IG01 在 22:30-22:40 期间的 CPU 使用率是否存在类似 IG02 的显著飙升，以验证其是否为根因或仅作为共犯。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17466,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 55,
+        "available_facts": 252
+      }
+    }
+  ],
+  "labels_used": false
+}

@@ -1,0 +1,93 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat01",
+        "reason": "high memory usage",
+        "time": "20:11:00.000",
+        "time_evidence_id": "e312",
+        "support_ids": [
+          "e312"
+        ],
+        "counter_ids": [],
+        "explanation": "e312 显示 Tomcat01 JVM 内存从 20:06 的 1.26GB 升至 20:11 的 2.09GB，增幅显著。此时间早于 e181 的长调用 (20:07)，符合资源耗尽导致延迟的因果链。需确认是否达到 OOM 阈值及是否影响下游。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "high CPU usage",
+        "time": "20:07:41.040",
+        "time_evidence_id": "e181",
+        "support_ids": [
+          "e181"
+        ],
+        "counter_ids": [],
+        "explanation": "e181 记录 Tomcat02 在 20:07:41 出现 5314ms 长调用。虽无直接 CPU 指标，但长调用常由 CPU 满载引起。需补查 CPU 指标确认是否因计算阻塞导致，并排除网络因素。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "20:11:00.000",
+        "end": "20:13:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认 Tomcat01 在 20:11-20:13 期间 OS CPU 和内存占比是否持续高位，以验证 e312 中的 JVM 内存增长是否导致系统级资源耗尽。",
+        "basis_ids": [
+          "e312"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat02",
+        "start": "20:07:41.040",
+        "end": "20:08:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "验证 Tomcat02 在 20:07:41 长调用发生时 CPU 使用率是否异常高，以确认高 CPU 作为长调用根因的可能性。",
+        "basis_ids": [
+          "e181"
+        ]
+      },
+      {
+        "node_id": "device:IG01",
+        "start": "20:11:00.000",
+        "end": "20:13:00.000",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "检查 IG01 在 20:11-20:13 期间发往 Tomcat01 的调用延迟分布，确认 Tomcat01 的内存问题是否已导致上游网关出现大规模延迟或超时。",
+        "basis_ids": [
+          "e312",
+          "e21"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17770,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 38,
+        "available_facts": 304
+      }
+    }
+  ],
+  "labels_used": false
+}

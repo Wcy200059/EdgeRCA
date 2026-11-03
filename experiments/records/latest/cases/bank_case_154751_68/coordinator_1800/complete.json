@@ -1,0 +1,95 @@
+{
+  "case_id": "f1b8615ed6766232",
+  "cutoff_ms": 1614814200000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 228
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 230
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 233
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 236
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:IG01",
+      "start": "07:00:00",
+      "end": "07:30:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "检查 IG01 的 CPU 使用率，确认其是否为导致下游 Tomcat 延迟的根因。",
+      "basis_ids": [
+        "e14"
+      ]
+    }
+  ],
+  "peak_gpu_gib": 21.16567039489746,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e208",
+      "e209",
+      "e210",
+      "e211",
+      "e212",
+      "e213",
+      "e214",
+      "e215",
+      "e216",
+      "e217",
+      "e218",
+      "e219",
+      "e220",
+      "e221",
+      "e222",
+      "e223",
+      "e224",
+      "e225",
+      "e226",
+      "e227",
+      "e228",
+      "e229",
+      "e230",
+      "e231",
+      "e232",
+      "e233",
+      "e234",
+      "e235",
+      "e236",
+      "e237",
+      "e238",
+      "e239"
+    ],
+    "notes": "保留所有涉及候选组件（IG, MG, Tomcat, docker）间实际父子调用匹配的观测。这些证据展示了组件间的调用关系、延迟（P95/Max）及时间区间不匹配情况，有助于区分资源故障与传播链，且均在故障时段内。业务统计（e197-e207）因无具体组件关联且数值稳定，故拒绝。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 43
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": "14:47:00",
+        "time_evidence_id": "e272",
+        "support_ids": [
+          "e272"
+        ],
+        "counter_ids": [],
+        "explanation": "e272 显示 apache01 的 sdb 磁盘在 14:47:00 触发高读写异常，随后解除。结合 Mysql01 作为数据库层，其高读负载是合理的根因。虽直接观测在 apache01，但因果链指向 Mysql01。需确认 Mysql01 自身磁盘指标闭环。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "apache01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e274 显示 apache02 CPU 负载波动，e294 仅显示稳定值，缺乏明确高 CPU 数值证据。且 CPU 异常时间较晚，可能非根因。需补查具体 CPU 使用率数值及与业务失败的时间关联。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "14:30:00",
+        "end": "15:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadBps",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadIOPS"
+        ],
+        "focus": "核实 Mysql01 在 14:30-15:00 期间是否存在磁盘读取带宽或 IOPS 的异常高峰，以验证‘高磁盘读取’是否为根因。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:apache01",
+        "start": "14:30:00",
+        "end": "15:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "获取 apache01 全时段 CPU 使用率具体数值，确认是否存在持续或突发性的高 CPU 占用，并寻找与业务失败时间点的关联。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17672,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 36,
+        "available_facts": 295
+      }
+    }
+  ],
+  "labels_used": false
+}

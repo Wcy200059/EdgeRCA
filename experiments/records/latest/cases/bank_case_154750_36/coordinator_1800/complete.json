@@ -1,0 +1,140 @@
+{
+  "case_id": "cf3d731180c3574a",
+  "cutoff_ms": 1615561200000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 260
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 261
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 263
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 264
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Mysql02",
+      "start": "22:30:00",
+      "end": "22:40:00",
+      "tools": [
+        "get_logs"
+      ],
+      "metrics": [],
+      "focus": "检查 Mysql02 在 22:30-22:40 期间的 GC 日志和错误日志，确认高内存使用是否导致频繁 Full GC 或连接拒绝，从而引发上游 502 错误。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:apache01",
+      "start": "22:30:00",
+      "end": "22:40:00",
+      "tools": [
+        "get_logs"
+      ],
+      "metrics": [],
+      "focus": "检查 Apache01 在 502 爆发期间的错误日志，确认错误类型（如连接超时、拒绝连接）及上游来源，以区分是资源耗尽还是网络问题。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:Mysql02",
+      "start": "22:30:00",
+      "end": "22:40:00",
+      "tools": [
+        "list_metrics"
+      ],
+      "metrics": [
+        "MEMORY",
+        "DISK"
+      ],
+      "focus": "列出 Mysql02 所有内存和磁盘相关指标名称，以便后续精确查询是否存在内存泄漏或磁盘 I/O 瓶颈指标。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:apache02",
+      "start": "22:35:00",
+      "end": "22:40:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil"
+      ],
+      "focus": "对比 Apache02 的 CPU 使用率，确认故障是否仅发生在 Apache01 还是集群普遍现象。",
+      "basis_ids": []
+    }
+  ],
+  "peak_gpu_gib": 21.16248893737793,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e218",
+      "e219",
+      "e220",
+      "e221",
+      "e222",
+      "e223",
+      "e224",
+      "e225",
+      "e226",
+      "e227",
+      "e228",
+      "e229",
+      "e230",
+      "e231",
+      "e232",
+      "e233",
+      "e234",
+      "e235",
+      "e236",
+      "e237",
+      "e238",
+      "e239",
+      "e240",
+      "e241",
+      "e242",
+      "e243",
+      "e244",
+      "e245",
+      "e246",
+      "e247",
+      "e248",
+      "e249",
+      "e250",
+      "e251",
+      "e252",
+      "e253",
+      "e254",
+      "e255",
+      "e256",
+      "e257",
+      "e258",
+      "e259",
+      "e260"
+    ],
+    "notes": "保留所有涉及候选组件（IG, MG, Tomcat, docker）间调用关系的观测（e229-e260），用于分析传播链及高延迟（如e229最大3118ms）。保留业务流观测（e218-e228）以确认故障影响范围。拒绝e1-e217等非候选组件或无关事实。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 43
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Mysql02",
+        "reason": "high disk I/O read usage",
+        "time": "19:23:00.000",
+        "time_evidence_id": "e252",
+        "support_ids": [
+          "e252"
+        ],
+        "counter_ids": [],
+        "explanation": "Apache02 网络包输出在 19:23 激增（e252），随后 Tomcat 层出现高 CPU 负载。Mysql02 磁盘读取量在 19:23 后显著升高（e304 目录确认存在该指标，需补查数值）。若 Mysql02 因 IO 阻塞导致业务失败，将引发上游 Tomcat 资源争抢及网络波动。需确认 Mysql02 磁盘 IO 数值是否超标。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "MG01 报告 JVM CPU 高（e12），但 Tomcat01 本地尚未加载具体 JVM 负载数值（e303 缺失）。MG01 可能非 Tomcat01 实例。需补查 Tomcat01 本地 JVM CPU 负载以确认是否为根因，排除代理误差。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql02",
+        "start": "19:20:00.000",
+        "end": "19:30:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Mysql-MySQL_3306_DiskReadBytes",
+          "Mysql-MySQL_3306_DiskReads"
+        ],
+        "focus": "获取 Mysql02 在 19:20-19:30 的磁盘读取量具体数值，验证是否在 Apache02 网络异常（e252）后出现显著飙升，确认 IO 瓶颈根因。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17737,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 37,
+        "available_facts": 305
+      }
+    }
+  ],
+  "labels_used": false
+}

@@ -1,0 +1,96 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 当前仅加载了 e85（Bytes Sent），未显示高磁盘 I/O 的直接证据。需补查磁盘读取指标（如 DiskReadBytes 或类似）以确认是否存在 I/O 瓶颈导致下游延迟。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql02",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql02 当前仅加载了 e110（CPU 使用率），未显示高磁盘 I/O 的直接证据。需补查磁盘读取指标以确认是否存在 I/O 瓶颈。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Tomcat03",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat03 当前仅加载了 e178（连接延迟），未加载 CPU 指标。虽然节点状态显示 cpu_only_metrics 较高，但缺乏具体数值证据支持根因。需补查 CPU 使用率。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "14:30:00",
+        "end": "15:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadBytes",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKPercentBusy"
+        ],
+        "focus": "核实 Mysql01 是否存在高磁盘读取 I/O 或磁盘忙碌度异常，以支持或排除磁盘 I/O 作为根因。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Mysql02",
+        "start": "14:30:00",
+        "end": "15:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadBytes",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKPercentBusy"
+        ],
+        "focus": "核实 Mysql02 是否存在高磁盘读取 I/O 或磁盘忙碌度异常，以支持或排除磁盘 I/O 作为根因。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat03",
+        "start": "14:30:00",
+        "end": "15:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "获取 Tomcat03 的 OS CPU 使用率具体数值，确认是否存在高 CPU 使用导致服务延迟。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17755,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 56,
+        "available_facts": 278
+      }
+    }
+  ],
+  "labels_used": false
+}

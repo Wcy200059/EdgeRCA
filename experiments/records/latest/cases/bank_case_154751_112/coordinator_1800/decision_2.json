@@ -1,0 +1,78 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat01",
+        "reason": "high JVM CPU load",
+        "time": "03:40:00",
+        "time_evidence_id": "e179",
+        "support_ids": [
+          "e179",
+          "e262"
+        ],
+        "counter_ids": [],
+        "explanation": "e179 显示 Tomcat01 请求计数自 03:40 起显著上升并持续，符合高负载特征。e262 记录到 03:51 发生一次因 Allocation Failure 触发的 GC，佐证了内存压力导致的 CPU 争抢。虽无明确 OOM 错误，但高负载与频繁 GC 构成强因果链，导致业务响应变慢。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "03:30:00",
+        "end": "04:00:00",
+        "tools": [
+          "get_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "Tomcat-MEMORY_7441-MEMORY_JVMMemoryUsedPercent",
+          "Tomcat-MEMORY_7441-MEMORY_JVMMaxMemory"
+        ],
+        "focus": "验证 Tomcat01 在 03:40 请求激增期间，JVM 堆内存使用率是否持续上升直至接近最大值，确认是否存在内存耗尽风险。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:MG02",
+        "start": "03:30:00",
+        "end": "04:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_DISK_ens160_DISKReadBytesPerSec"
+        ],
+        "focus": "直接读取 MG02 磁盘读取速率指标，确认 03:52 网络异常前是否存在磁盘 I/O 飙升，以验证或排除磁盘 I/O 作为根因。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "h2: time 03:52:00 requires e66 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "not_supported",
+            "component": "MG02",
+            "reason": "high disk I/O read usage",
+            "time": "03:52:00",
+            "time_evidence_id": "e66",
+            "support_ids": [],
+            "counter_ids": [
+              "e66"
+            ],
+            "explanation": "e66 显示 MG02 网络指标在 03:52 触发阈值，但 e66 本身仅描述网络流量数值，未确认累计/瞬时含义，不直接断言磁盘 I/O 故障。现有证据无法证明磁盘 I/O 飙升是根因，反而网络指标可能是下游 Tomcat 高负载导致的网络拥塞结果。"
+          },
+          "error": "h2: time 03:52:00 requires e66 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

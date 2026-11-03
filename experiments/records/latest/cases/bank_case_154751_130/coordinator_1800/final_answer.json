@@ -1,0 +1,36 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Tomcat02",
+        "reason": "high JVM CPU load",
+        "time": "19:04:00.000",
+        "evidence_ids": [
+          "e11"
+        ],
+        "explanation": "Tomcat02 在 19:04:00 观测到 CPU 使用率 94.4241% 的极端峰值 (e11)。该时间点早于 Apache 502 错误爆发 (19:15)，表明上游服务处理失败导致代理返回错误。"
+      },
+      {
+        "component": "apache01",
+        "reason": "high JVM CPU load",
+        "time": "19:15:04.000",
+        "evidence_ids": [
+          "e306"
+        ],
+        "explanation": "Apache01 在 19:15:04 起集中返回大量 502 错误 (e306-e331)。这是业务层面的服务不可用表现，根因为上游 Tomcat02 的高 CPU 导致请求超时或处理失败。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1616671800000,
+  "model_judgment_verified": false,
+  "expected_failures": 2,
+  "answer_schema": "faults_v1",
+  "field_repairs": [],
+  "warnings": []
+}

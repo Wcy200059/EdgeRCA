@@ -1,0 +1,90 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "apache01",
+        "reason": "high disk I/O read usage",
+        "time": "00:21:00",
+        "time_evidence_id": "e254",
+        "support_ids": [
+          "e254",
+          "e255",
+          "e256"
+        ],
+        "counter_ids": [],
+        "explanation": "apache01 在 00:21:00 出现 sdb 磁盘读取量激增（e254, e255），随后读写总量（e256）在 00:23:00 仍处高位。此现象符合磁盘 IO 过载导致业务延迟的机制。但缺乏上游调用失败或下游数据库负载同步突增的直接证据，需确认是否引发业务中断。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "apache01",
+        "reason": "high disk space usage",
+        "time": "00:22:00",
+        "time_evidence_id": "e253",
+        "support_ids": [
+          "e253"
+        ],
+        "counter_ids": [],
+        "explanation": "apache01 在 00:22:00 磁盘使用率（sdb）达到 100%（e253），随后在 00:24:00 规则清除。磁盘空间耗尽可导致写入阻塞或服务不可用。需确认此时是否有日志报错或业务流中断，且需排除磁盘 IO 满导致无法写入日志从而掩盖空间问题的可能性。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 有 87 条事实未加载，node_summary 提示有 1 条变化/错误优先展示但未在当前证据中体现具体数值。仅凭目录信息无法确认 CPU 是否过载及其时间。需补查具体指标以验证是否为根因。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:apache01",
+        "start": "00:20:00",
+        "end": "00:25:00",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "确认 00:21:00-00:25:00 期间磁盘 IO 激增和空间耗尽是否伴随应用层报错、连接超时或业务日志中断。",
+        "basis_ids": [
+          "e254",
+          "e255",
+          "e256",
+          "e253"
+        ]
+      },
+      {
+        "node_id": "device:Mysql01",
+        "start": "00:00:00",
+        "end": "00:30:00",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "CPU"
+        ],
+        "focus": "获取 Mysql01 的 CPU 相关指标名称列表，以便后续查询具体 CPU 使用率数据。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17332,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 38,
+        "available_facts": 275
+      }
+    }
+  ],
+  "labels_used": false
+}

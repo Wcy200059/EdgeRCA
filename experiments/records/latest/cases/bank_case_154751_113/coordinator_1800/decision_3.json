@@ -1,0 +1,64 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "apache02",
+        "reason": "high CPU usage",
+        "time": "16:24:06.000",
+        "time_evidence_id": "e277",
+        "support_ids": [
+          "e277",
+          "e350"
+        ],
+        "counter_ids": [],
+        "explanation": "e277 显示 apache02 在 16:24:06 发生 502 错误。e350 证实该节点 CPU 使用率在故障后（16:25）显著升高至 10%，且早段极低。结合单故障要求，本地资源耗尽导致服务不可用是最直接根因。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "MG01",
+        "reason": "high CPU usage",
+        "time": "16:25:00.000",
+        "time_evidence_id": "e32",
+        "support_ids": [
+          "e32"
+        ],
+        "counter_ids": [],
+        "explanation": "e32 显示 MG01 CPU 在 16:25 触发高负载规则。但 MG01 高 CPU 是否早于 apache02 的 502 错误（16:24:06）尚不明确，需确认时间先后及因果链。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:MG01",
+        "start": "16:24:00",
+        "end": "16:24:30",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认 MG01 CPU 在 16:24:00-16:24:30 的具体数值，判断其高 CPU 是否早于 16:24:06 的 502 错误发生。",
+        "basis_ids": [
+          "e32"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17768,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 41,
+        "available_facts": 350
+      }
+    }
+  ],
+  "labels_used": false
+}

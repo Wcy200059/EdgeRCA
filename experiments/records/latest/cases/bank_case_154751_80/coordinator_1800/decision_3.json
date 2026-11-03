@@ -1,0 +1,81 @@
+{
+  "reply": {
+    "hypotheses": [],
+    "requests": [
+      {
+        "node_id": "device:dockerB1",
+        "start": "14:36:00.000",
+        "end": "14:37:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认 dockerB1 在 14:36 长调用期间 CPU 和内存是否飙升，以验证是否因资源耗尽导致服务延迟。",
+        "basis_ids": [
+          "e287"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "use unique e IDs from current evidence; node overviews are not evidence",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 0,
+          "item": {
+            "id": "h1",
+            "assessment": "supported",
+            "component": "IG01",
+            "reason": "high JVM CPU load",
+            "time": "14:36:00.000",
+            "time_evidence_id": "e17",
+            "support_ids": [
+              "e17",
+              "e35",
+              "e145",
+              "e180",
+              "e205",
+              "e285",
+              "e286",
+              "e289"
+            ],
+            "counter_ids": [],
+            "explanation": "e17 显示 IG01 在 14:36 有 11s 长调用。e35/e145/e180/e205 证实 IG01 是上游，其下游 Tomcat 节点均出现高延迟，符合资源耗尽导致下游阻塞的机制。e285/e286 显示 IG01 内存波动且 CPU 平稳，但长调用期间 JVM CPU 可能瞬时飙升（e286 未覆盖峰值）。e289 无日志，无法排除 GC 暂停。综合支持 IG01 因高 JVM 负载导致故障。"
+          },
+          "error": "use unique e IDs from current evidence; node overviews are not evidence"
+        },
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "unresolved",
+            "component": "dockerB1",
+            "reason": "high CPU usage",
+            "time": "14:36:03.000",
+            "time_evidence_id": "e225",
+            "support_ids": [
+              "e225",
+              "e267",
+              "e281",
+              "e287"
+            ],
+            "counter_ids": [
+              "e287"
+            ],
+            "explanation": "e225 显示 dockerB1 在 14:36:03 有 17s 长调用。e267 显示 dockerB1 是 MG02 的下游，e281 显示其是 MG01 的下游，延迟较高。但 e287 明确 dockerB1 缺失 CPU 和内存指标，无法确认是资源耗尽还是应用逻辑慢。需补查 dockerB1 资源指标以区分根因。"
+          },
+          "error": "component must use a public candidate or null"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

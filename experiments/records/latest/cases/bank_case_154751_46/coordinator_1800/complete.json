@@ -1,0 +1,109 @@
+{
+  "case_id": "bba3864da27acd77",
+  "cutoff_ms": 1614837600000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 316
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 320
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 321
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 323
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:dockerB2",
+      "start": "13:30:00",
+      "end": "14:00:00",
+      "tools": [
+        "get_calls"
+      ],
+      "metrics": [],
+      "focus": "获取dockerB2的完整调用链详情，特别是e280/e284中记录的长调用，分析其父子节点及耗时分布，定位延迟源头。",
+      "basis_ids": [
+        "e280",
+        "e281",
+        "e284"
+      ]
+    },
+    {
+      "node_id": "device:Tomcat03",
+      "start": "13:30:00",
+      "end": "14:00:00",
+      "tools": [
+        "list_metrics",
+        "get_logs"
+      ],
+      "metrics": [
+        "JVM-CPU_CPU_CPUUserTime"
+      ],
+      "focus": "确认Tomcat03是否有JVM CPU高负载指标，并检查该时段是否有GC频繁或应用线程阻塞日志。",
+      "basis_ids": []
+    }
+  ],
+  "peak_gpu_gib": 21.12020444869995,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e296",
+      "e297",
+      "e298",
+      "e299",
+      "e300",
+      "e301",
+      "e302",
+      "e303",
+      "e304",
+      "e305",
+      "e306",
+      "e307",
+      "e308",
+      "e309",
+      "e310",
+      "e311",
+      "e312",
+      "e313",
+      "e314",
+      "e315",
+      "e316",
+      "e317",
+      "e318",
+      "e319",
+      "e320",
+      "e321",
+      "e322",
+      "e323",
+      "e324",
+      "e325",
+      "e326",
+      "e327"
+    ],
+    "notes": "筛选所有涉及候选组件（IG, MG, Tomcat, docker）间实际父子调用匹配的观测。这些边直接反映服务调用链及延迟传播情况（P95/Max），是区分资源故障与调用传播的关键证据。业务统计类观测（e285-e295）未提供时序或组件关联，故拒绝。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 43
+  }
+}

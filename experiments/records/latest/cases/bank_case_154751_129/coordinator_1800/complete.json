@@ -1,0 +1,103 @@
+{
+  "case_id": "141cc502b225b69f",
+  "cutoff_ms": 1616659200000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 262
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 267
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 272
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 274
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Tomcat04",
+      "start": "15:30:00.000",
+      "end": "16:00:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "JVM-CPU_7779_JVM_CPU_Time",
+        "Tomcat-MEMORY_7441-MEMORY_JVMMemoryUsedPercent"
+      ],
+      "focus": "确认 Tomcat04 在故障窗口内的 JVM CPU 负载及 Heap 内存使用率峰值，以验证 OOM 是否由内存泄漏或 GC 风暴引起。",
+      "basis_ids": [
+        "e263",
+        "e269",
+        "e270",
+        "e271"
+      ]
+    },
+    {
+      "node_id": "device:Tomcat04",
+      "start": "15:30:00.000",
+      "end": "16:00:00.000",
+      "tools": [
+        "get_logs"
+      ],
+      "metrics": [],
+      "focus": "检索 Tomcat04 在故障窗口内的日志，特别是包含 'OutOfMemoryError', 'Allocation Failure', 或 'GC overhead' 等关键词的错误日志，以确认 OOM 事件。",
+      "basis_ids": []
+    },
+    {
+      "node_id": "device:apache01",
+      "start": "15:30:00.000",
+      "end": "16:00:00.000",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUUserTime",
+        "OSLinux-CPU_CPU_CPUSysTime"
+      ],
+      "focus": "获取 apache01 完整的 CPU 时间指标，确认 15:38 和 15:42 的 100% 利用率是瞬时尖峰还是持续高负载，并评估其对下游 Tomcat 的影响。",
+      "basis_ids": []
+    }
+  ],
+  "peak_gpu_gib": 21.101741313934326,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e252",
+      "e253",
+      "e254",
+      "e255",
+      "e256",
+      "e257",
+      "e258",
+      "e259",
+      "e260",
+      "e261",
+      "e262"
+    ],
+    "notes": "保留所有 ServiceTest 业务观测（e252-e262）。虽未直接关联具体设备，但作为业务层全局事实，可反映整体服务表现及潜在传播影响，符合保留‘能区分资源故障与正常背景’及‘涉及候选组件调用边’的优先原则。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 11
+  }
+}

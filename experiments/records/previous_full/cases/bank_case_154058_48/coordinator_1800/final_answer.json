@@ -1,0 +1,29 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "Mysql02",
+        "reason": "high disk I/O read usage",
+        "time": "06:13:00",
+        "evidence_ids": [
+          "e8",
+          "e9",
+          "e7",
+          "e67",
+          "e68"
+        ],
+        "explanation": "Mysql02 在 06:13:00 触发 Binlog Cache Use 规则，随后 Bytes Received 在 06:23:00 再次触发，且 Com Select 持续高位。这些高 I/O 和吞吐直接导致下游 Tomcat 调用延迟（如 e40 显示最大延迟超 1.3s），构成资源耗尽导致业务延迟的因果链。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1614810600000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1"
+}

@@ -1,0 +1,79 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "apache02",
+        "reason": "high disk I/O read usage",
+        "time": "03:41:00",
+        "time_evidence_id": "e244",
+        "support_ids": [
+          "e244",
+          "e245"
+        ],
+        "counter_ids": [],
+        "explanation": "证据 e244/e245 显示 apache02 磁盘 I/O 在 03:41:00 触发异常并持续至 03:57:00，状态为'triggered'。虽然缺乏直接的业务失败日志关联，但在单故障场景下，显著的磁盘 I/O 激增是合理的根因候选，需确认是否导致业务阻塞。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat04",
+        "reason": "high JVM CPU load",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e268 显示 IG01->Tomcat04 存在最大延迟 2171ms 的异常调用，且 e196 显示 CPU 曾达 100%。但缺乏直接证明 JVM 线程阻塞或 CPU 独占的日志证据，且无明确业务失败时间点。需补查 Tomcat04 的 JVM 指标及日志确认是否因 CPU 过载导致业务延迟。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:apache02",
+        "start": "03:41:00",
+        "end": "03:57:00",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "确认磁盘 I/O 异常期间（03:41-03:57）是否有对应的业务慢调用或超时，验证磁盘 I/O 是否为业务故障根因。",
+        "basis_ids": [
+          "e244",
+          "e245"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "basis_ids must use e IDs from current evidence",
+      "rejected_sections": [
+        {
+          "section": "requests",
+          "index": 1,
+          "item": {
+            "node_id": "device:Tomcat04",
+            "start": "03:30:00",
+            "end": "04:00:00",
+            "tools": [
+              "get_metrics"
+            ],
+            "metrics": [
+              "JVM-Memory_7778_JVM_Memory_HeapMemoryUsed",
+              "OSLinux-CPU_CPU-0_SingleCpuUtil"
+            ],
+            "focus": "获取 Tomcat04 全时段 JVM 堆内存使用率及 CPU 单核利用率，确认是否存在高负载或内存溢出迹象。",
+            "basis_ids": [
+              "e196",
+              "e268"
+            ]
+          },
+          "error": "basis_ids must use e IDs from current evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

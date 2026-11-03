@@ -1,0 +1,92 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat04",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "23:30:00.000",
+        "time_evidence_id": "e371",
+        "support_ids": [
+          "e371"
+        ],
+        "counter_ids": [],
+        "explanation": "e371 显示 Tomcat04 内存占用 (MEMUsedMemPerc) 全程维持在 98% 极高水位。结合 e271 中记录的 Allocation Failure 导致的 GC，高内存水位直接导致堆内存耗尽，引发 OOM。这是最直接的根因。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Mysql02",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql02 有海量未加载事实，且尚未查询磁盘指标。虽然存在高磁盘 I/O 假设，但缺乏具体数值证据。需补查磁盘 I/O 指标以确认是否存在阻塞。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql02",
+        "start": "23:30:00.000",
+        "end": "00:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKRead",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKWrite",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdc_DSKRead",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdc_DSKWrite"
+        ],
+        "focus": "确认 Mysql02 在故障时段是否存在高磁盘 I/O 读/写活动，验证高磁盘 I/O 是否阻塞应用层。",
+        "basis_ids": [
+          "e372",
+          "e373"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "23:30:00.000",
+        "end": "00:00:00.000",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "检查 Tomcat04 日志中是否有 OOM Killer 触发记录或更详细的 Heap Dump 信息，以确认 OOM 是否导致进程重启或业务中断。",
+        "basis_ids": [
+          "e371"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "use unique e IDs from current evidence; node overviews are not evidence",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "supported",
+            "component": "Tomcat03",
+            "reason": "high CPU usage",
+            "time": "23:30:00.000",
+            "time_evidence_id": "e233",
+            "support_ids": [
+              "e233"
+            ],
+            "counter_ids": [],
+            "explanation": "e233 显示 Tomcat03 CPU 使用率在早期达到 100%。虽然当前采样未持续显示，但结合其作为上游服务对 MG 的高延迟（e60），且 Tomcat04 内存告急，Tomcat03 的高 CPU 可能是导致下游 Tomcat04 资源耗尽的诱因或并发压力源。"
+          },
+          "error": "use unique e IDs from current evidence; node overviews are not evidence"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

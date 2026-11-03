@@ -1,0 +1,78 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat01",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "04:38:20.000",
+        "time_evidence_id": "e248",
+        "support_ids": [
+          "e248",
+          "e140"
+        ],
+        "counter_ids": [],
+        "explanation": "e248 显示 Tomcat01 在 04:38:20 发生 GC 暂停，原因为 Allocation Failure，直接指向 Heap 内存耗尽。e140 佐证了 04:40:00 附近 CPU 飙升（99.7%），符合 OOM 触发 Full GC 的特征。"
+      },
+      {
+        "id": "h2",
+        "assessment": "not_supported",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [
+          "e252"
+        ],
+        "explanation": "e252 显示 Mysql01 的磁盘读取指标 (DSKRead) 在窗口期内数值为 0 且无变化，直接反证了高磁盘 I/O 读使用的假设。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "04:38:00",
+        "end": "04:40:00",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "查找 04:38:20 GC 暂停对应的日志，确认是否存在 OOM 错误信息或 Full GC 记录，以锁定根因为 JVM Heap 耗尽。",
+        "basis_ids": [
+          "e248"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "04:38:00",
+        "end": "04:40:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "Tomcat-MEMORY_7441-MEMORY_JVMFreeMemory",
+          "Tomcat-MEMORY_7441-MEMORY_JVMMemoryUsedPercent"
+        ],
+        "focus": "直接观测 JVM 堆内存使用量，确认在 04:38:20 前后 FreeMemory 是否急剧下降至接近 0，验证 Heap 耗尽假设。",
+        "basis_ids": [
+          "e247"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17703,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 49,
+        "available_facts": 242
+      }
+    }
+  ],
+  "labels_used": false
+}

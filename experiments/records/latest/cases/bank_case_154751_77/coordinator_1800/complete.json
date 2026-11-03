@@ -1,0 +1,125 @@
+{
+  "case_id": "40798e35e235a243",
+  "cutoff_ms": 1615095000000,
+  "rounds": [
+    {
+      "round": 0,
+      "reply_valid": true,
+      "evidence": 280
+    },
+    {
+      "round": 1,
+      "reply_valid": true,
+      "evidence": 281
+    },
+    {
+      "round": 2,
+      "reply_valid": true,
+      "evidence": 282
+    },
+    {
+      "round": 3,
+      "reply_valid": true,
+      "evidence": 285
+    }
+  ],
+  "device_nodes_received": 18,
+  "executed_central_queries": 3,
+  "reused_central_queries": 0,
+  "pending_requests": [
+    {
+      "node_id": "device:Tomcat01",
+      "start": "13:24:00",
+      "end": "13:26:00",
+      "tools": [
+        "get_logs"
+      ],
+      "metrics": [],
+      "focus": "检查 Tomcat01 在 13:24-13:26 的日志，确认是否有因上游 IG01 响应慢导致的超时或错误，验证因果链。",
+      "basis_ids": [
+        "e260",
+        "e189"
+      ]
+    },
+    {
+      "node_id": "device:dockerB2",
+      "start": "13:00:00",
+      "end": "13:02:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-OSLinux_DISK_DISKUsedDiskPerc"
+      ],
+      "focus": "检查 dockerB2 在 13:00 长调用发生时磁盘使用率，确认是否存在空间不足导致的阻塞。",
+      "basis_ids": [
+        "e244"
+      ]
+    },
+    {
+      "node_id": "device:Tomcat04",
+      "start": "13:24:00",
+      "end": "13:25:00",
+      "tools": [
+        "get_metrics"
+      ],
+      "metrics": [
+        "OSLinux-CPU_CPU_CPUCpuUtil",
+        "JVM-Memory-MemoryHeapUsedPercent"
+      ],
+      "focus": "检查 Tomcat04 在 13:24 长调用发生时的 OS CPU 和 JVM 堆内存使用率，判断是否为资源耗尽导致业务失败。",
+      "basis_ids": [
+        "e203"
+      ]
+    }
+  ],
+  "peak_gpu_gib": 21.1491117477417,
+  "final_commit": true,
+  "labels_used": false,
+  "rca_evaluated": false,
+  "node_mode": "catalogue",
+  "global_filter": {
+    "ids": [
+      "e260",
+      "e261",
+      "e262",
+      "e263",
+      "e264",
+      "e265",
+      "e266",
+      "e267",
+      "e268",
+      "e269",
+      "e270",
+      "e271",
+      "e272",
+      "e273",
+      "e274",
+      "e275",
+      "e276",
+      "e277",
+      "e278",
+      "e279",
+      "e280",
+      "e281",
+      "e282",
+      "e283",
+      "e284",
+      "e285",
+      "e286",
+      "e287",
+      "e288",
+      "e289",
+      "e290",
+      "e291"
+    ],
+    "notes": "筛选所有涉及候选组件（IG, MG, Tomcat, docker）间实际父子调用匹配的观测。这些边直接反映服务依赖关系及延迟传播（P95/Max值异常），是区分资源故障与调用链问题的关键证据。e249-e259为业务统计，未提供组件级调用细节，故拒绝。",
+    "attempts": [
+      {
+        "valid": true
+      }
+    ],
+    "fallback": false,
+    "available": 43
+  }
+}

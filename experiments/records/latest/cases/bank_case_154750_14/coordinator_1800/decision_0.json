@@ -1,0 +1,91 @@
+{
+  "reply": {
+    "hypotheses": [],
+    "requests": [
+      {
+        "node_id": "device:IG01",
+        "start": "21:30:00.000",
+        "end": "21:45:00.000",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "确认21:36-21:40期间是否有大量超时或失败的调用，以及这些调用是否指向Apache或Tomcat，以验证长调用是否导致502错误。",
+        "basis_ids": [
+          "e14"
+        ]
+      },
+      {
+        "node_id": "device:IG02",
+        "start": "21:30:00.000",
+        "end": "21:45:00.000",
+        "tools": [
+          "get_calls"
+        ],
+        "metrics": [],
+        "focus": "确认21:36-21:40期间是否有大量超时或失败的调用，以及这些调用是否指向Apache或Tomcat，以验证长调用是否导致502错误。",
+        "basis_ids": [
+          "e30"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "reason must use a public candidate or null",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 0,
+          "item": {
+            "id": "h1",
+            "assessment": "supported",
+            "component": "apache01",
+            "reason": "502 Bad Gateway",
+            "time": "21:36:09.000",
+            "time_evidence_id": "e232",
+            "support_ids": [
+              "e231",
+              "e232",
+              "e233",
+              "e234",
+              "e244",
+              "e245",
+              "e246",
+              "e247",
+              "e248",
+              "e249",
+              "e250",
+              "e251",
+              "e252",
+              "e253",
+              "e254"
+            ],
+            "counter_ids": [],
+            "explanation": "多个Apache节点在21:36-21:40期间报告大量502错误，覆盖ServiceTest业务。虽然存在长调用（e14, e30），但502是明确的业务失败证据，符合单故障报告。"
+          },
+          "error": "reason must use a public candidate or null"
+        },
+        {
+          "section": "hypotheses",
+          "index": 1,
+          "item": {
+            "id": "h2",
+            "assessment": "unresolved",
+            "component": "IG01",
+            "reason": "high network latency",
+            "time": null,
+            "time_evidence_id": null,
+            "support_ids": [],
+            "counter_ids": [],
+            "explanation": "IG01和IG02存在长调用（e14, e30），可能影响下游。但缺乏明确的网络丢包或延迟激增的定量证据（如RTT飙升），且Apache的502错误时间早于部分长调用结束，需确认长调用是否直接导致502。"
+          },
+          "error": "reason must use a public candidate or null"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

@@ -1,0 +1,94 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat03",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat03 在 00:06-00:10 出现 CPU 极高（99.96%），但无下游业务失败或资源耗尽证据。需确认该高 CPU 是否导致服务不可用，或仅为瞬时波动。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat03",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Apache01 磁盘读写在 00:21-00:27 触发，但 Tomcat03 高 CPU 发生在 00:06-00:10，时间不匹配。需确认 Tomcat03 是否存在磁盘 IO 问题。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat01 有 CPU 空闲下降记录（e186），但未加载详细数值。需获取 CPU 使用率具体数值及时间，确认是否构成故障。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat03",
+        "start": "00:00:00",
+        "end": "00:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认 Tomcat03 在 00:06-00:10 期间 CPU 使用率是否持续高位，以及是否伴随业务异常。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat03",
+        "start": "00:00:00",
+        "end": "00:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKBps"
+        ],
+        "focus": "检查 Tomcat03 磁盘读写流量，排除磁盘 IO 过高导致的 CPU 飙升。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "00:00:00",
+        "end": "00:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "获取 Tomcat01 CPU 使用率具体数值，验证 e186 中 CPU 空闲下降是否代表高负载。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17363,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 39,
+        "available_facts": 271
+      }
+    }
+  ],
+  "labels_used": false
+}

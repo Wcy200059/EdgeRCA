@@ -1,0 +1,516 @@
+--- before/tools/bank_summary.py
++++ after/tools/bank_summary.py
+@@ -1,89 +1,142 @@
+-"""Aggregate per-question Bank evaluations into one accuracy report."""
++"""Aggregate frozen Bank evaluations with an explicit, consistent time tolerance."""
+ 
+ from __future__ import annotations
+ 
+ import argparse
+-import glob
+ import json
+ from pathlib import Path
+ import statistics
+ 
++from edge_rca.ranked_answers import score as score_ranked
++from edge_rca.scoring import evaluate
+ 
+-def main():
+-    parser = argparse.ArgumentParser(description=__doc__)
+-    parser.add_argument("--root", type=Path, default=Path("outputs"))
+-    parser.add_argument("--job", required=True, help="Slurm array job id")
+-    parser.add_argument("--design-row", type=int, default=1,
+-                        help="Row used during design; report inclusive and exclusive")
+-    args = parser.parse_args()
+-    rows, missing = [], []
+-    for directory in sorted(glob.glob(str(args.root / f"bank_case_{args.job}_*"))):
+-        row = int(directory.rsplit("_", 1)[-1])
+-        path = Path(directory) / "evaluation" / "result.json"
+-        if not path.exists():
++
++def summarize(root: Path, job: str, *, time_tolerance_seconds: int | None = None,
++              expected_rows: int | None = None, design_rows: tuple[int, ...] = ()) -> dict:
++    if time_tolerance_seconds is not None and time_tolerance_seconds < 0:
++        raise ValueError("time tolerance must be nonnegative")
++    if expected_rows is not None and expected_rows < 1:
++        raise ValueError("expected_rows must be positive")
++    directories = {int(path.name.rsplit("_", 1)[-1]): path
++                   for path in root.glob(f"bank_case_{job}_*")}
++    expected = set(range(expected_rows)) if expected_rows is not None else set(directories)
++    unexpected = set(directories) - expected
++    if unexpected:
++        raise ValueError(f"unexpected rows outside requested dataset: {sorted(unexpected)}")
++    rows, missing, tolerances = [], [], set()
++    for row in sorted(expected):
++        directory = directories.get(row)
++        path = directory / "evaluation/result.json" if directory else None
++        if path is None or not path.exists():
+             missing.append(row)
+             continue
+         result = json.loads(path.read_text())
+-        rows.append({
+-            "row": row,
+-            "score": result.get("score"),
+-            "fully_correct": result.get("fully_correct"),
+-            "any_field_correct": result.get("any_field_correct"),
+-            "final_reply_valid": result.get("final_reply_valid"),
+-            "prediction": result.get("prediction"),
+-            "failed": result.get("failed", []),
+-            "model_calls": result.get("model_calls"),
+-            "model_generation_seconds": result.get("model_generation_seconds"),
+-            "checkpoints": result.get("checkpoints", []),
+-            "top3_fully_correct": result.get("top3_fully_correct"),
+-            "candidate_count": result.get("ranked_evaluation", {}).get("candidate_count"),
+-        })
+-    scores = [item["score"] for item in rows if isinstance(item["score"], (int, float))]
+-    unseen = [item for item in rows if item["row"] != args.design_row]
+-    unseen_scores = [item["score"] for item in unseen if isinstance(item["score"], (int, float))]
+-    summary = {
+-        "job": args.job,
+-        "questions_with_evaluation": len(rows),
+-        "missing_or_failed": missing,
+-        "mean_official_field_score": statistics.mean(scores) if scores else None,
+-        "exact_match_rate": (sum(item["fully_correct"] is True for item in rows) / len(rows)) if rows else None,
+-        "any_field_correct_rate": (sum(item["any_field_correct"] is True for item in rows) / len(rows)) if rows else None,
+-        "unseen_questions": len(unseen),
+-        "unseen_mean_official_field_score": statistics.mean(unseen_scores) if unseen_scores else None,
+-        "unseen_exact_match_rate": (sum(item["fully_correct"] is True for item in unseen) / len(unseen)) if unseen else None,
+-        "design_row": args.design_row,
+-        "note": "单题官方评分均值；Bank每题的字段数和故障数可能不同，不是统一题数加权。",
+-        "rows": rows,
+-    }
++        if result.get("row", row) != row:
++            raise ValueError(f"evaluation row disagrees with directory: {path}")
++        saved_tolerance = result.get("time_tolerance_seconds")
++        tolerance = time_tolerance_seconds if time_tolerance_seconds is not None else saved_tolerance
++        tolerances.add(tolerance)
++        score, failed = result.get("score"), result.get("failed", [])
++        if time_tolerance_seconds is not None:
++            if "prediction" not in result or not result.get("scoring_points"):
++                raise ValueError(f"cannot rescore without frozen prediction and scoring points: {path}")
++            _, failed, score = evaluate(json.dumps(result["prediction"], ensure_ascii=False),
++                                        result["scoring_points"], time_tolerance_seconds=tolerance)
++        if isinstance(score, bool) or not isinstance(score, (int, float)) or not 0 <= score <= 1:
++            raise ValueError(f"invalid evaluation score: {path}")
++        ranked = result.get("ranked_evaluation", {})
++        top3 = result.get("top3_fully_correct")
++        if time_tolerance_seconds is not None and saved_tolerance != tolerance:
++            top3, ranked = None, {}
++            ranked_path = directory / "coordinator_1800/ranked_predictions.json"
++            if ranked_path.exists():
++                ranked = score_ranked(json.loads(ranked_path.read_text()), result["prediction"],
++                                      result["scoring_points"], time_tolerance_seconds=tolerance)
++                top3 = ranked["fully_correct_within_top3"]
++        rows.append({"row": row, "score": score, "fully_correct": score == 1,
++                     "any_field_correct": score > 0, "failed": failed,
++                     "prediction": result.get("prediction"),
++                     "final_reply_valid": result.get("final_reply_valid"),
++                     "model_calls": result.get("model_calls"),
++                     "model_generation_seconds": result.get("model_generation_seconds"),
++                     "checkpoints": result.get("checkpoints", []),
++                     "top3_fully_correct": top3, "candidate_count": ranked.get("candidate_count")})
++    if len(tolerances) > 1:
++        raise ValueError("mixed or unknown saved time tolerances; request an explicit rescore")
++    tolerance = next(iter(tolerances), time_tolerance_seconds)
++    mean = statistics.mean(item["score"] for item in rows) if rows else None
++    summary = {"job": job, "time_tolerance_seconds": tolerance,
++               "questions_expected": len(expected), "questions_with_evaluation": len(rows),
++               "missing_or_failed": missing, "mean_field_score": mean,
++               "mean_official_field_score": mean if tolerance == 60 else None,
++               "fully_correct_count": sum(item["fully_correct"] for item in rows),
++               "any_field_correct_count": sum(item["any_field_correct"] for item in rows),
++               "exact_match_rate": statistics.mean(item["fully_correct"] for item in rows) if rows else None,
++               "any_field_correct_rate": statistics.mean(item["any_field_correct"] for item in rows) if rows else None,
++               "invalid_final_rows": [item["row"] for item in rows if item["final_reply_valid"] is False],
++               "note": "±60秒为官方口径；其他容差单列。已有Bank样例不自动视作未参与设计的测试集。",
++               "rows": rows}
++    if design_rows:
++        subset = [item for item in rows if item["row"] not in design_rows]
++        summary["excluding_design_rows"] = {
++            "excluded_rows": sorted(set(design_rows)), "questions": len(subset),
++            "mean_field_score": statistics.mean(item["score"] for item in subset) if subset else None,
++            "note": "仅排除指定行，不代表其他题未用于开发。"}
+     ranked_rows = [item for item in rows if item["top3_fully_correct"] is not None]
+     if ranked_rows:
+         summary["questions_with_ranked_candidates"] = len(ranked_rows)
+         summary["top3_correct_count"] = sum(item["top3_fully_correct"] is True for item in ranked_rows)
+         summary["top3_exact_match_rate"] = summary["top3_correct_count"] / len(ranked_rows)
+-    output = args.root / f"bank_accuracy_{args.job}"
++    return summary
++
++
++def write_summary(summary: dict, output: Path) -> None:
+     output.mkdir(parents=True, exist_ok=False)
+     (output / "summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n",
+                                          encoding="utf-8")
+-    lines = ["# Bank 批量结果", "",
+-             f"- 有评分题目：{len(rows)}；缺失/失败：{len(missing)} {missing}",
+-             f"- 平均官方字段得分：{summary['mean_official_field_score']:.3f}" if scores else "- 平均官方字段得分：无",
+-             f"- 完全正确率：{summary['exact_match_rate']:.1%}" if rows else "- 完全正确率：无",
+-             f"- 至少一个字段正确：{summary['any_field_correct_rate']:.1%}" if rows else "- 至少一个字段正确：无",
+-             f"- 未参与设计题目：{len(unseen)}；平均分 {summary['unseen_mean_official_field_score']:.3f}"
+-             if unseen_scores else "- 未参与设计题目：无",
+-             "", "| row | 得分 | 完全正确 | 失败字段 | 模型调用 |", "|---:|---:|---|---|---:|"]
+-    for item in rows:
++    tolerance = summary["time_tolerance_seconds"]
++    if tolerance == 60:
++        label = "官方±60秒"
++    elif tolerance is None:
++        label = "原记录容差未知"
++    else:
++        label = f"±{tolerance}秒（非官方口径）"
++    lines = [f"# Bank 批量结果：{label}", "",
++             f"- 有评分题目：{summary['questions_with_evaluation']}/{summary['questions_expected']}",
++             f"- 缺失/失败：{summary['missing_or_failed']}",
++             f"- 平均字段得分：{summary['mean_field_score']:.6f}" if summary["rows"] else "- 平均字段得分：无",
++             f"- 整题完全正确：{summary['fully_correct_count']}",
++             f"- 至少一项正确：{summary['any_field_correct_count']}",
++             f"- 无效最终回复：{summary['invalid_final_rows']}",
++             "", summary["note"], "",
++             "| row | 得分 | 完全正确 | 失败字段 | 模型调用 |", "|---:|---:|---|---|---:|"]
++    for item in summary["rows"]:
+         lines.append(f"| {item['row']} | {item['score']} | {item['fully_correct']} | "
+                      f"{', '.join(item['failed']) or '-'} | {item['model_calls']} |")
+-    if ranked_rows:
++    if "questions_with_ranked_candidates" in summary:
+         lines += ["", f"前三候选完整命中率：{summary['top3_exact_match_rate']:.1%}"
+-                  f"（{summary['top3_correct_count']}/{len(ranked_rows)}题）。"
+-                  "这里只统计实际生成候选文件的题目；首选正确率保持单独报告。"]
++                  f"（{summary['top3_correct_count']}/{summary['questions_with_ranked_candidates']}题）。"
++                  "只统计相同容差下有候选评分的题目。"]
+     (output / "summary.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+-    print(json.dumps({key: summary[key] for key in (
+-        "questions_with_evaluation", "missing_or_failed", "mean_official_field_score",
+-        "exact_match_rate", "unseen_questions", "unseen_mean_official_field_score",
+-        "unseen_exact_match_rate")}, ensure_ascii=False, indent=2), flush=True)
++
++
++def main() -> None:
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument("--root", type=Path, default=Path("outputs"))
++    parser.add_argument("--job", required=True)
++    parser.add_argument("--design-row", type=int, action="append", default=[])
++    parser.add_argument("--expected-rows", type=int)
++    parser.add_argument("--time-tolerance-seconds", type=int,
++                        help="Rescore frozen answers; omit to use consistent saved scores")
++    parser.add_argument("--output", type=Path)
++    args = parser.parse_args()
++    summary = summarize(args.root, args.job, time_tolerance_seconds=args.time_tolerance_seconds,
++                        expected_rows=args.expected_rows, design_rows=tuple(args.design_row))
++    suffix = f"_{args.time_tolerance_seconds}s" if args.time_tolerance_seconds is not None else ""
++    output = args.output or args.root / f"bank_accuracy_{args.job}{suffix}"
++    write_summary(summary, output)
++    print(json.dumps({key: value for key, value in summary.items() if key != "rows"},
++                     ensure_ascii=False, indent=2), flush=True)
+     print(f"summary: {output / 'summary.md'}", flush=True)
+ 
+ 
+--- before/tools/bank_combine.py
++++ after/tools/bank_combine.py
+@@ -0,0 +1,81 @@
++"""Collect two completed Bank arrays into a new, non-destructive report bundle."""
++
++from __future__ import annotations
++
++import argparse
++import hashlib
++import json
++from pathlib import Path
++import re
++
++from tools.bank_summary import summarize, write_summary
++
++
++def combine(root: Path, output: Path, a_job: str, b_job: str, *,
++            split_row: int = 46, expected_rows: int = 136) -> dict:
++    if not 0 <= split_row <= expected_rows or expected_rows < 1:
++        raise ValueError("split_row must be within the expected dataset")
++    if not all(re.fullmatch(r"[A-Za-z0-9_-]+", job) for job in (a_job, b_job)):
++        raise ValueError("array identifiers must contain only letters, digits, underscores or hyphens")
++    sources = []
++    for row in range(expected_rows):
++        case = (root / f"bank_case_{a_job if row < split_row else b_job}_{row}").resolve()
++        result_path = case / "evaluation/result.json"
++        result_bytes = result_path.read_bytes()
++        result = json.loads(result_bytes)
++        if result.get("row") != row:
++            raise ValueError(f"wrong row in {result_path}")
++        prediction_path = case / "coordinator_1800/prediction.json"
++        prediction_bytes = prediction_path.read_bytes()
++        prediction_hash = hashlib.sha256(prediction_bytes).hexdigest()
++        if result.get("prediction_sha256") != prediction_hash or json.loads(prediction_bytes) != result["prediction"]:
++            raise ValueError(f"frozen prediction differs from evaluation: {case}")
++        sources.append({"row": row, "source": str(case),
++                        "evaluation_sha256": hashlib.sha256(result_bytes).hexdigest(),
++                        "prediction_sha256": prediction_hash})
++    # Never reuse or delete a case directory. An interrupted bundle must get a new name.
++    output.mkdir(parents=True, exist_ok=False)
++    for item in sources:
++        (output / f"bank_case_combined_{item['row']}").symlink_to(item["source"], target_is_directory=True)
++    summaries = {str(t): summarize(output, "combined", time_tolerance_seconds=t,
++                                  expected_rows=expected_rows) for t in (60, 300)}
++    for item in sources:
++        for name, relative in (("evaluation", "evaluation/result.json"),
++                               ("prediction", "coordinator_1800/prediction.json")):
++            actual = hashlib.sha256((Path(item["source"]) / relative).read_bytes()).hexdigest()
++            if actual != item[f"{name}_sha256"]:
++                raise ValueError("source changed while building report: " + item["source"])
++    for tolerance, summary in summaries.items():
++        write_summary(summary, output / f"scores_{tolerance}s")
++    manifest = {"source_arrays": [a_job, b_job], "split_row": split_row,
++                "expected_rows": expected_rows, "sources": sources,
++                "scope": "Frozen original predictions; no new inference or labels passed to models."}
++    (output / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n")
++    lines = ["# Bank 原全量实验最终结果", "", "原始预测与评价文件均未改写，逐题指纹见manifest.json。", "",
++             "| 时间口径 | 完全正确 | 至少一项正确 | 平均字段分 |", "|---|---:|---:|---:|"]
++    for tolerance, summary in summaries.items():
++        label = "官方±60秒" if tolerance == "60" else "历史±300秒"
++        lines.append(f"| {label} | {summary['fully_correct_count']}/{expected_rows} | "
++                     f"{summary['any_field_correct_count']}/{expected_rows} | {summary['mean_field_score']:.6f} |")
++    lines.extend(["", "两种容差分开报告；本表不是修复后的全量重跑成绩。", ""])
++    (output / "结果.md").write_text("\n".join(lines))
++    return {t: {key: value for key, value in summary.items() if key != "rows"}
++            for t, summary in summaries.items()}
++
++
++def main() -> None:
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument("--root", type=Path, default=Path("outputs"))
++    parser.add_argument("--output", type=Path, required=True)
++    parser.add_argument("--a-job", required=True)
++    parser.add_argument("--b-job", required=True)
++    parser.add_argument("--split-row", type=int, default=46)
++    parser.add_argument("--expected-rows", type=int, default=136)
++    args = parser.parse_args()
++    print(json.dumps(combine(args.root, args.output, args.a_job, args.b_job,
++                             split_row=args.split_row, expected_rows=args.expected_rows),
++                     ensure_ascii=False, indent=2))
++
++
++if __name__ == "__main__":
++    main()
+--- before/tools/rescore_bank.py
++++ after/tools/rescore_bank.py
+@@ -41,11 +41,12 @@
+                      and "component" not in item["scoring_points"].lower(),
+                      "failure_count": 2 if "two" in item["instruction"].lower() else 1})
+     scores = [item["score"] for item in rows]
+-    output = args.root / f"bank_accuracy_{args.job}_5min"
++    output = args.root / f"bank_accuracy_{args.job}_{args.time_tolerance_seconds}s"
+     output.mkdir(parents=True, exist_ok=False)
+     summary = {"job": args.job, "time_tolerance_seconds": args.time_tolerance_seconds,
+                "questions_with_evaluation": len(rows), "missing_or_failed": missing,
+-               "mean_official_field_score": statistics.mean(scores) if scores else None,
++               "mean_field_score": statistics.mean(scores) if scores else None,
++               "mean_official_field_score": statistics.mean(scores) if scores and args.time_tolerance_seconds == 60 else None,
+                "exact_match_rate": sum(item["fully_correct"] for item in rows) / len(rows) if rows else None,
+                "any_field_correct_rate": sum(item["any_field_correct"] for item in rows) / len(rows) if rows else None,
+                "conservative_mean_over_136": sum(scores) / 136 if scores else None,
+@@ -55,12 +56,13 @@
+                              "exact": sum(item["fully_correct"] for item in rows if item["failure_count"] == 2)},
+                "rows": rows}
+     (output / "summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+-    lines = ["# Bank 批量结果（5分钟时间窗）", "",
++    lines = [f"# Bank 批量结果（±{args.time_tolerance_seconds}秒时间窗）", "",
++             "±60秒为官方口径，其他容差单独报告。", "",
+              f"- 评分题目：{len(rows)}；缺失/失败：{len(missing)} {missing}",
+-             f"- 平均官方字段得分：{summary['mean_official_field_score']:.3f}",
++             f"- 平均字段得分：{summary['mean_field_score']:.3f}" if scores else "- 平均字段得分：无",
+              f"- 完全正确率：{summary['exact_match_rate']:.1%}",
+              f"- 至少一个字段正确：{summary['any_field_correct_rate']:.1%}",
+-             f"- 把19道缺失按0分算：{summary['conservative_mean_over_136']:.3f}",
++             f"- 按136题分母计分：{summary['conservative_mean_over_136']:.3f}" if scores else "- 按136题分母计分：无",
+              f"- 时间题：{summary['time_only']['n']} 道，完全正确 {summary['time_only']['exact']}",
+              f"- 双故障题：{summary['two_fault']['n']} 道，完全正确 {summary['two_fault']['exact']}", "",
+              "| row | 得分 | 完全正确 | 失败字段 |", "|---:|---:|---|---|"]
+@@ -68,7 +70,7 @@
+         lines.append(f"| {item['row']} | {item['score']} | {item['fully_correct']} | {', '.join(item['failed']) or '-'} |")
+     (output / "summary.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+     print(json.dumps({key: summary[key] for key in (
+-        "questions_with_evaluation", "missing_or_failed", "mean_official_field_score",
++        "questions_with_evaluation", "missing_or_failed", "mean_field_score", "mean_official_field_score",
+         "exact_match_rate", "any_field_correct_rate", "conservative_mean_over_136",
+         "time_only", "two_fault")}, ensure_ascii=False, indent=2))
+     print(f"summary: {output / 'summary.md'}")
+--- before/slurm/bank_combine.sbatch
++++ after/slurm/bank_combine.sbatch
+@@ -1,8 +1,8 @@
+ #!/bin/bash
+-#SBATCH --partition=rtx
+-#SBATCH --cpus-per-task=2
+-#SBATCH --mem=8G
+-#SBATCH --time=00:20:00
++#SBATCH --partition=cpu
++#SBATCH --cpus-per-task=1
++#SBATCH --mem=512M
++#SBATCH --time=00:05:00
+ #SBATCH --job-name=edge-bank-combine
+ #SBATCH --output=/mnt/beegfs/home/wangchunyun25/Documents/EdgeRCA/outputs/bank_combine-%j.log
+ set -euo pipefail
+@@ -10,19 +10,6 @@
+ PYTHON=/mnt/beegfs/home/wangchunyun25/.conda/envs/csle/bin/python
+ A_JOB=${A_JOB:?}
+ B_JOB=${B_JOB:?}
+-OUT_JOB=${OUT_JOB:?}
+-for row in $(seq 0 45); do
+-    src="$PWD/outputs/bank_case_${A_JOB}_${row}"
+-    rm -rf "outputs/bank_case_${OUT_JOB}_${row}"
+-    [ -d "$src" ] && ln -sfn "$src" "outputs/bank_case_${OUT_JOB}_${row}"
+-done
+-for row in $(seq 46 135); do
+-    src="$PWD/outputs/bank_case_${B_JOB}_${row}"
+-    rm -rf "outputs/bank_case_${OUT_JOB}_${row}"
+-    [ -d "$src" ] && ln -sfn "$src" "outputs/bank_case_${OUT_JOB}_${row}"
+-done
+-"$PYTHON" tools/bank_summary.py --root outputs --job "$OUT_JOB"
+-"$PYTHON" tools/bank_diagnose.py --root outputs --job "$OUT_JOB" --time-tolerance-seconds 300
+-"$PYTHON" tools/candidate_recall.py --job "$OUT_JOB" > "outputs/bank_candidate_recall_${OUT_JOB}.json"
+-"$PYTHON" tools/stage_recall.py --job "$OUT_JOB" > "outputs/bank_stage_recall_${OUT_JOB}.json"
+-cat "outputs/bank_stage_recall_${OUT_JOB}.json"
++export PYTHONDONTWRITEBYTECODE=1
++OUT_DIR=${OUT_DIR:-"$PWD/outputs/bank_combined_${SLURM_JOB_ID:?}"}
++"$PYTHON" -m tools.bank_combine --root outputs --a-job "$A_JOB" --b-job "$B_JOB" --output "$OUT_DIR"
+--- before/slurm/bank_summary.sbatch
++++ after/slurm/bank_summary.sbatch
+@@ -1,11 +1,13 @@
+ #!/bin/bash
+-#SBATCH --partition=rtx
+-#SBATCH --cpus-per-task=2
+-#SBATCH --mem=8G
++#SBATCH --partition=cpu
++#SBATCH --cpus-per-task=1
++#SBATCH --mem=512M
+ #SBATCH --time=00:10:00
+ #SBATCH --job-name=edge-bank-summary
+ #SBATCH --output=/mnt/beegfs/home/wangchunyun25/Documents/EdgeRCA/outputs/bank_summary-%j.log
+ set -euo pipefail
+ cd /mnt/beegfs/home/wangchunyun25/Documents/EdgeRCA
+ PYTHON=/mnt/beegfs/home/wangchunyun25/.conda/envs/csle/bin/python
+-"$PYTHON" tools/bank_summary.py --root outputs --job "${BANK_JOB:?BANK_JOB is required}"
++export PYTHONDONTWRITEBYTECODE=1
++"$PYTHON" -m tools.bank_summary --root outputs --job "${BANK_JOB:?BANK_JOB is required}" \
++    --time-tolerance-seconds "${TIME_TOLERANCE_SECONDS:-60}" --expected-rows "${EXPECTED_ROWS:-136}"
+--- before/tests/test_bank_summary.py
++++ after/tests/test_bank_summary.py
+@@ -0,0 +1,121 @@
++"""Reports must preserve frozen answers, missing rows and scoring tolerances."""
++
++import hashlib
++import json
++from pathlib import Path
++import tempfile
++import unittest
++
++from tools.bank_combine import combine
++from tools.bank_summary import summarize, write_summary
++
++
++def create_case(root: Path, job: str, row: int, tolerance: int = 300) -> Path:
++    case = root / f"bank_case_{job}_{row}"
++    (case / "evaluation").mkdir(parents=True)
++    (case / "coordinator_1800").mkdir()
++    prediction = [{"root cause occurrence datetime": "2021-03-24 19:31:01",
++                   "root cause component": "MG01", "root cause reason": "network latency"}]
++    raw = json.dumps(prediction).encode()
++    (case / "coordinator_1800/prediction.json").write_bytes(raw)
++    result = {"row": row, "score": 1, "fully_correct": True, "any_field_correct": True,
++              "final_reply_valid": True, "prediction": prediction,
++              "prediction_sha256": hashlib.sha256(raw).hexdigest(),
++              "time_tolerance_seconds": tolerance,
++              "scoring_points": "The only root cause occurrence time is within 1 minutes (i.e., <=1min) of 2021-03-24 19:30:00"}
++    (case / "evaluation/result.json").write_text(json.dumps(result))
++    return case
++
++
++class BankSummaryTests(unittest.TestCase):
++    def test_rescore_keeps_both_tolerances_and_frozen_bytes_separate(self):
++        with tempfile.TemporaryDirectory() as directory:
++            root = Path(directory)
++            case = create_case(root, "a", 0)
++            before = (case / "evaluation/result.json").read_bytes()
++            official = summarize(root, "a", time_tolerance_seconds=60)
++            relaxed = summarize(root, "a", time_tolerance_seconds=300)
++            self.assertEqual(official["mean_official_field_score"], 0)
++            self.assertEqual(relaxed["mean_field_score"], 1)
++            self.assertIsNone(relaxed["mean_official_field_score"])
++            self.assertEqual((case / "evaluation/result.json").read_bytes(), before)
++
++    def test_missing_directories_are_counted_when_expected_rows_supplied(self):
++        with tempfile.TemporaryDirectory() as directory:
++            root = Path(directory)
++            create_case(root, "a", 1)
++            report = summarize(root, "a", expected_rows=3)
++            self.assertEqual(report["missing_or_failed"], [0, 2])
++            self.assertEqual(report["questions_with_evaluation"], 1)
++            self.assertNotIn("unseen_questions", report)
++
++    def test_mixed_saved_tolerances_require_explicit_rescore(self):
++        with tempfile.TemporaryDirectory() as directory:
++            root = Path(directory)
++            create_case(root, "a", 0, 60)
++            create_case(root, "a", 1, 300)
++            with self.assertRaisesRegex(ValueError, "mixed"):
++                summarize(root, "a")
++            self.assertEqual(summarize(root, "a", time_tolerance_seconds=60)["fully_correct_count"], 0)
++
++    def test_ranked_hits_are_not_reused_with_different_tolerance(self):
++        with tempfile.TemporaryDirectory() as directory:
++            root = Path(directory)
++            case = create_case(root, "a", 0)
++            path = case / "evaluation/result.json"
++            data = json.loads(path.read_text())
++            data.update(top3_fully_correct=True, ranked_evaluation={"candidate_count": 2})
++            path.write_text(json.dumps(data))
++            report = summarize(root, "a", time_tolerance_seconds=60)
++            self.assertNotIn("top3_correct_count", report)
++
++    def test_existing_report_is_not_overwritten(self):
++        with tempfile.TemporaryDirectory() as directory:
++            root = Path(directory)
++            create_case(root, "a", 0)
++            report = summarize(root, "a")
++            output = root / "report"
++            write_summary(report, output)
++            with self.assertRaises(FileExistsError):
++                write_summary(report, output)
++
++
++class BankCombineTests(unittest.TestCase):
++    def test_combines_complete_arrays_without_touching_old_broken_directories(self):
++        with tempfile.TemporaryDirectory() as directory:
++            root = Path(directory)
++            create_case(root, "a", 0)
++            create_case(root, "b", 1)
++            old = root / "bank_case_old_0"
++            old.mkdir()
++            marker = old / "keep.txt"
++            marker.write_text("old evidence")
++            output = root / "new"
++            report = combine(root, output, "a", "b", split_row=1, expected_rows=2)
++            self.assertEqual(report["60"]["questions_with_evaluation"], 2)
++            self.assertEqual(report["300"]["fully_correct_count"], 2)
++            self.assertTrue((output / "bank_case_combined_0").is_symlink())
++            self.assertEqual(marker.read_text(), "old evidence")
++            with self.assertRaises(FileExistsError):
++                combine(root, output, "a", "b", split_row=1, expected_rows=2)
++
++    def test_missing_source_fails_before_creating_bundle(self):
++        with tempfile.TemporaryDirectory() as directory:
++            root = Path(directory)
++            create_case(root, "a", 0)
++            with self.assertRaises(FileNotFoundError):
++                combine(root, root / "new", "a", "b", split_row=1, expected_rows=2)
++            self.assertFalse((root / "new").exists())
++
++    def test_changed_prediction_is_rejected_before_creating_bundle(self):
++        with tempfile.TemporaryDirectory() as directory:
++            root = Path(directory)
++            case = create_case(root, "a", 0)
++            (case / "coordinator_1800/prediction.json").write_text("[]")
++            with self.assertRaisesRegex(ValueError, "frozen prediction"):
++                combine(root, root / "new", "a", "b", split_row=1, expected_rows=1)
++            self.assertFalse((root / "new").exists())
++
++
++if __name__ == "__main__":
++    unittest.main()

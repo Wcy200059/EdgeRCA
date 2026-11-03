@@ -1,0 +1,51 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "IG02",
+        "reason": "high CPU usage",
+        "time": "22:33:00",
+        "time_evidence_id": "e26",
+        "support_ids": [
+          "e26",
+          "e236",
+          "e237",
+          "e238",
+          "e239"
+        ],
+        "counter_ids": [],
+        "explanation": "IG02 在 22:33:00 出现 CPU 峰值 99.76% (e26)，随后下降。该节点是 Tomcat 集群的上游入口 (e236-e239)，且 Tomcat 端观测到长调用 (e151, e197)。资源高导致下游延迟符合因果链，且题目要求单故障，此证据链完整。"
+      },
+      {
+        "id": "h2",
+        "assessment": "not_supported",
+        "component": "IG01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [
+          "e264"
+        ],
+        "explanation": "IG01 虽连接 Tomcat 且有长调用，但其 CPU 指标 e264 显示最大值仅 26.2%，无显著飙升。在存在明确 IG02 故障证据的情况下，IG01 的高 CPU 假设缺乏数值支持，故不支持。"
+      }
+    ],
+    "requests": []
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17777,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 53,
+        "available_facts": 253
+      }
+    }
+  ],
+  "labels_used": false
+}

@@ -1,0 +1,105 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "apache02",
+        "reason": "high CPU usage",
+        "time": "16:24:06.000",
+        "time_evidence_id": "e277",
+        "support_ids": [
+          "e277"
+        ],
+        "counter_ids": [],
+        "explanation": "e277 显示 apache02 在 16:24:06 发生 502 错误，且 public_task 明确为单故障。虽未直接测得 CPU 数值，但 502 通常由后端资源耗尽（如 CPU）导致。其他节点如 Tomcat/Redis 无明确 502 或 OOM 日志，且 docker 节点长调用多为结果而非根因。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat01 存在长调用（e202），但无法区分是自身 CPU 高还是下游（MG）高导致。需补查 Tomcat01 的 CPU 指标以确认是否触发高 CPU 规则。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:apache02",
+        "start": "16:00:00",
+        "end": "16:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "获取 apache02 的 CPU 使用率数值，验证 502 错误是否由本地 CPU 耗尽直接引起。",
+        "basis_ids": [
+          "e277"
+        ]
+      },
+      {
+        "node_id": "device:Tomcat01",
+        "start": "16:00:00",
+        "end": "16:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认 Tomcat01 在该时段内 CPU 使用率是否显著升高，以验证其是否为长调用的根因。",
+        "basis_ids": [
+          "e205"
+        ]
+      },
+      {
+        "node_id": "device:MG01",
+        "start": "16:00:00",
+        "end": "16:30:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPUCpuUtil"
+        ],
+        "focus": "确认 MG01 在 16:00-16:30 期间 CPU 使用率变化趋势，判断其高 CPU 是否早于 apache02 故障发生。",
+        "basis_ids": [
+          "e32"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "h3: time 16:25:00.000 requires e32 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown",
+      "rejected_sections": [
+        {
+          "section": "hypotheses",
+          "index": 2,
+          "item": {
+            "id": "h3",
+            "assessment": "not_supported",
+            "component": "MG01",
+            "reason": "high CPU usage",
+            "time": "16:25:00.000",
+            "time_evidence_id": "e32",
+            "support_ids": [],
+            "counter_ids": [
+              "e277"
+            ],
+            "explanation": "MG01 的高 CPU 发生在 16:25:00，晚于 apache02 的 502 错误（16:24:06）。若 MG01 是根因，其故障应早于或同时于业务失败，时间线不支持其为首因。"
+          },
+          "error": "h3: time 16:25:00.000 requires e32 in support_ids and an exact time_mark match; use null for time and time_evidence_id if unknown"
+        }
+      ],
+      "read_only_requests_usable": true
+    }
+  ],
+  "labels_used": false
+}

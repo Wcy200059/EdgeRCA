@@ -1,0 +1,49 @@
+{
+  "query_file": "/mnt/beegfs/home/wangchunyun25/Documents/OpenRCA/dataset/Bank/query.csv",
+  "row": 120,
+  "instruction": "Two failures were detected within the time range of March 25, 2021, from 00:00 to 00:30. The exact time of occurrence and the underlying reasons for these failures are currently unknown. Please determine the root cause occurrence datetime and the root cause reason.",
+  "task_index": "task_4",
+  "scoring_points": "The 1-th root cause occurrence time is within 1 minutes (i.e., <=1min) of 2021-03-25 00:07:00\nThe 1-th predicted root cause reason is network latency\nThe 2-th root cause occurrence time is within 1 minutes (i.e., <=1min) of 2021-03-25 00:19:00\nThe 2-th predicted root cause reason is high disk I/O read usage\n",
+  "prediction": [
+    {
+      "root cause occurrence datetime": "2021-03-25 00:02:00",
+      "root cause component": "Mysql02",
+      "root cause reason": "high disk I/O read usage"
+    },
+    {
+      "root cause occurrence datetime": "2021-03-25 00:02:00",
+      "root cause component": "Tomcat04",
+      "root cause reason": "high memory usage"
+    }
+  ],
+  "prediction_sha256": "b06b88eb087f17fabf4cfba79a170dc24406244162c95bd03079dea3d8bbb877",
+  "final_reply_valid": true,
+  "score": 0.5,
+  "fully_correct": false,
+  "any_field_correct": true,
+  "passed": [
+    "2021-03-25 00:07:00",
+    "high disk I/O read usage"
+  ],
+  "failed": [
+    "2021-03-25 00:19:00",
+    "network latency"
+  ],
+  "checkpoints": [
+    {
+      "seconds": 1800,
+      "nodes": 18,
+      "central_queries": 3
+    }
+  ],
+  "delivered_rows": 53778,
+  "device_nodes": 18,
+  "model_calls": 63,
+  "model_generation_seconds": 433.70911054173484,
+  "hit_output_limit_calls": 0,
+  "inference_labels_used": false,
+  "scorer": "/mnt/beegfs/home/wangchunyun25/Documents/OpenRCA/main/evaluate.py",
+  "time_tolerance_seconds": 300,
+  "scoring_rule": "components/reasons exact; occurrence time <= 300s",
+  "scope": "单道已有Bank样例的加速回放验收，不代表335题准确率或实时部署性能。"
+}

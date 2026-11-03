@@ -1,0 +1,61 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high CPU usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e201/e202 显示 dockerB1 出现长调用，可能由上游 Tomcat01 高 CPU 导致。但 e248 显示 Tomcat01 的 CPU 指标查询失败（missing），缺乏直接数值证据确认高负载及具体时间。需补查 CPU 指标。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat01",
+        "reason": "high memory usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e137 显示 Tomcat01 JVM 剩余内存呈上升趋势，不支持内存耗尽假设。但无法排除其他内存指标（如堆外内存）异常或 e137 采样不足。需补查完整内存指标以确认是否存在高内存故障。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat01",
+        "start": "18:30:00.000",
+        "end": "19:00:00.000",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-CPU_CPU_CPU-0_SingleCpuUtil",
+          "OSLinux-CPU_CPU_CPU-1_SingleCpuUtil",
+          "OSLinux-CPU_CPU_CPU-2_SingleCpuUtil",
+          "OSLinux-CPU_CPU_CPU-3_SingleCpuUtil",
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "确认 Tomcat01 在 18:30-19:00 期间 CPU 各核使用率是否显著升高，以及内存使用率是否出现异常峰值，以验证高 CPU/内存故障假设。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17665,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 54,
+        "available_facts": 238
+      }
+    }
+  ],
+  "labels_used": false
+}

@@ -1,0 +1,41 @@
+{
+  "reply": {
+    "faults": [
+      {
+        "component": "apache01",
+        "reason": "high JVM CPU load",
+        "time": "21:36:09.000",
+        "evidence_ids": [
+          "e46",
+          "e47",
+          "e48",
+          "e49",
+          "e50",
+          "e51",
+          "e52",
+          "e53"
+        ],
+        "explanation": "Apache 节点大量返回 502 错误（e46-e67），时间集中在 21:36-21:40。结合候选原因 high JVM CPU load，推测后端 Tomcat 因 CPU 过载无法处理请求导致超时。需确认 Tomcat 资源指标以证实根因。"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": false,
+      "error": "evidence_ids must use current e IDs"
+    },
+    {
+      "valid": false,
+      "error": "evidence_ids must use current e IDs"
+    },
+    {
+      "valid": true,
+      "source": "coordinator_seed_fallback"
+    }
+  ],
+  "labels_used": false,
+  "cutoff_ms": 1615125600000,
+  "model_judgment_verified": false,
+  "expected_failures": 1,
+  "answer_schema": "faults_v1"
+}

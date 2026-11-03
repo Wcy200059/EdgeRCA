@@ -1,0 +1,124 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat01",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": "15:30:19.000",
+        "time_evidence_id": "e271",
+        "support_ids": [
+          "e271",
+          "e269",
+          "e152"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat01 在 15:30:19 首次发生 Allocation Failure 导致 GC（e271），且内存使用率从 15:30 的 98% 开始维持高位（e269）。早于该时间的长调用（e152）可能是 OOM 前兆。内存高是根因，GC 是结果。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat02",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [
+          "e170"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat02 存在长调用（e170）且 CPU 空闲极低（e140），疑似资源耗尽。但缺乏直接的内存指标或 GC 日志证据确认 OOM，需补查内存及 GC 状态。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "Tomcat03",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [
+          "e170"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat03 存在长调用（e170）且 CPU 使用异常。缺乏内存指标直接证据，需补查内存及 GC 日志确认是否 OOM。"
+      },
+      {
+        "id": "h4",
+        "assessment": "unresolved",
+        "component": "Tomcat04",
+        "reason": "JVM Out of Memory (OOM) Heap",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [
+          "e176"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 存在长调用（e176）且 CPU 使用异常。缺乏内存指标直接证据，需补查内存及 GC 日志确认是否 OOM。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat02",
+        "start": "15:30:00.000",
+        "end": "16:00:00.000",
+        "tools": [
+          "get_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc",
+          "JVM-Memory_HeapUsedBytes",
+          "JVM-GC_PauseTime"
+        ],
+        "focus": "确认 Tomcat02 内存使用率及 GC 停顿情况，验证长调用是否由内存耗尽引起。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat03",
+        "start": "15:30:00.000",
+        "end": "16:00:00.000",
+        "tools": [
+          "get_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc",
+          "JVM-Memory_HeapUsedBytes",
+          "JVM-GC_PauseTime"
+        ],
+        "focus": "确认 Tomcat03 内存使用率及 GC 停顿情况，验证长调用是否由内存耗尽引起。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "15:30:00.000",
+        "end": "16:00:00.000",
+        "tools": [
+          "get_metrics",
+          "get_logs"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc",
+          "JVM-Memory_HeapUsedBytes",
+          "JVM-GC_PauseTime"
+        ],
+        "focus": "确认 Tomcat04 内存使用率及 GC 停顿情况，验证长调用是否由内存耗尽引起。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17706,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 47,
+        "available_facts": 267
+      }
+    }
+  ],
+  "labels_used": false
+}

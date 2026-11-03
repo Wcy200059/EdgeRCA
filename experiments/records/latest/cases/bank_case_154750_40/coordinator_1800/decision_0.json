@@ -1,0 +1,99 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "supported",
+        "component": "Tomcat04",
+        "reason": "high memory usage",
+        "time": "14:32:00",
+        "time_evidence_id": "e246",
+        "support_ids": [
+          "e246"
+        ],
+        "counter_ids": [],
+        "explanation": "Tomcat04 内存占用在 14:32:00 瞬间达到 98% 并持续高位，符合 OOM 前兆特征。虽无直接 OOM 日志，但资源耗尽是业务中断的直接原因，且时间早于网络流量激增。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Tomcat04",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Tomcat04 磁盘读写在 14:37-14:53 有波动，但缺乏明确触发点，且晚于内存异常。需确认是否与内存压力导致的缓存失效有关，或独立故障。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "MG02",
+        "reason": "network packet loss",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "MG02 网络流出包在 14:40 后激增，但缺乏丢包或延迟的具体指标佐证。需确认是流量增大还是网络拥塞/故障。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Tomcat04",
+        "start": "14:30:00",
+        "end": "15:00:00",
+        "tools": [
+          "get_logs"
+        ],
+        "metrics": [],
+        "focus": "查找 Tomcat04 在 14:32 内存高企后是否有 JVM OOM 堆溢出日志或应用级错误堆栈，以确认内存故障是否导致服务不可用。",
+        "basis_ids": [
+          "e246"
+        ]
+      },
+      {
+        "node_id": "device:MG02",
+        "start": "14:30:00",
+        "end": "15:00:00",
+        "tools": [
+          "list_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_NETWORK_ens160_NETPacketLoss",
+          "OSLinux-OSLinux_NETWORK_ens160_NETRTT"
+        ],
+        "focus": "确认 MG02 是否存在网络丢包或高延迟指标，以验证网络故障假设。若仅有流量增大则排除网络根因。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "14:30:00",
+        "end": "15:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc"
+        ],
+        "focus": "获取 Tomcat04 内存占比的连续数值序列，确认 14:32 后是否持续高位或出现泄漏趋势，排除瞬时抖动。",
+        "basis_ids": [
+          "e246"
+        ]
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17577,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 39,
+        "available_facts": 271
+      }
+    }
+  ],
+  "labels_used": false
+}

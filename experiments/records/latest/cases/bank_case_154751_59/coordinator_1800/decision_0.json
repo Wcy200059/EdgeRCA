@@ -1,0 +1,96 @@
+{
+  "reply": {
+    "hypotheses": [
+      {
+        "id": "h1",
+        "assessment": "unresolved",
+        "component": "Tomcat04",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e182 显示 Tomcat04 磁盘指标存在波动，但仅 8 个样本且早/晚期均为 0，无法确认是否持续高 I/O 导致故障。缺乏具体数值趋势和与业务慢调用的时间关联，需补查磁盘详细指标及调用链。"
+      },
+      {
+        "id": "h2",
+        "assessment": "unresolved",
+        "component": "Mysql01",
+        "reason": "high disk I/O read usage",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "Mysql01 有海量未加载事实（329 条），e45 仅显示流量波动，无磁盘 I/O 直接证据。Tomcat 端 P95 延迟高但无明确失败状态。需确认 Mysql01 磁盘负载及 Tomcat 调用是否超时。"
+      },
+      {
+        "id": "h3",
+        "assessment": "unresolved",
+        "component": "IG01",
+        "reason": "network latency",
+        "time": null,
+        "time_evidence_id": null,
+        "support_ids": [],
+        "counter_ids": [],
+        "explanation": "e22/e30 显示 IG01 到 Tomcat 及自身存在长调用（P95>3s），但 note 提示时间区间可能不匹配，且无明确网络丢包或 RTT 指标。需核实具体网络延迟指标及慢调用发生时刻。"
+      }
+    ],
+    "requests": [
+      {
+        "node_id": "device:Mysql01",
+        "start": "15:30:00",
+        "end": "16:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKPercentBusy",
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadsSec"
+        ],
+        "focus": "确认 Mysql01 磁盘读写百分比和每秒读取量在故障窗口内是否出现持续高负载，以验证磁盘 I/O 瓶颈假设。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:Tomcat04",
+        "start": "15:30:00",
+        "end": "16:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKPercentBusy"
+        ],
+        "focus": "获取 Tomcat04 磁盘繁忙百分比的具体数值曲线，确认 e182 中的波动是否对应持续的高 I/O 使用率。",
+        "basis_ids": []
+      },
+      {
+        "node_id": "device:IG01",
+        "start": "15:30:00",
+        "end": "16:00:00",
+        "tools": [
+          "get_metrics"
+        ],
+        "metrics": [
+          "OSLinux-NETWORK_NETWORK-NET_RXBytes",
+          "OSLinux-NETWORK_NETWORK-NET_TXBytes"
+        ],
+        "focus": "检查 IG01 网卡收发字节数，确认是否存在网络拥塞或丢包导致的延迟，以区分是网络故障还是下游处理慢。",
+        "basis_ids": []
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "valid": true,
+      "input_budget": {
+        "input_tokens": 17722,
+        "output_tokens": 2000,
+        "repair_reserve": 700,
+        "context_limit": 20480,
+        "loaded_facts": 64,
+        "available_facts": 264
+      }
+    }
+  ],
+  "labels_used": false
+}
